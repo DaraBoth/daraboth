@@ -18,7 +18,7 @@ import {
   nextjs,
   hrd,
   kosign,
-  tinynotie,
+  shopify,
   kshrdregi,
   rupp,
   googleadsense,
@@ -256,27 +256,27 @@ const projects = [
     image: kshrdregi,
     source_code_link: "https://kshrdregistraion.web.app/",
   },
-  {
-    name: "TinyNotie",
-    description:
-      "Manage your cash note with functionality",
-    tags: [
-      {
-        name: "react",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "express js",
-        color: "green-text-gradient",
-      },
-      {
-        name: "mui",
-        color: "pink-text-gradient",
-      },
-    ],
-    image: tinynotie,
-    source_code_link: "https://gitlab.com/DaraBoth/kitluyapp",
-  },
+  // {
+  //   name: "TinyNotie",
+  //   description:
+  //     "Manage your cash note with functionality",
+  //   tags: [
+  //     {
+  //       name: "react",
+  //       color: "blue-text-gradient",
+  //     },
+  //     {
+  //       name: "express js",
+  //       color: "green-text-gradient",
+  //     },
+  //     {
+  //       name: "mui",
+  //       color: "pink-text-gradient",
+  //     },
+  //   ],
+  //   image: kshrdregi,
+  //   source_code_link: "https://gitlab.com/DaraBoth/kitluyapp",
+  // },
 ];
 
 export { services, technologies, experiences, testimonials, projects };

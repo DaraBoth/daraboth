@@ -41,6 +41,7 @@ import nextjs from "./nextjs.png";
 import profile from "./profile.jpg";
 import accpremiumwrap from "./accpremiumwrap.png";
 import kshrdregi from "./kshrdregi.png";
+import tinynotie from "./tinynotie.png";
 
 export {
   logo,
@@ -82,4 +83,5 @@ export {
   makerlight,
   hrd,
   kosign,
+  tinynotie,
 };
