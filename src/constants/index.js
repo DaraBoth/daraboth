@@ -275,7 +275,7 @@ const projects = [
       },
     ],
     image: tinynotie,
-    source_code_link: "https://gitlab.com/DaraBoth/kitluyapp",
+    source_code_link: "https://tinynotie-dev.vercel.app/",
   },
 ];
 
