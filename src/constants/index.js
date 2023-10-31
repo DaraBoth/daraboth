@@ -273,6 +273,10 @@ const projects = [
         name: "mui",
         color: "pink-text-gradient",
       },
+      {
+        name: "serverless",
+        color: "blue-text-gradient",
+      },
     ],
     image: tinynotie,
     source_code_link: "https://tinynotie-dev.vercel.app/",
