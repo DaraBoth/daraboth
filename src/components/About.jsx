@@ -10,12 +10,6 @@ import OpenAI from "openai";
 import { TypeAnimation } from "react-type-animation";
 import axios from "axios";
 
-/* OPEN AI CONFIGURATION */
-const openai = new OpenAI({
-  apiKey: "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",
-  dangerouslyAllowBrowser: true,
-});
-
 const ServiceCard = ({ index, title, icon }) => (
   <Tilt className="xs:w-[250px] w-full">
     <motion.div
@@ -110,7 +104,6 @@ export const OpenAiChat = ({ text }) => {
         sequence={[
           "" + apiResponse,
         ]}
-        // preRenderFirstString={true}
         wrapper="p"
         cursor={true}
         speed={70}
