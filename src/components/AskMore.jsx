@@ -47,12 +47,12 @@ const AskMore = () => {
         setLoading(false);
       })
       .catch((error) => {
+        setLoading(false);
         setForm({
           ...form,
-          answer: "There is too many request please try again.",
+          answer: "There are too many request please wait abit and try again.",
         });
-        setLoading("There is too many request please try again.");
-        console.log(error);
+        console.log(error?.message);
       });
   };
 
