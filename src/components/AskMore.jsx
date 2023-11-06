@@ -34,7 +34,7 @@ const AskMore = () => {
       method: "post",
       maxBodyLength: Infinity,
       url: "https://tinynotie-api.vercel.app/openai/ask",
-    //   url: "http://localhost:9000/openai/ask",
+      //   url: "http://localhost:9000/openai/ask",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
@@ -47,6 +47,11 @@ const AskMore = () => {
         setLoading(false);
       })
       .catch((error) => {
+        setForm({
+          ...form,
+          answer: "There is too many request please try again.",
+        });
+        setLoading("There is too many request please try again.");
         console.log(error);
       });
   };
@@ -65,12 +70,10 @@ const AskMore = () => {
         </p>
         {!!form.answer && (
           <TypeAnimation
-            sequence={[
-                ""+form.answer,
-            ]}
+            sequence={["" + form.answer]}
             wrapper="p"
             cursor={true}
-            className={{...styles.sectionSubText2}}
+            className={{ ...styles.sectionSubText2 }}
             speed={70}
             repeat={0}
           />
