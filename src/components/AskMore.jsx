@@ -33,8 +33,8 @@ const AskMore = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-    //   url: "https://tinynotie-api.vercel.app/openai/ask",
-      url: "http://localhost:9000/openai/ask",
+      url: "https://tinynotie-api.vercel.app/openai/ask",
+    //   url: "http://localhost:9000/openai/ask",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
