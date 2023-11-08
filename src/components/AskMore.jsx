@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { styles } from "../styles";
-import { BallCanvas, ComputersCanvas, EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
 import { TypeAnimation } from "react-type-animation";
@@ -32,8 +31,9 @@ const AskMore = () => {
     }
     if (!lastDate) {
       localStorage.setItem("today", today);
-    } else if (today > lastDate) {
-      resetQuestionLimit();
+    } else if (isMoreThanADay(today, new Date(lastDate))) {
+      alert("work")
+      resetQuestionLimit()
     }
   }, []);
 
@@ -80,7 +80,7 @@ const AskMore = () => {
         setForm({ ...form, answer: response.data?.text });
         setLoading(false);
         setRemainingQuestions(remainingQuestions - 1);
-        localStorage.setItem("questionsAskedToday", remainingQuestions - 1);
+        localStorage.setItem("remainingQuestions", remainingQuestions - 1);
       })
       .catch((error) => {
         setLoading(false);
@@ -146,3 +146,22 @@ const AskMore = () => {
 };
 
 export default SectionWrapper(AskMore, "askmore");
+
+function isMoreThanADay(dateA, dateB) {
+  // Get the timestamps of the two dates
+  const dateATimestamp = dateA.getTime();
+  const dateBTimestamp = dateB.getTime();
+
+  // Calculate the difference in milliseconds
+  const differenceInMilliseconds = dateATimestamp - dateBTimestamp;
+
+  // Convert the difference to days
+  const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
+
+  // Check if the difference is more than a day
+  if (differenceInDays > 0 && differenceInDays > 1) {
+    return true;
+  } else {
+    return false;
+  }
+}
