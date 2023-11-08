@@ -68,47 +68,45 @@ const About = () => {
 export const OpenAiChat = ({ text }) => {
   const [apiResponse, setApiResponse] = useState("");
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    async function getChat() {
-      try {
-        setLoading(true);
-        let config = {
-          method: "post",
-          maxBodyLength: Infinity,
-          url: "https://tinynotie-api.vercel.app/openai/text",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          data: { text: text },
-        };
-        axios
-          .request(config)
-          .then((response) => {
-            setApiResponse(response.data?.text);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    getChat();
-  }, []);
+  // useEffect(() => {
+  //   async function getChat() {
+  //     try {
+  //       setLoading(true);
+  //       let config = {
+  //         method: "post",
+  //         maxBodyLength: Infinity,
+  //         url: "https://tinynotie-api.vercel.app/openai/text",
+  //         headers: {
+  //           "Content-Type": "application/x-www-form-urlencoded",
+  //         },
+  //         data: { text: text },
+  //       };
+  //       axios
+  //         .request(config)
+  //         .then((response) => {
+  //           setApiResponse(response.data?.text);
+  //           setLoading(false);
+  //         })
+  //         .catch((error) => {
+  //           console.log(error);
+  //         });
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }
+  //   getChat();
+  // }, []);
 
   return (
-    !loading && (
-      <TypeAnimation
-        sequence={[
-          "" + apiResponse,
-        ]}
-        wrapper="p"
-        cursor={true}
-        speed={70}
-        repeat={0}
-      />
-    )
+    <TypeAnimation
+      sequence={[
+        "I'm a software engineer and Full stack web developer I used to work with AngularJS, Next.js, React.js, JavaScript, and jQuery on frontend and backend I used to use Express.js, Spring Boot with JPA, JSP, and Flask and about SQL I used to use PostgreSQL and MySQL. Please write and Introduction about me in a professional way.",
+      ]}
+      wrapper="p"
+      cursor={true}
+      speed={70}
+      repeat={0}
+    />
   );
 };
 
