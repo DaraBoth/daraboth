@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { styles } from "../styles";
 import { BallCanvas, ComputersCanvas, EarthCanvas } from "./canvas";
@@ -13,8 +13,29 @@ const AskMore = () => {
     message: "",
     answer: "",
   });
-
   const [loading, setLoading] = useState(false);
+  const [remainingQuestions, setRemainingQuestions] = useState(5);
+  const [today, setToday] = useState(new Date());
+
+  const resetQuestionLimit = () => {
+    setRemainingQuestions(5);
+    localStorage.setItem("remainingQuestions", 5);
+    localStorage.setItem("today", today);
+    setToday(new Date());
+  };
+
+  useEffect(() => {
+    const storedRemainingQuestions = localStorage.getItem("remainingQuestions");
+    const lastDate = localStorage.getItem("today");
+    if (storedRemainingQuestions) {
+      setRemainingQuestions(parseInt(storedRemainingQuestions));
+    }
+    if (!lastDate) {
+      localStorage.setItem("today", today);
+    } else if (today > lastDate) {
+      resetQuestionLimit();
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { target } = e;
@@ -30,27 +51,43 @@ const AskMore = () => {
     e.preventDefault();
     setLoading(true);
     setForm({ ...form, answer: "" });
+
+    if (remainingQuestions <= 0) {
+      setTimeout(() => {
+        setForm({
+          ...form,
+          answer: "You have reached your daily question limit for today. 🫰",
+        });
+        setLoading(false);
+      }, 1000);
+      return;
+    }
+
     let config = {
       method: "post",
       maxBodyLength: Infinity,
       url: "https://tinynotie-api.vercel.app/openai/ask",
-      //   url: "http://localhost:9000/openai/ask",
+      // url: "http://localhost:9000/openai/ask",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       data: { text: form.message },
     };
+
     axios
       .request(config)
       .then((response) => {
         setForm({ ...form, answer: response.data?.text });
         setLoading(false);
+        setRemainingQuestions(remainingQuestions - 1);
+        localStorage.setItem("questionsAskedToday", remainingQuestions - 1);
       })
       .catch((error) => {
         setLoading(false);
         setForm({
           ...form,
-          answer: "There are too many request please wait abit and try again.",
+          answer:
+            "There are too many requests. Please wait a bit and try again.",
         });
         console.log(error?.message);
       });
@@ -100,7 +137,7 @@ const AskMore = () => {
             type="submit"
             className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
           >
-            {loading ? "Answering..." : "Ask"}
+            {loading ? "Answering..." : `Ask (${remainingQuestions})`}
           </button>
         </form>
       </motion.div>
