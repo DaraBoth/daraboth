@@ -100,7 +100,7 @@ export const OpenAiChat = ({ text }) => {
   return (
     <TypeAnimation
       sequence={[
-        "I'm a software engineer and Full stack web developer I used to work with AngularJS, Next.js, React.js, JavaScript, and jQuery on frontend and backend I used to use Express.js, Spring Boot with JPA, JSP, and Flask and about SQL I used to use PostgreSQL and MySQL. Please write and Introduction about me in a professional way.",
+        "I'm a software engineer and Full stack web developer I used to work with AngularJS, Next.js, React.js, JavaScript, and jQuery on frontend and backend I used to use Express.js, Spring Boot with JPA, JSP, and Flask and about SQL I used to use PostgreSQL and MySQL.",
       ]}
       wrapper="p"
       cursor={true}
