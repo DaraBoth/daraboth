@@ -10,8 +10,8 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
   scroll-behavior: smooth;
+  scroll-snap-type: mandatory;
   color-scheme: dark;
-  scroll-behavior: smooth;
 }
 
 /* scroll */

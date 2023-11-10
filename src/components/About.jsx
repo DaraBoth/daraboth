@@ -45,7 +45,7 @@ const About = () => {
         <h2 className={styles.sectionHeadText}>Overview.</h2>
       </motion.div>
 
-      <motion.p
+      <motion.div
         variants={fadeIn("", "", 0.1, 1)}
         className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]"
       >
@@ -54,7 +54,7 @@ const About = () => {
             "Please write and introduction about me. My name's DaraBoth.I'm male. I'm a software engineer and Full stack web developer I used to work with AngularJS, Next.js, React.js, JavaScript, and jQuery on frontend and backend I used to use Express.js, Spring Boot with JPA, JSP, and Flask and about SQL I used to use PostgreSQL and MySQL. Please write and Introduction about me in a professional way."
           }
         />
-      </motion.p>
+      </motion.div>
 
       <div className="mt-20 flex flex-wrap gap-10">
         {services.map((service, index) => (
