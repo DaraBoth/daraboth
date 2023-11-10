@@ -35,8 +35,6 @@ import hrd from "./work/hrd.jpg";
 import kosign from "./work/KOSIGN.png";
 
 import carrent from "./carrent.png";
-import jobit from "./jobit.png";
-import tripguide from "./tripguide.png";
 import nextjs from "./nextjs.png";
 import profile from "./profile.jpg";
 import accpremiumwrap from "./accpremiumwrap.png";
@@ -70,8 +68,6 @@ export {
   starbucks,
   tesla,
   carrent,
-  jobit,
-  tripguide,
   nextjs,
   profile,
   accpremiumwrap,

@@ -13,6 +13,8 @@
     "@react-three/drei": "^9.56.24",
     "@react-three/fiber": "^8.11.1",
     "axios": "^1.6.0",
+    "flowbite": "^2.0.0",
+    "flowbite-react": "^0.6.4",
     "framer-motion": "^9.0.7",
     "maath": "^0.5.2",
     "react": "^18.2.0",
@@ -21,6 +23,7 @@
     "react-tilt": "^0.1.4",
     "react-type-animation": "^3.2.0",
     "react-vertical-timeline-component": "^3.6.0",
+    "sonner": "^1.2.0",
     "three": "^0.149.0"
   },
   "devDependencies": {

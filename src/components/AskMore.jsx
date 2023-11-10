@@ -5,6 +5,8 @@ import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
 import { TypeAnimation } from "react-type-animation";
 import axios from "axios";
+import {  toast } from "sonner";
+import Alert from "./Alert";
 
 const AskMore = () => {
   const formRef = useRef();
@@ -32,9 +34,12 @@ const AskMore = () => {
     if (!lastDate) {
       localStorage.setItem("today", today);
     } else if (isMoreThanADay(today, new Date(lastDate))) {
-      alert("work")
-      resetQuestionLimit()
+      toast.success("Welcome back. Your question has been reset! 😍",{
+        duration:5000,
+      })
+      resetQuestionLimit();
     }
+    
   }, []);
 
   const handleChange = (e) => {
@@ -59,6 +64,9 @@ const AskMore = () => {
           answer: "You have reached your daily question limit for today. 🫰",
         });
         setLoading(false);
+        toast("You have reached your daily question limit for today. 🫰", {
+          duration: 5000,
+        });
       }, 1000);
       return;
     }
@@ -88,6 +96,9 @@ const AskMore = () => {
           ...form,
           answer:
             "There are too many requests. Please wait a bit and try again.",
+        });
+        toast.warning("There are too many requests. Please wait a bit and try again.", {
+          duration: 3000,
         });
         console.log(error?.message);
       });
@@ -159,9 +170,5 @@ function isMoreThanADay(dateA, dateB) {
   const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
 
   // Check if the difference is more than a day
-  if (differenceInDays > 0 && differenceInDays > 1) {
-    return true;
-  } else {
-    return false;
-  }
+  return differenceInDays > 0 && differenceInDays > 1;
 }
