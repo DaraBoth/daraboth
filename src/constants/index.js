@@ -283,7 +283,7 @@ const projects = [
       },
     ],
     image: tinynotie,
-    source_code_link: "https://tinynotie-dev.vercel.app/",
+    source_code_link: "https://www.tinynotie.bio/",
   },
 ];
 
