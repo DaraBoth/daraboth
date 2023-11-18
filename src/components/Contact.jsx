@@ -53,7 +53,7 @@ const Contact = () => {
         () => {
           setLoading(false);
           toast(<Alert />, {
-            duration: 5000,
+            duration: 55000,
           });
           setForm({
             name: "",

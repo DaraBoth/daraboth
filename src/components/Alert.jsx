@@ -3,7 +3,7 @@ import React from "react";
 const Alert = () => {
   return (
     <div
-      class="flex items-center w-full max-w-xs space-x-4 text-gray-500 divide-x divide-gray-200 rounded-lg dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
+      class="flex items-center w-full max-w-xs space-x-4 text-gray-500 divide-x divide-gray-200 rounded-lg dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-white-800"
       role="alert"
     >
       <svg
