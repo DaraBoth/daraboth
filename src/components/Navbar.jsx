@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { styles } from "../styles";
@@ -6,7 +6,6 @@ import { navLinks } from "../constants";
 import { menu, close } from "../assets";
 import profile from "../assets/profile.jpg";
 import { useMotionValueEvent, motion, useScroll } from "framer-motion";
-import DynamicIsland from "./DynamicIsland";
 
 const Navbar = () => {
   const [hidden, setHidden] = useState(false);
@@ -32,11 +31,8 @@ const Navbar = () => {
       }}
       transition={{ duration: 0.35, ease: "easeInOut" }}
       animate={hidden ? "hidden" : "visible"}
-      className={`${
-        styles.paddingX
-      } w-full flex items-center py-5 fixed top-0 z-20`}
+      className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-20`}
     >
-      <DynamicIsland/>
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
         <Link
           to="/"
