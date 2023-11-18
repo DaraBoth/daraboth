@@ -7,7 +7,6 @@ import { EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
 import { toast } from "sonner";
-import Alert from "./Alert";
 
 const Contact = () => {
   const formRef = useRef();
@@ -31,6 +30,7 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     if (!form.name || !form.email || !form.message) {
       toast.warning`Please fill all the information first!`;
       return;
@@ -52,9 +52,7 @@ const Contact = () => {
       .then(
         () => {
           setLoading(false);
-          toast(<Alert />, {
-            duration: 55000,
-          });
+          toast.success(`Thanks you I will get back to you soon.`)
           setForm({
             name: "",
             email: "",

@@ -6,7 +6,6 @@ import { slideIn } from "../utils/motion";
 import { TypeAnimation } from "react-type-animation";
 import axios from "axios";
 import {  toast } from "sonner";
-import Alert from "./Alert";
 
 const AskMore = () => {
   const formRef = useRef();
