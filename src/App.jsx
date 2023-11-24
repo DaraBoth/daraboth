@@ -13,6 +13,7 @@ import {
 } from "./components";
 import AskMore from "./components/AskMore";
 import { Toaster } from "sonner";
+import Carousels from "./components/Carousels";
 
 const App = () => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
           <Contact />
           <StarsCanvas />
           <AskMore />
+          <Carousels />
         </div>
       </div>
     </BrowserRouter>
