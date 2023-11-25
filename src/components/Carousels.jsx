@@ -200,7 +200,7 @@ export default function Carousels() {
                           <img
                             src={post.profile != "" ? post.profile : thumbnail}
                             alt="sitting area"
-                            className="object-center object-cover w-2/4 h-2/4"
+                            className="object-center object-cover w-full h-full"
                           />
                           <div className="pl-6 pb-6 lg:pl-8 lg:pb-8 absolute left-0 bottom-0">
                             <h1 className="text-xl leading-5 lg:text-2xl lg:leading-normal font-medium text-white">
@@ -213,7 +213,7 @@ export default function Carousels() {
                           <img
                             src={post.profile != "" ? post.profile : thumbnail}
                             alt="sitting area"
-                            className="object-center object-cover w-2/4 h-2/4"
+                            className="object-center object-cover w-full h-full"
                           />
                           <div className="pl-6 pb-6 lg:pl-8 lg:pb-8 absolute left-0 bottom-0">
                             <h1 className="text-xl leading-5 lg:text-2xl lg:leading-normal font-medium text-white">
@@ -283,7 +283,6 @@ export default function Carousels() {
                         height: calc(100% - 20px);
                         left: 10px;
                         top: 10px;
-                        
                     }
                 `}
       </style>
