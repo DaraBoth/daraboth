@@ -56,19 +56,19 @@ const AskMore = () => {
     setLoading(true);
     setForm({ ...form, answer: "" });
 
-    if (remainingQuestions <= 0) {
-      setTimeout(() => {
-        setForm({
-          ...form,
-          answer: "You have reached your daily question limit for today. 🫰",
-        });
-        setLoading(false);
-        toast("You have reached your daily question limit for today. 🫰", {
-          duration: 5000,
-        });
-      }, 1000);
-      return;
-    }
+    // if (remainingQuestions <= 0) {
+    //   setTimeout(() => {
+    //     setForm({
+    //       ...form,
+    //       answer: "You have reached your daily question limit for today. 🫰",
+    //     });
+    //     setLoading(false);
+    //     toast("You have reached your daily question limit for today. 🫰", {
+    //       duration: 5000,
+    //     });
+    //   }, 1000);
+    //   return;
+    // }
 
     let config = {
       method: "post",
