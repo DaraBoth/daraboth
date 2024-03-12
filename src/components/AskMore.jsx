@@ -5,7 +5,11 @@ import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
 import { TypeAnimation } from "react-type-animation";
 import axios from "axios";
-import {  toast } from "sonner";
+import { toast } from "sonner";
+import { marked, options } from "marked";
+import DOMPurify from "dompurify";
+
+import Markdown from "react-markdown";
 
 const AskMore = () => {
   const formRef = useRef();
@@ -33,12 +37,11 @@ const AskMore = () => {
     if (!lastDate) {
       localStorage.setItem("today", today);
     } else if (isMoreThanADay(today, new Date(lastDate))) {
-      toast.success("Welcome back. Your question has been reset! 😍",{
-        duration:5000,
-      })
+      toast.success("Welcome back. Your question has been reset! 😍", {
+        duration: 5000,
+      });
       resetQuestionLimit();
     }
-    
   }, []);
 
   const handleChange = (e) => {
@@ -96,9 +99,12 @@ const AskMore = () => {
           answer:
             "There are too many requests. Please wait a bit and try again.",
         });
-        toast.warning("There are too many requests. Please wait a bit and try again.", {
-          duration: 3000,
-        });
+        toast.warning(
+          "There are too many requests. Please wait a bit and try again.",
+          {
+            duration: 3000,
+          }
+        );
         console.log(error?.message);
       });
   };
@@ -115,14 +121,24 @@ const AskMore = () => {
         <p className={styles.sectionSubText}>
           Ask anything about me in real time
         </p>
-        {!!form.answer && (
+        <br />
+        {/* {!!form.answer && (
           <TypeAnimation
-            sequence={["" + form.answer]}
+            sequence={["" + marked.parse(form.answer)]}
+            role="document"
             wrapper="p"
             cursor={true}
             className={{ ...styles.sectionSubText2 }}
             speed={70}
             repeat={0}
+          />
+        )} */}
+        {!!form.answer && (
+          <div
+            className="sectionSubText2"
+            dangerouslySetInnerHTML={{
+              __html: sanitizeAnswer(form.answer),
+            }}
           />
         )}
 
@@ -155,6 +171,15 @@ const AskMore = () => {
       </motion.div>
     </div>
   );
+  function sanitizeAnswer(answer) {
+    try {
+      const cleanHtml = DOMPurify.sanitize(marked(answer));
+      return cleanHtml;
+    } catch (error) {
+      console.error("Error rendering markdown:", error);
+      return "Error rendering content.";
+    }
+  }
 };
 
 export default SectionWrapper(AskMore, "askmore");
