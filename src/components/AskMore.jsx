@@ -86,8 +86,8 @@ const AskMore = () => {
       .then((response) => {
         setForm({ ...form, answer: response.data?.text });
         setLoading(false);
-        setRemainingQuestions(remainingQuestions - 1);
-        localStorage.setItem("remainingQuestions", remainingQuestions - 1);
+        // setRemainingQuestions(remainingQuestions - 1);
+        // localStorage.setItem("remainingQuestions", remainingQuestions - 1);
       })
       .catch((error) => {
         setLoading(false);
@@ -148,7 +148,8 @@ const AskMore = () => {
             type="submit"
             className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
           >
-            {loading ? "Answering..." : `Ask (${remainingQuestions})`}
+            {loading ? "Answering..." : `Ask`}
+            {/* (${remainingQuestions}) */}
           </button>
         </form>
       </motion.div>
