@@ -105,8 +105,9 @@ const AskMore = () => {
             duration: 3000,
           }
         );
-        console.log(error?.message);
-      });
+        // console.log(error?.message);
+      })
+      .finally((fnl) => {});
   };
 
   return (

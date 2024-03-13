@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Tilt from "react-tilt";
+import { Tilt } from "react-tilt";
 import { motion } from "framer-motion";
 
 import { styles } from "../styles";
@@ -100,10 +100,10 @@ export const OpenAiChat = ({ text }) => {
 
     if (about) {
       setLoading(true);
-      setTimeout(()=>{
+      setTimeout(() => {
         setApiResponse(about);
         setLoading(false);
-      },1000)
+      }, 1000);
     } else {
       getChat();
     }
