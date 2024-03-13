@@ -116,6 +116,12 @@ const AskMore = () => {
       .finally((fnl) => {});
   };
 
+  function* charIterator(str) {
+    for (let i = 0; i < str.length; i++) {
+      yield str[i];
+    }
+  }
+
   return (
     <div
       className={`xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden`}
@@ -140,6 +146,7 @@ const AskMore = () => {
             repeat={0}
           />
         )} */}
+
         {/* {!!form.answer && (
           <div
             className="sectionSubText2"
@@ -162,6 +169,32 @@ const AskMore = () => {
               {char}
             </motion.span>
           ))}
+
+        {/* {form.answer && (
+          <div className="sectionSubText2">
+            {DOMPurify.sanitize(marked(form.answer))
+              .split(" ")   
+              .map((char, index) => {
+                if (char.startsWith("<") || char.endsWith(">")) {
+                  return <>{char}</>;
+                } else {
+                  // Text node (apply animation)
+                  return (
+                    <motion.span
+                      key={index}
+                      variants={answerChar}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: index * 0.1, duration: 0.05 }}
+                      className="ml-1 inline-block"
+                    >
+                      {char}
+                    </motion.span>
+                  );
+                }
+              })}
+          </div>
+        )} */}
 
         <form
           ref={formRef}
@@ -227,3 +260,4 @@ function isMoreThanADay(dateA, dateB) {
   // Check if the difference is more than a day
   return differenceInDays > 0 && differenceInDays > 1;
 }
+
