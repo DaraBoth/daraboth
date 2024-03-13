@@ -54,6 +54,12 @@ const AskMore = () => {
     });
   };
 
+  const answerChar = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.2 },
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -120,7 +126,7 @@ const AskMore = () => {
       >
         <h3 className={styles.sectionHeadText}>Ask More</h3>
         <p className={styles.sectionSubText}>
-          Ask anything about me in real time
+          Ask anything about me in real time with AI
         </p>
         <br />
         {/* {!!form.answer && (
@@ -134,14 +140,28 @@ const AskMore = () => {
             repeat={0}
           />
         )} */}
-        {!!form.answer && (
+        {/* {!!form.answer && (
           <div
             className="sectionSubText2"
             dangerouslySetInnerHTML={{
               __html: sanitizeAnswer(form.answer),
             }}
           />
-        )}
+        )} */}
+
+        {form.answer &&
+          form.answer.split(" ").map((char, index) => (
+            <motion.span
+              key={index}
+              variants={answerChar}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: index * 0.03, duration: 0.2 }}
+              className="ml-1 inline-block"
+            >
+              {" " + char}
+            </motion.span>
+          ))}
 
         <form
           ref={formRef}
@@ -156,18 +176,26 @@ const AskMore = () => {
               value={form.message}
               onChange={handleChange}
               placeholder="What you want to say?"
-              className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium min-h[58px]"
             />
           </label>
-
-          <button
-            disabled={loading}
-            type="submit"
-            className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
-          >
-            {loading ? "Answering..." : `Ask`}
-            {/* (${remainingQuestions}) */}
-          </button>
+          <div className="w-full flex flex-row justify-between gap-5">
+            <button
+              disabled={loading}
+              type="submit"
+              className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
+            >
+              {loading ? "Answering..." : `Ask`}
+              {/* (${remainingQuestions}) */}
+            </button>
+            <button
+              onClick={() => setForm({ ...form, message: "" })}
+              type="button"
+              className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
+            >
+              Clear
+            </button>
+          </div>
         </form>
       </motion.div>
     </div>

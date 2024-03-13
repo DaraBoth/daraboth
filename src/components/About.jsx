@@ -51,7 +51,14 @@ const About = () => {
       >
         <OpenAiChat
           text={
-            "Please write and introduction about me. My name's DaraBoth.I'm male. I'm a software engineer and Full stack web developer I used to work with AngularJS, Next.js, React.js, JavaScript, and jQuery on frontend and backend I used to use Express.js, Spring Boot with JPA, JSP, and Flask and about SQL I used to use PostgreSQL and MySQL. Please write and Introduction about me in a professional way."
+            `Write a greeting like this for me. 
+              | Hi everyone, my name is DaraBoth. 
+              | I'm a passionate software engineer with experience in both front-end and back-end development. 
+              | Throughout my career, I've honed my skills in a variety of technologies, 
+              | including JavaScript frameworks like AngularJS, Next.js, and React.js, along with libraries like jQuery. 
+              | For back-end development, I've utilized frameworks such as Express.js and Spring Boot with JPA, as well as templating languages like JSP and Flask. 
+              | Additionally, I possess strong database management skills, having worked extensively with PostgreSQL and MySQL.
+            Make it more friendly ,professional, funny and kind and please response as Text. `
           }
         />
       </motion.div>
@@ -89,9 +96,11 @@ export const OpenAiChat = ({ text }) => {
             setLoading(false);
           })
           .catch((error) => {
+            setApiResponse(about);
             console.log(error);
           });
       } catch (e) {
+        setApiResponse(about);
         console.log(e);
       }
     }
@@ -99,11 +108,12 @@ export const OpenAiChat = ({ text }) => {
     const about = localStorage.getItem("about");
 
     if (about) {
-      setLoading(true);
-      setTimeout(() => {
-        setApiResponse(about);
-        setLoading(false);
-      }, 1000);
+      getChat()
+      // setLoading(true);
+      // setTimeout(() => {
+      //   setApiResponse(about);
+      //   setLoading(false);
+      // }, 1000);
     } else {
       getChat();
     }

@@ -42,7 +42,7 @@ const App = () => {
           <Contact />
           <StarsCanvas />
           <AskMore />
-          <Carousels />
+          {/* <Carousels /> */}
         </div>
       </div>
     </BrowserRouter>

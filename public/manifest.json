@@ -45,5 +45,43 @@
       "sizes": "512x512",
       "type": "image/png"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "https://vongpichdaraboth.com/screenshots/1.jpg",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://vongpichdaraboth.com/screenshots/2.jpg",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://vongpichdaraboth.com/screenshots/3.jpg",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://vongpichdaraboth.com/screenshots/1_dt.jpg",
+      "sizes": "1200x790",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "https://vongpichdaraboth.com/screenshots/2_dt.jpg",
+      "sizes": "1200x790",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "https://vongpichdaraboth.com/screenshots/3_dt.jpg",
+      "sizes": "1200x790",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
   ]
 }
