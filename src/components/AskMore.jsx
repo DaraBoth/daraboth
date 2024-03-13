@@ -156,10 +156,10 @@ const AskMore = () => {
               variants={answerChar}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: index * 0.03, duration: 0.2 }}
+              transition={{ delay: index * 0.1, duration: 0.05 }} // Adjust delay and duration
               className="ml-1 inline-block"
             >
-              {" " + char}
+              {char}
             </motion.span>
           ))}
 
