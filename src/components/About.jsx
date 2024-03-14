@@ -75,6 +75,8 @@ const About = () => {
 export const OpenAiChat = ({ text }) => {
   const [apiResponse, setApiResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  const about = localStorage.getItem("about");
+
   useEffect(() => {
     async function getChat() {
       try {
@@ -96,6 +98,7 @@ export const OpenAiChat = ({ text }) => {
             setLoading(false);
           })
           .catch((error) => {
+            setLoading(false);
             setApiResponse(about);
             console.log(error);
           });
@@ -105,7 +108,6 @@ export const OpenAiChat = ({ text }) => {
       }
     }
 
-    const about = localStorage.getItem("about");
 
     if (about) {
       getChat()
