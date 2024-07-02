@@ -78,7 +78,10 @@ const AskMore = () => {
     //   }, 1000);
     //   return;
     // }
-
+    let chatHistory = localStorage.getItem("chatHistory")
+    if(chatHistory){
+      chatHistory = JSON.parse(chatHistory);
+    }
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -87,7 +90,7 @@ const AskMore = () => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      data: { text: form.message },
+      data: { text: form.message , chatHistory : chatHistory },
     };
 
     axios
@@ -133,7 +136,7 @@ const AskMore = () => {
           parts: [{ text: response }],
         })
       }
-      localStorage.setItem("chatHistory",tempChat)
+      localStorage.setItem("chatHistory",JSON.stringify(tempChat))
 
     }else {
       

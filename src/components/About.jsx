@@ -122,16 +122,19 @@ export const OpenAiChat = ({ text }) => {
   }, []);
 
   return (
-    !loading && (
-      <TypeAnimation
-        sequence={["" + apiResponse]}
-        wrapper="p"
-        cursor={true}
-        speed={70}
-        repeat={0}
-      />
-    )
+    !loading && <p>{apiResponse}</p>
   );
+  // return (
+  //   !loading && (
+  //     <TypeAnimation
+  //       sequence={["" + apiResponse]}
+  //       wrapper="p"
+  //       cursor={true}
+  //       speed={70}
+  //       repeat={0}
+  //     />
+  //   )
+  // );
 };
 
 export default SectionWrapper(About, "about");
