@@ -95,6 +95,7 @@ const AskMore = () => {
       .then((response) => {
         setForm({ ...form, answer: response.data?.text });
         setLoading(false);
+        saveOldChat(form.message,response.data?.text)
         // setRemainingQuestions(remainingQuestions - 1);
         // localStorage.setItem("remainingQuestions", remainingQuestions - 1);
       })
@@ -115,6 +116,43 @@ const AskMore = () => {
       })
       .finally((fnl) => {});
   };
+
+  function saveOldChat (chat,response) {
+
+    let chatHistory = localStorage.getItem("chatHistory");
+    if(chatHistory){
+      
+      let tempChat = JSON.parse(chatHistory);
+      if( Array.isArray(tempChat) ){
+        tempChat.push({
+          role: "user",
+          parts: [{ text: chat }],
+        },
+        {
+          role: "model",
+          parts: [{ text: response }],
+        })
+      }
+      localStorage.setItem("chatHistory",tempChat)
+
+    }else {
+      
+      const newTempChat = [{
+        role: "user",
+        parts: [{ text: chat }],
+      },
+      {
+        role: "model",
+        parts: [{ text: response }],
+      }]
+
+      localStorage.setItem("chatHistory",JSON.stringify(newTempChat))
+
+    }
+
+    
+  
+  }
 
   function* charIterator(str) {
     for (let i = 0; i < str.length; i++) {
