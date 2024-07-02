@@ -47,7 +47,7 @@ const AskMore = () => {
   const handleChange = (e) => {
     const { target } = e;
     const { name, value } = target;
-
+    
     setForm({
       ...form,
       [name]: value,
@@ -162,6 +162,11 @@ const AskMore = () => {
       yield str[i];
     }
   }
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit(event)
+    }
+  }
 
   return (
     <div
@@ -249,6 +254,7 @@ const AskMore = () => {
               name="message"
               value={form.message}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
               placeholder="What you want to say?"
               className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium min-h[58px]"
             />
