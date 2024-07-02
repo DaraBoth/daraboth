@@ -163,7 +163,7 @@ const AskMore = () => {
     }
   }
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
+    if (event.ctrlKey && event.key === 'Enter') {
       handleSubmit(event)
     }
   }
