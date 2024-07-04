@@ -207,8 +207,10 @@ const AskMore = () => {
             }
           );
 
-        }else if(banCount > 30000) {
 
+        }else {
+
+          if (banCount == 30000) return;
           setBanCount(30000)
           countDownbaned()
           toast.error(
