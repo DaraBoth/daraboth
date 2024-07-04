@@ -211,14 +211,14 @@ const AskMore = () => {
         }else {
 
           if (banCount == 30000) return;
-          setBanCount(30000)
-          countDownbaned()
           toast.error(
             "You are baned from asking for 3 minutes. Until this alert close!",
             {
               duration: 30000,
             }
           );
+          countDownbaned()
+          setBanCount(30000)
 
         }
 
