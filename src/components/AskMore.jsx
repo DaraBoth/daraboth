@@ -21,7 +21,7 @@ const AskMore = () => {
   const [remainingQuestions, setRemainingQuestions] = useState(5);
   const [today, setToday] = useState(new Date());
 
-  const banCount = useRef();
+  const [banCount,setBanCount] = useState(0)
 
   const resetQuestionLimit = () => {
     setRemainingQuestions(5);
@@ -66,7 +66,7 @@ const AskMore = () => {
     e.preventDefault();
 
     // it meant you are baned for 3 minutes
-    if(banCount.current == 30000) {
+    if(banCount == 30000) {
 
       setTimeout(()=>{
         setForm({ ...form, answer: "Hasha my boss is mad you are getting banned right now. Please wait...." });
@@ -196,9 +196,9 @@ const AskMore = () => {
       }else{
 
 
-        if(banCount.current < 10){
+        if(banCount < 10){
 
-          banCount.current++
+          setBanCount(banCount+1)
 
           toast.warning(
             "Chill daddy chill....",
@@ -207,9 +207,9 @@ const AskMore = () => {
             }
           );
 
-        }else if(banCount.current > 30000) {
+        }else if(banCount > 30000) {
 
-          banCount.current = 30000
+          setBanCount(30000)
           countDownbaned()
           toast.error(
             "You are baned from asking for 3 minutes. Until this alert close!",
@@ -226,7 +226,7 @@ const AskMore = () => {
 
   const countDownbaned = () =>{
     setTimeout(()=>{
-      banCount.current = 0
+      setBanCount(0)
     },30000)
   }
 
