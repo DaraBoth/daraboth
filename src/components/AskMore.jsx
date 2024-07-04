@@ -162,9 +162,19 @@ const AskMore = () => {
       yield str[i];
     }
   }
+
   const handleKeyDown = (event) => {
     if (event.ctrlKey && event.key === 'Enter') {
-      handleSubmit(event)
+      if(!loading) {
+        handleSubmit(event);
+      }else{
+        toast.warning(
+          "Chill daddy chill....",
+          {
+            duration: 3000,
+          }
+        );
+      }
     }
   }
 
