@@ -21,6 +21,8 @@ const AskMore = () => {
   const [remainingQuestions, setRemainingQuestions] = useState(5);
   const [today, setToday] = useState(new Date());
 
+  const banCount = useRef();
+
   const resetQuestionLimit = () => {
     setRemainingQuestions(5);
     localStorage.setItem("remainingQuestions", 5);
@@ -62,6 +64,25 @@ const AskMore = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // it meant you are baned for 3 minutes
+    if(banCount.current == 30000) {
+
+      setTimeout(()=>{
+        setForm({ ...form, answer: "Hasha my boss is mad you are getting banned right now. Please wait...." });
+      },10000)
+
+      setTimeout(()=>{
+        setForm({ ...form, answer: "1mins and 30s more. Please wait hasha." });
+      },15000)
+
+      setTimeout(()=>{
+        setForm({ ...form, answer: "Congratulations!!!!! Now you are back... Let behave good this time. ㄱㄱㄱㄱㄱㄱㄱ" });
+      },29000)
+
+      return null;
+    };
+
     setLoading(true);
     setForm({ ...form, answer: "" });
 
@@ -164,18 +185,49 @@ const AskMore = () => {
   }
 
   const handleKeyDown = (event) => {
+
+
     if (event.ctrlKey && event.key === 'Enter') {
+
+
       if(!loading) {
         handleSubmit(event);
+
       }else{
-        toast.warning(
-          "Chill daddy chill....",
-          {
-            duration: 3000,
-          }
-        );
+
+
+        if(banCount.current < 10){
+
+          banCount.current++
+
+          toast.warning(
+            "Chill daddy chill....",
+            {
+              duration: 3000,
+            }
+          );
+
+        }else if(banCount.current > 30000) {
+
+          banCount.current = 30000
+          countDownbaned()
+          toast.error(
+            "You are baned from asking for 3 minutes. Until this alert close!",
+            {
+              duration: 30000,
+            }
+          );
+
+        }
+
       }
     }
+  }
+
+  const countDownbaned = () =>{
+    setTimeout(()=>{
+      banCount.current = 0
+    },30000)
   }
 
   return (
