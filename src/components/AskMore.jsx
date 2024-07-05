@@ -3,58 +3,19 @@ import { motion } from "framer-motion";
 import { styles } from "../styles";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
-import { TypeAnimation } from "react-type-animation";
 import axios from "axios";
 import { toast } from "sonner";
-import { marked, options } from "marked";
-import DOMPurify from "dompurify";
 
-import Markdown from "react-markdown";
+const BAN_DURATION = 3 * 60 * 1000; // 3 minutes in milliseconds
+const BAN_THRESHOLD = 10; // Number of attempts before ban
 
 const AskMore = () => {
   const formRef = useRef();
-  const [form, setForm] = useState({
-    message: "",
-    answer: "",
-  });
+  const [form, setForm] = useState({ message: "", answer: "" });
   const [loading, setLoading] = useState(false);
   const [remainingQuestions, setRemainingQuestions] = useState(5);
-  const [today, setToday] = useState(new Date());
-
-  const [banCount,setBanCount] = useState(0)
-
-  const resetQuestionLimit = () => {
-    setRemainingQuestions(5);
-    localStorage.setItem("remainingQuestions", 5);
-    localStorage.setItem("today", today);
-    setToday(new Date());
-  };
-
-  useEffect(() => {
-    const storedRemainingQuestions = localStorage.getItem("remainingQuestions");
-    const lastDate = localStorage.getItem("today");
-    if (storedRemainingQuestions) {
-      setRemainingQuestions(parseInt(storedRemainingQuestions));
-    }
-    if (!lastDate) {
-      localStorage.setItem("today", today);
-    } else if (isMoreThanADay(today, new Date(lastDate))) {
-      toast.success("Welcome back. Your question has been reset! 😍", {
-        duration: 5000,
-      });
-      resetQuestionLimit();
-    }
-  }, []);
-
-  const handleChange = (e) => {
-    const { target } = e;
-    const { name, value } = target;
-    
-    setForm({
-      ...form,
-      [name]: value,
-    });
-  };
+  const [banCount, setBanCount] = useState(0);
+  const [banEndTime, setBanEndTime] = useState(null);
 
   const answerChar = {
     initial: { opacity: 0 },
@@ -62,209 +23,126 @@ const AskMore = () => {
     transition: { duration: 0.2 },
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const storedRemainingQuestions = localStorage.getItem("remainingQuestions");
+    const lastDate = localStorage.getItem("today");
+
+    if (storedRemainingQuestions) {
+      setRemainingQuestions(parseInt(storedRemainingQuestions));
+    }
+
+    if (!lastDate) {
+      localStorage.setItem("today", new Date());
+    } else if (isMoreThanADay(new Date(), new Date(lastDate))) {
+      toast.success("Welcome back. Your question limit has been reset! 😍", { duration: 5000 });
+      resetQuestionLimit();
+    }
+
+    const storedBanEndTime = localStorage.getItem("banEndTime");
+    if (storedBanEndTime && new Date(storedBanEndTime) > new Date()) {
+      setBanEndTime(new Date(storedBanEndTime));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (banEndTime) {
+      const remainingBanTime = banEndTime.getTime() - new Date().getTime();
+      if (remainingBanTime > 0) {
+        const timer = setTimeout(() => setBanCount(0), remainingBanTime);
+        return () => clearTimeout(timer);
+      } else {
+        setBanCount(0);
+        setBanEndTime(null);
+        localStorage.removeItem("banEndTime");
+      }
+    }
+  }, [banEndTime]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // it meant you are baned for 3 minutes
-    if(banCount == 30000) {
-
-      setTimeout(()=>{
-        setForm({ ...form, answer: "Hasha my boss is mad you are getting banned right now. Please wait...." });
-      },10000)
-
-      setTimeout(()=>{
-        setForm({ ...form, answer: "1mins and 30s more. Please wait hasha." });
-      },15000)
-
-      setTimeout(()=>{
-        setForm({ ...form, answer: "Congratulations!!!!! Now you are back... Let behave good this time. ㄱㄱㄱㄱㄱㄱㄱ" });
-      },29000)
-
-      return null;
-    };
+    if (banCount >= BAN_THRESHOLD) {
+      handleBan();
+      return;
+    }
 
     setLoading(true);
     setForm({ ...form, answer: "" });
 
-    // if (remainingQuestions <= 0) {
-    //   setTimeout(() => {
-    //     setForm({
-    //       ...form,
-    //       answer: "You have reached your daily question limit for today. 🫰",
-    //     });
-    //     setLoading(false);
-    //     toast("You have reached your daily question limit for today. 🫰", {
-    //       duration: 5000,
-    //     });
-    //   }, 1000);
-    //   return;
-    // }
-    let chatHistory = localStorage.getItem("chatHistory")
-    if(chatHistory){
-      chatHistory = JSON.parse(chatHistory);
-    }
-    let config = {
+    const chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
+    const config = {
       method: "post",
       maxBodyLength: Infinity,
       url: "https://tinynotie-api.vercel.app/openai/ask",
-      // url: "http://localhost:9000/openai/ask",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      data: { text: form.message , chatHistory : chatHistory },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      data: { text: form.message, chatHistory },
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        setForm({ ...form, answer: response.data?.text });
-        setLoading(false);
-        saveOldChat(form.message,response.data?.text)
-        // setRemainingQuestions(remainingQuestions - 1);
-        // localStorage.setItem("remainingQuestions", remainingQuestions - 1);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setForm({
-          ...form,
-          answer:
-            "There are too many requests. Please wait a bit and try again.",
-        });
-        toast.warning(
-          "There are too many requests. Please wait a bit and try again.",
-          {
-            duration: 3000,
-          }
-        );
-        // console.log(error?.message);
-      })
-      .finally((fnl) => {});
+    try {
+      const response = await axios.request(config);
+      setForm({ ...form, answer: response.data?.text });
+      saveOldChat(form.message, response.data?.text);
+    } catch (error) {
+      setForm({ ...form, answer: "There are too many requests. Please wait a bit and try again." });
+      toast.warning("There are too many requests. Please wait a bit and try again.", { duration: 3000 });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  function saveOldChat (chat,response) {
-
-    let chatHistory = localStorage.getItem("chatHistory");
-    if(chatHistory){
-      
-      let tempChat = JSON.parse(chatHistory);
-      if( Array.isArray(tempChat) ){
-        tempChat.push({
-          role: "user",
-          parts: [{ text: chat }],
-        },
-        {
-          role: "model",
-          parts: [{ text: response }],
-        })
-      }
-      localStorage.setItem("chatHistory",JSON.stringify(tempChat))
-
-    }else {
-      
-      const newTempChat = [{
-        role: "user",
-        parts: [{ text: chat }],
-      },
-      {
-        role: "model",
-        parts: [{ text: response }],
-      }]
-
-      localStorage.setItem("chatHistory",JSON.stringify(newTempChat))
-
-    }
-
-    
-  
-  }
-
-  function* charIterator(str) {
-    for (let i = 0; i < str.length; i++) {
-      yield str[i];
-    }
-  }
-
   const handleKeyDown = (event) => {
-
-
-    if (event.ctrlKey && event.key === 'Enter') {
-
-
-      if(!loading) {
+    if (event.ctrlKey && event.key === "Enter") {
+      if (!loading) {
         handleSubmit(event);
-
-      }else{
-
-
-        if(banCount < 10){
-
-          setBanCount(banCount+1)
-
-          toast.warning(
-            "Chill daddy chill....",
-            {
-              duration: 3000,
-            }
-          );
-
-
-        }else {
-
-          if (banCount == 30000) return;
-          toast.error(
-            "You are baned from asking for 3 minutes. Until this alert close!",
-            {
-              duration: 30000,
-            }
-          );
-          countDownbaned()
-          setBanCount(30000)
-
-        }
-
+      } else {
+        incrementBanCount();
       }
     }
-  }
+  };
 
-  const countDownbaned = () =>{
-    setTimeout(()=>{
-      setBanCount(0)
-    },30000)
-  }
+  const incrementBanCount = () => {
+    if (banCount < BAN_THRESHOLD) {
+      setBanCount(banCount + 1);
+      toast.warning("Chill daddy chill....", { duration: 3000 });
+    } else {
+      handleBan();
+    }
+  };
+
+  const handleBan = () => {
+    const endTime = new Date(new Date().getTime() + BAN_DURATION);
+    setBanEndTime(endTime);
+    localStorage.setItem("banEndTime", endTime);
+    toast.error("You are banned from asking for 3 minutes. Until this alert closes!", { duration: 30000 });
+  };
+
+  const resetQuestionLimit = () => {
+    setRemainingQuestions(5);
+    localStorage.setItem("remainingQuestions", 5);
+    localStorage.setItem("today", new Date());
+  };
+
+  const saveOldChat = (chat, response) => {
+    const chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
+    chatHistory.push({ role: "user", parts: [{ text: chat }] }, { role: "model", parts: [{ text: response }] });
+    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+  };
+
+  const isMoreThanADay = (dateA, dateB) => {
+    const differenceInMilliseconds = dateA - dateB;
+    return differenceInMilliseconds > 1000 * 60 * 60 * 24;
+  };
 
   return (
-    <div
-      className={`xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden`}
-    >
-      <motion.div
-        variants={slideIn("left", "tween", 0.2, 1)}
-        className="flex-[1] bg-black-100 p-8 rounded-2xl"
-      >
+    <div className={`xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden`}>
+      <motion.div variants={slideIn("left", "tween", 0.2, 1)} className="flex-[1] bg-black-100 p-8 rounded-2xl">
         <h3 className={styles.sectionHeadText}>Ask More</h3>
-        <p className={styles.sectionSubText}>
-          Ask anything about me in real time with AI
-        </p>
+        <p className={styles.sectionSubText}>Ask anything about me in real time with AI</p>
         <br />
-        {/* {!!form.answer && (
-          <TypeAnimation
-            sequence={["" + marked.parse(form.answer)]}
-            role="document"
-            wrapper="p"
-            cursor={true}
-            className={{ ...styles.sectionSubText2 }}
-            speed={70}
-            repeat={0}
-          />
-        )} */}
-
-        {/* {!!form.answer && (
-          <div
-            className="sectionSubText2"
-            dangerouslySetInnerHTML={{
-              __html: sanitizeAnswer(form.answer),
-            }}
-          />
-        )} */}
 
         {form.answer &&
           form.answer.split(" ").map((char, index) => (
@@ -273,44 +151,14 @@ const AskMore = () => {
               variants={answerChar}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: index * 0.1, duration: 0.05 }} // Adjust delay and duration
+              transition={{ delay: index * 0.1, duration: 0.05 }}
               className="ml-1 inline-block"
             >
               {char}
             </motion.span>
           ))}
 
-        {/* {form.answer && (
-          <div className="sectionSubText2">
-            {DOMPurify.sanitize(marked(form.answer))
-              .split(" ")   
-              .map((char, index) => {
-                if (char.startsWith("<") || char.endsWith(">")) {
-                  return <>{char}</>;
-                } else {
-                  // Text node (apply animation)
-                  return (
-                    <motion.span
-                      key={index}
-                      variants={answerChar}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: index * 0.1, duration: 0.05 }}
-                      className="ml-1 inline-block"
-                    >
-                      {char}
-                    </motion.span>
-                  );
-                }
-              })}
-          </div>
-        )} */}
-
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className="mt-12 flex flex-col gap-8"
-        >
+        <form ref={formRef} onSubmit={handleSubmit} className="mt-12 flex flex-col gap-8">
           <label className="flex flex-col">
             <span className="text-white font-medium mb-4">Your Question</span>
             <textarea
@@ -325,12 +173,11 @@ const AskMore = () => {
           </label>
           <div className="w-full flex flex-row justify-between gap-5">
             <button
-              disabled={loading}
+              disabled={loading || banCount >= BAN_THRESHOLD}
               type="submit"
               className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
             >
-              {loading ? "Answering..." : `Ask`}
-              {/* (${remainingQuestions}) */}
+              {loading ? "Answering..." : "Ask"}
             </button>
             <button
               onClick={() => setForm({ ...form, message: "" })}
@@ -344,31 +191,6 @@ const AskMore = () => {
       </motion.div>
     </div>
   );
-  function sanitizeAnswer(answer) {
-    try {
-      const cleanHtml = DOMPurify.sanitize(marked(answer));
-      return cleanHtml;
-    } catch (error) {
-      console.error("Error rendering markdown:", error);
-      return "Error rendering content.";
-    }
-  }
 };
 
 export default SectionWrapper(AskMore, "askmore");
-
-function isMoreThanADay(dateA, dateB) {
-  // Get the timestamps of the two dates
-  const dateATimestamp = dateA.getTime();
-  const dateBTimestamp = dateB.getTime();
-
-  // Calculate the difference in milliseconds
-  const differenceInMilliseconds = dateATimestamp - dateBTimestamp;
-
-  // Convert the difference to days
-  const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
-
-  // Check if the difference is more than a day
-  return differenceInDays > 0 && differenceInDays > 1;
-}
-
