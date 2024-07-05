@@ -17,6 +17,7 @@ const AskMore = () => {
   const [banCount, setBanCount] = useState(0);
   const [banEndTime, setBanEndTime] = useState(null);
   const [lastSpamTime, setLastSpamTime] = useState(0);
+  const [showingBannedAlert,setShowingBannedAlert] = useState(false);
 
   const answerChar = {
     initial: { opacity: 0 },
@@ -48,6 +49,7 @@ const AskMore = () => {
           setBanCount(0);
           setBanEndTime(null);
           localStorage.removeItem("banEndTime");
+          setShowingBannedAlert(false)
           toast.success("Congratulations! Now you are back... Let's behave well this time. ㄱㄱㄱㄱㄱㄱㄱ", { duration: 10000 });
         }, remainingBanTime);
         displayBanMessages(remainingBanTime);
@@ -119,11 +121,18 @@ const AskMore = () => {
   };
 
   const handleBan = () => {
+    if(showingBannedAlert) return;
     const endTime = new Date(new Date().getTime() + BAN_DURATION);
     setBanEndTime(endTime);
     localStorage.setItem("banEndTime", endTime);
-    toast.error("You are banned from asking for 3 minutes. Until this alert closes!", { duration: BAN_DURATION });
+    toast.error("You are banned from asking for 3 minutes. Until this alert closes!",{ 
+        duration: BAN_DURATION ,
+        onclose:()=>{  
+          if(showingBannedAlert) return;
+        } 
+    });
     displayBanMessages(BAN_DURATION);
+    setShowingBannedAlert(true)
   };
 
   const displayBanMessages = (remainingBanTime) => {
