@@ -13,7 +13,6 @@ const AskMore = () => {
   const formRef = useRef();
   const [form, setForm] = useState({ message: "", answer: "" });
   const [loading, setLoading] = useState(false);
-  const [remainingQuestions, setRemainingQuestions] = useState(5);
   const [banCount, setBanCount] = useState(0);
   const [banEndTime, setBanEndTime] = useState(null);
 
@@ -48,8 +47,11 @@ const AskMore = () => {
     if (banEndTime) {
       const remainingBanTime = banEndTime.getTime() - new Date().getTime();
       if (remainingBanTime > 0) {
-        const timer = setTimeout(() => setBanCount(0), remainingBanTime);
-        displayBanMessages();
+        const timer = setTimeout(() => {
+          setBanCount(0);
+          toast.success("Congratulations! Now you are back... Let's behave well this time. ㄱㄱㄱㄱㄱㄱㄱ", { duration: 10000 });
+        }, remainingBanTime);
+        displayBanMessages(remainingBanTime);
         return () => clearTimeout(timer);
       } else {
         setBanCount(0);
@@ -66,9 +68,8 @@ const AskMore = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (banCount >= BAN_THRESHOLD) {
-      handleBan();
-      return;
+    if (banEndTime && new Date() < new Date(banEndTime)) {
+      return; // Prevent submission during ban
     }
 
     setLoading(true);
@@ -119,13 +120,12 @@ const AskMore = () => {
     setBanEndTime(endTime);
     localStorage.setItem("banEndTime", endTime);
     toast.error("You are banned from asking for 3 minutes. Until this alert closes!", { duration: 30000 });
-    displayBanMessages();
+    displayBanMessages(BAN_DURATION);
   };
 
-  const displayBanMessages = () => {
-    setTimeout(() => setForm({ ...form, answer: "Hasha my boss is mad you are getting banned right now. Please wait...." }), 10000);
-    setTimeout(() => setForm({ ...form, answer: "1min and 30s more. Please wait hasha." }), 15000);
-    setTimeout(() => setForm({ ...form, answer: "Congratulations! Now you are back... Let behave good this time. ㄱㄱㄱㄱㄱㄱㄱ" }), 29000);
+  const displayBanMessages = (remainingBanTime) => {
+    setTimeout(() => setForm({ ...form, answer: "Hasha my boss is mad you are getting banned right now. Please wait...." }), 60 * 1000);
+    setTimeout(() => setForm({ ...form, answer: "1min and 20s more. Please wait hasha." }), 1.67 * 60 * 1000);
   };
 
   const resetQuestionLimit = () => {
@@ -181,7 +181,7 @@ const AskMore = () => {
           </label>
           <div className="w-full flex flex-row justify-between gap-5">
             <button
-              disabled={loading || banCount >= BAN_THRESHOLD}
+              disabled={loading || (banEndTime && new Date() < new Date(banEndTime))}
               type="submit"
               className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
             >
