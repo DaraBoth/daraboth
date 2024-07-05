@@ -49,6 +49,7 @@ const AskMore = () => {
       const remainingBanTime = banEndTime.getTime() - new Date().getTime();
       if (remainingBanTime > 0) {
         const timer = setTimeout(() => setBanCount(0), remainingBanTime);
+        displayBanMessages();
         return () => clearTimeout(timer);
       } else {
         setBanCount(0);
@@ -118,6 +119,13 @@ const AskMore = () => {
     setBanEndTime(endTime);
     localStorage.setItem("banEndTime", endTime);
     toast.error("You are banned from asking for 3 minutes. Until this alert closes!", { duration: 30000 });
+    displayBanMessages();
+  };
+
+  const displayBanMessages = () => {
+    setTimeout(() => setForm({ ...form, answer: "Hasha my boss is mad you are getting banned right now. Please wait...." }), 10000);
+    setTimeout(() => setForm({ ...form, answer: "1min and 30s more. Please wait hasha." }), 15000);
+    setTimeout(() => setForm({ ...form, answer: "Congratulations! Now you are back... Let behave good this time. ㄱㄱㄱㄱㄱㄱㄱ" }), 29000);
   };
 
   const resetQuestionLimit = () => {
