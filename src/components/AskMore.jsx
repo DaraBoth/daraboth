@@ -23,18 +23,13 @@ const AskMore = () => {
   };
 
   useEffect(() => {
-    const storedRemainingQuestions = localStorage.getItem("remainingQuestions");
     const lastDate = localStorage.getItem("today");
-
-    if (storedRemainingQuestions) {
-      setRemainingQuestions(parseInt(storedRemainingQuestions));
-    }
 
     if (!lastDate) {
       localStorage.setItem("today", new Date());
     } else if (isMoreThanADay(new Date(), new Date(lastDate))) {
       toast.success("Welcome back. Your question limit has been reset! 😍", { duration: 5000 });
-      resetQuestionLimit();
+      localStorage.setItem("today", new Date());
     }
 
     const storedBanEndTime = localStorage.getItem("banEndTime");
@@ -49,6 +44,8 @@ const AskMore = () => {
       if (remainingBanTime > 0) {
         const timer = setTimeout(() => {
           setBanCount(0);
+          setBanEndTime(null);
+          localStorage.removeItem("banEndTime");
           toast.success("Congratulations! Now you are back... Let's behave well this time. ㄱㄱㄱㄱㄱㄱㄱ", { duration: 10000 });
         }, remainingBanTime);
         displayBanMessages(remainingBanTime);
@@ -126,12 +123,6 @@ const AskMore = () => {
   const displayBanMessages = (remainingBanTime) => {
     setTimeout(() => setForm({ ...form, answer: "Hasha my boss is mad you are getting banned right now. Please wait...." }), 60 * 1000);
     setTimeout(() => setForm({ ...form, answer: "1min and 20s more. Please wait hasha." }), 1.67 * 60 * 1000);
-  };
-
-  const resetQuestionLimit = () => {
-    setRemainingQuestions(5);
-    localStorage.setItem("remainingQuestions", 5);
-    localStorage.setItem("today", new Date());
   };
 
   const saveOldChat = (chat, response) => {
