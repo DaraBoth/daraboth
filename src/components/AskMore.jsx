@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 const BAN_DURATION = 3 * 60 * 1000; // 3 minutes in milliseconds
 const BAN_THRESHOLD = 10; // Number of attempts before ban
+const SPAM_INTERVAL = 500; // Interval in milliseconds to consider as spam
 
 const AskMore = () => {
   const formRef = useRef();
@@ -15,6 +16,7 @@ const AskMore = () => {
   const [loading, setLoading] = useState(false);
   const [banCount, setBanCount] = useState(0);
   const [banEndTime, setBanEndTime] = useState(null);
+  const [lastSpamTime, setLastSpamTime] = useState(0);
 
   const answerChar = {
     initial: { opacity: 0 },
@@ -95,10 +97,14 @@ const AskMore = () => {
 
   const handleKeyDown = (event) => {
     if (event.ctrlKey && event.key === "Enter") {
-      if (!loading) {
-        handleSubmit(event);
+      if (loading) {
+        const now = Date.now();
+        if (now - lastSpamTime < SPAM_INTERVAL) {
+          incrementBanCount();
+        }
+        setLastSpamTime(now);
       } else {
-        incrementBanCount();
+        handleSubmit(event);
       }
     }
   };
@@ -116,7 +122,7 @@ const AskMore = () => {
     const endTime = new Date(new Date().getTime() + BAN_DURATION);
     setBanEndTime(endTime);
     localStorage.setItem("banEndTime", endTime);
-    toast.error("You are banned from asking for 3 minutes. Until this alert closes!", { duration: 30000 });
+    toast.error("You are banned from asking for 3 minutes. Until this alert closes!", { duration: BAN_DURATION });
     displayBanMessages(BAN_DURATION);
   };
 
