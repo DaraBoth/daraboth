@@ -40,7 +40,7 @@ import profile from "./profile.jpg";
 import accpremiumwrap from "./accpremiumwrap.png";
 import kshrdregi from "./kshrdregi.png";
 import tinynotie from "./tinynotie.png";
-import mankerlightkh from "./mankerlightkh.png"
+import mankerlightkh from "./mankerlighkh.png"
 
 export {
   logo,
