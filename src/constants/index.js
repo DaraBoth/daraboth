@@ -261,10 +261,14 @@ const projects = [
     tags: [
       {
         name: "html",
-        color: "pink-text-gradient",
+        color: "green-text-gradient",
       },
       {
         name: "css",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "pwa",
         color: "pink-text-gradient",
       },
     ],
@@ -281,7 +285,7 @@ const projects = [
         color: "blue-text-gradient",
       },
       {
-        name: "spring boot",
+        name: "spring_boot",
         color: "green-text-gradient",
       },
       {
@@ -306,7 +310,7 @@ const projects = [
         color: "blue-text-gradient",
       },
       {
-        name: "express js",
+        name: "express_js",
         color: "green-text-gradient",
       },
       {
