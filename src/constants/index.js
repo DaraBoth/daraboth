@@ -24,6 +24,7 @@ import {
   googleadsense,
   accpremiumwrap,
   mankerlightkh,
+  wewallet,
 } from "../assets";
 
 export const navLinks = [
@@ -237,9 +238,9 @@ const projects = [
     source_code_link: "https://acc-premium-wraps.web.app/",
   },
   {
-    name: "E-commerce Website",
+    name: "MankerLight Cambodia",
     description:
-      "MankerLight Cambodia",
+      "E-commerce Website",
     tags: [
       {
         name: "angular",
@@ -252,6 +253,23 @@ const projects = [
     ],
     image: mankerlightkh,
     source_code_link: "https://mankerlightkh.web.app/",
+  },
+  {
+    name: "We Wallet Kh",
+    description:
+      "Money Saving Website",
+    tags: [
+      {
+        name: "html",
+        color: "pink-text-gradient",
+      },
+      {
+        name: "css",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: wewallet,
+    source_code_link: "https://wewalletkh.web.app/",
   },
   {
     name: "KSHRD-Registration",

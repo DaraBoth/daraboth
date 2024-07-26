@@ -41,6 +41,7 @@ import accpremiumwrap from "./accpremiumwrap.png";
 import kshrdregi from "./kshrdregi.png";
 import tinynotie from "./tinynotie.png";
 import mankerlightkh from "./mankerlighkh.png"
+import wewallet from "./wewallet.png"
 
 export {
   logo,
@@ -82,4 +83,5 @@ export {
   kosign,
   tinynotie,
   mankerlightkh,
+  wewallet,
 };
