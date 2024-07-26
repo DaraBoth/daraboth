@@ -23,6 +23,7 @@ import {
   rupp,
   googleadsense,
   accpremiumwrap,
+  mankerlightkh,
 } from "../assets";
 
 export const navLinks = [
@@ -234,6 +235,23 @@ const projects = [
     ],
     image: accpremiumwrap,
     source_code_link: "https://acc-premium-wraps.web.app/",
+  },
+  {
+    name: "MankerLight Cambodia",
+    description:
+      "E-commerce Website",
+    tags: [
+      {
+        name: "angular",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "scss",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: mankerlightkh,
+    source_code_link: "https://mankerlightkh.web.app/",
   },
   {
     name: "KSHRD-Registration",
