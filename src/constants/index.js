@@ -237,9 +237,9 @@ const projects = [
     source_code_link: "https://acc-premium-wraps.web.app/",
   },
   {
-    name: "MankerLight Cambodia",
+    name: "E-commerce Website",
     description:
-      "E-commerce Website",
+      "MankerLight Cambodia",
     tags: [
       {
         name: "angular",
