@@ -31,7 +31,7 @@ const AskMore = () => {
     if (!lastDate) {
       localStorage.setItem("today", new Date());
     } else if (isMoreThanADay(new Date(), new Date(lastDate))) {
-      toast.success("Welcome back. Your question limit has been reset! 😍", { duration: 5000 });
+      toast.success("Welcome back ! 😍", { duration: 5000 });
       localStorage.setItem("today", new Date());
     }
 
@@ -39,6 +39,12 @@ const AskMore = () => {
     if (storedBanEndTime && new Date(storedBanEndTime) > new Date()) {
       setBanEndTime(new Date(storedBanEndTime));
     }
+    const chatHistory = JSON.parse(localStorage.getItem("chatHistory"))
+    if(Array.isArray(chatHistory)){
+      const lastChat = chatHistory[chatHistory.length-1].part[0].text
+      setForm({ ...form, answer: lastChat });
+    }
+
   }, []);
 
   useEffect(() => {
@@ -50,7 +56,7 @@ const AskMore = () => {
           setBanEndTime(null);
           localStorage.removeItem("banEndTime");
           setShowingBannedAlert(false)
-          toast.success("Congratulations! Now you are back... Let's behave well this time. ㄱㄱㄱㄱㄱㄱㄱ", { duration: 10000 });
+          toast.success("Congratulations! Now you are back... Let's behave well this time. ㅎㅎㅎㅎㅎㅎㅎㅎㅎ", { duration: 10000 });
         }, remainingBanTime);
         displayBanMessages(remainingBanTime);
         return () => clearTimeout(timer);
@@ -154,8 +160,8 @@ const AskMore = () => {
   return (
     <div className={`xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden`}>
       <motion.div variants={slideIn("left", "tween", 0.2, 1)} className="flex-[1] bg-black-100 p-8 rounded-2xl">
-        <h3 className={styles.sectionHeadText}>Ask More</h3>
-        <p className={styles.sectionSubText}>Ask anything about me in real time with AI</p>
+        <h3 className={styles.sectionHeadText}>Ask more with my AI</h3>
+        <p className={styles.sectionSubText}>This is my assistance</p>
         <br />
 
         {form.answer &&
