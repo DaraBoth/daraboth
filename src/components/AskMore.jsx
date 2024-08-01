@@ -41,7 +41,7 @@ const AskMore = () => {
     }
     const chatHistory = JSON.parse(localStorage.getItem("chatHistory"))
     if(Array.isArray(chatHistory)){
-      const lastChat = chatHistory[chatHistory.length-1].part[0].text
+      const lastChat = chatHistory[chatHistory.length-1].parts[0].text
       setForm({ ...form, answer: lastChat });
     }
 
