@@ -1,5 +1,4 @@
 import { BrowserRouter } from "react-router-dom";
-
 import {
   About,
   Contact,
@@ -11,11 +10,17 @@ import {
   Works,
   StarsCanvas,
 } from "./components";
-import AskMore from "./components/AskMore";
 import { Toaster } from "sonner";
-import Carousels from "./components/Carousels";
+import FloatingChatButton from "./components/FloatingChatButton"; // New Component
+import FloatingChat from "./components/ChatPopup"; // New Component
+import { useState } from "react";
 
 const App = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+
   return (
     <BrowserRouter>
       <Toaster
@@ -41,8 +46,8 @@ const App = () => {
         <div className="relative z-0">
           <Contact />
           <StarsCanvas />
-          <AskMore />
-          {/* <Carousels /> */}
+          <FloatingChatButton onClick={toggleChat} />
+          {isChatOpen && <FloatingChat onClose={toggleChat} />}
         </div>
       </div>
     </BrowserRouter>
