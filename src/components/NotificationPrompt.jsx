@@ -6,37 +6,33 @@ const NotificationPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false); // State to show or hide the custom prompt
   const isPWA = window.matchMedia("(display-mode: standalone)").matches;
   if (!isPWA || !("Notification" in window)) return;
-  // Check notification permission on component mount
+
   useEffect(() => {
     if (Notification.permission === "default") {
       setShowPrompt(true); // Show the custom prompt if permission is 'default'
     }
   }, []);
 
-  // Handle Allow button click to request notification permission
   const handleAllow = () => {
     Notification.requestPermission()
       .then((permission) => {
         if (permission === "granted") {
           console.log("User granted notifications.");
-          // Optionally, add push subscription logic here
         } else {
           console.log("User denied notifications.");
         }
-        setShowPrompt(false); // Hide the custom prompt after asking
+        setShowPrompt(false);
       })
       .catch((error) => {
         console.error("Notification permission request error:", error);
-        setShowPrompt(false); // Hide the custom prompt even if an error occurs
+        setShowPrompt(false);
       });
   };
 
-  // Handle Dismiss button click to hide the prompt
   const handleDismiss = () => {
-    setShowPrompt(false); // Hide the custom prompt if user dismisses
+    setShowPrompt(false); 
   };
 
-  // If showPrompt is false, don't render the prompt
   if (!showPrompt) return null;
 
   return (
