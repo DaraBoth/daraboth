@@ -18,6 +18,7 @@ export default function usePushNotifications() {
 
         Notification.requestPermission().then(permission => {
           if (permission === 'granted') {
+            console.log("yehahhhh")
             subscribeUserToPush(registration);
           } else {
             console.log('Notification permission denied.');
