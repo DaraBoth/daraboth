@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion'; // Import from framer-motion for animations
-import { AiOutlineBell, AiOutlineClose } from 'react-icons/ai'; // Icons from react-icons
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion"; // Import from framer-motion for animations
+import { AiOutlineBell, AiOutlineClose } from "react-icons/ai"; // Icons from react-icons
 
 const NotificationPrompt = () => {
-  const [showPrompt, setShowPrompt] = useState(false);  // State to show or hide the custom prompt
-
+  const [showPrompt, setShowPrompt] = useState(false); // State to show or hide the custom prompt
+  const isPWA = window.matchMedia("(display-mode: standalone)").matches;
+  if (!isPWA || !("Notification" in window)) return;
   // Check notification permission on component mount
   useEffect(() => {
-    console.log(Notification.permission );
-    if (Notification.permission === 'default') {
+    if (Notification.permission === "default") {
       setShowPrompt(true); // Show the custom prompt if permission is 'default'
     }
   }, []);
@@ -17,16 +17,16 @@ const NotificationPrompt = () => {
   const handleAllow = () => {
     Notification.requestPermission()
       .then((permission) => {
-        if (permission === 'granted') {
-          console.log('User granted notifications.');
+        if (permission === "granted") {
+          console.log("User granted notifications.");
           // Optionally, add push subscription logic here
         } else {
-          console.log('User denied notifications.');
+          console.log("User denied notifications.");
         }
         setShowPrompt(false); // Hide the custom prompt after asking
       })
       .catch((error) => {
-        console.error('Notification permission request error:', error);
+        console.error("Notification permission request error:", error);
         setShowPrompt(false); // Hide the custom prompt even if an error occurs
       });
   };
@@ -50,7 +50,10 @@ const NotificationPrompt = () => {
       <div className="flex items-center justify-between mb-3">
         <AiOutlineBell size={24} className="text-blue-500" />
         <button onClick={handleDismiss}>
-          <AiOutlineClose size={20} className="text-gray-600 hover:text-red-600 transition-colors" />
+          <AiOutlineClose
+            size={20}
+            className="text-gray-600 hover:text-red-600 transition-colors"
+          />
         </button>
       </div>
       <p className="text-gray-700 text-sm">
