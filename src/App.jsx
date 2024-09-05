@@ -14,7 +14,7 @@ import { Toaster } from "sonner";
 import FloatingChatButton from "./components/FloatingChatButton"; // New Component
 import FloatingChat from "./components/ChatPopup"; // New Component
 import { useState } from "react";
-import usePushNotifications from "./hock/usePushNotifications";
+// import usePushNotifications from "./hock/usePushNotifications";
 
 const App = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -22,7 +22,7 @@ const App = () => {
     setIsChatOpen(!isChatOpen);
   };
 
-  usePushNotifications();
+  // usePushNotifications();
 
   return (
     <BrowserRouter>

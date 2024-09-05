@@ -3,6 +3,7 @@ self.addEventListener("push", (event) => {
 
   let data = {};
   if (event.data) {
+    console.log(event.data)
     data = event.data.json(); // Parse the push event data as JSON
   }
 
