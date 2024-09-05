@@ -86,7 +86,6 @@ function getOrCreateDeviceId() {
 }
 
 function sendDeviceInfoToBackend(deviceInfo) {
-  alert(JSON.stringify(deviceInfo))
   console.log('Sending device info to backend:', deviceInfo);  // Debugging log
   fetch('https://tinynotie-api.vercel.app/openai/subscribe', {  // Replace with your actual backend endpoint URL
     method: 'POST',
