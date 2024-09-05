@@ -14,6 +14,7 @@ import { Toaster } from "sonner";
 import FloatingChatButton from "./components/FloatingChatButton"; // New Component
 import FloatingChat from "./components/ChatPopup"; // New Component
 import { useState } from "react";
+import NotificationPrompt from "./components/NotificationPrompt";
 // import usePushNotifications from "./hock/usePushNotifications";
 
 const App = () => {
@@ -33,6 +34,7 @@ const App = () => {
         position="top-right"
         closeButton
       />
+      <NotificationPrompt />
       <div className="relative z-0 bg-primary">
         <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
           <div className="relative">

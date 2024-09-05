@@ -3,17 +3,16 @@ self.addEventListener("push", (event) => {
 
   let data = {};
   if (event.data) {
-    console.log(event.data)
     data = event.data.json(); // Parse the push event data as JSON
   }
 
   const title = data.title || "Notification";
   const options = {
     body: data.body || "You have a new message!",
-    icon: data.icon || "/images/default-icon.png", // Replace with your icon
-    badge: data.badge || "/images/default-badge.png", // Replace with your badge
+    icon: "https://vongpichdaraboth.com/icons/maskable_icon_x72.png", // Replace with your icon
+    badge: "https://vongpichdaraboth.com/icons/maskable_icon_x72.png", // Replace with your badge
   };
-
+  console.log({options});
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
