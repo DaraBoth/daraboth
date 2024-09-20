@@ -1,13 +1,14 @@
-import { motion } from "framer-motion";
+// src/components/Hero.jsx
 
+import { motion } from "framer-motion";
 import { styles } from "../styles";
-import { ComputersCanvas } from "./canvas";
+import GojoCanvas from "./canvas/GojoCanvas";
 
 const Hero = () => {
   return (
-    <section className={`relative w-full h-screen mx-auto`}>
+    <section className="relative w-full h-screen mx-auto">
       <div
-        className={`absolute inset-0 top-[120px]  max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5`}
+        className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5`}
       >
         <div className="flex flex-col justify-center items-center mt-5">
           <div className="w-5 h-5 rounded-full bg-[#ffb6c1]" />
@@ -19,13 +20,13 @@ const Hero = () => {
             Hi, I'm <span className="text-[#ffb6c1]">DaraBoth</span>
           </h1>
           <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-            I am a skilled software engineer <br className="sm:block hidden" />I
-            develop website.
+            I am a skilled software engineer <br className="sm:block hidden" />
+            I develop websites.
           </p>
         </div>
       </div>
 
-      <ComputersCanvas />
+      <GojoCanvas />
 
       <div className="absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center">
         <a href="#about">

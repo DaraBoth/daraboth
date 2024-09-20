@@ -1,0 +1,8 @@
+Model Information:
+* title:	Gojo WIP
+* source:	https://sketchfab.com/3d-models/gojo-wip-40df4edf1b624b0b97da097e9b5b85c5
+* author:	K- (https://sketchfab.com/K-)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works
