@@ -1,11 +1,22 @@
-import React, { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+// src/components/ChatPopup.jsx
+
+import React, { useEffect, useState, useRef, memo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
-import { MdClose, MdSend, MdArrowDownward, MdDelete } from "react-icons/md";
+import {
+  MdClose,
+  MdSend,
+  MdArrowDownward,
+  MdDelete,
+  MdDownload,
+  MdClear,
+} from "react-icons/md";
 import { ClipLoader } from "react-spinners";
-import ReactMarkdown from "react-markdown";
 import moment from "moment";
+import { Tooltip } from "react-tooltip";
+import Modal from "./Modal"; // Import the custom Modal component
+import VirtualizedChatHistory from "./VirtualizedChatHistory"; // Import the virtualized chat history component
 
 const BAN_DURATION = 3 * 60 * 1000; // 3 minutes in milliseconds
 const BAN_THRESHOLD = 10; // Number of attempts before ban
@@ -27,13 +38,14 @@ const ChatPopup = ({ onClose }) => {
   });
   const [isTyping, setIsTyping] = useState(false);
   const [hoveredMessageIndex, setHoveredMessageIndex] = useState(null); // Track hovered message for delete button
+  const [showClearModal, setShowClearModal] = useState(false); // State for confirmation modal
 
   useEffect(() => {
     const lastDate = localStorage.getItem("today");
     if (!lastDate) {
       localStorage.setItem("today", new Date());
     } else if (isMoreThanADay(new Date(), new Date(lastDate))) {
-      toast.success("Welcome back! 😍", { duration: 5000 });
+      toast.success("Welcome back! 😊", { duration: 5000 });
       localStorage.setItem("today", new Date());
     }
 
@@ -56,7 +68,9 @@ const ChatPopup = ({ onClose }) => {
           setBanEndTime(null);
           localStorage.removeItem("banEndTime");
           setShowingBannedAlert(false);
-          toast.success("Congratulations! You're back. Let's behave this time.", { duration: 10000 });
+          toast.success("You're back! Let's continue our conversation. 😊", {
+            duration: 10000,
+          });
         }, remainingBanTime);
         displayBanMessages(remainingBanTime);
         return () => clearTimeout(timer);
@@ -90,8 +104,20 @@ const ChatPopup = ({ onClose }) => {
     const userMessage = form.message.trim();
     if (!userMessage) return; // Don't submit if the message is empty
 
+    // Anti-Spam Check
+    const currentTime = new Date().getTime();
+    if (currentTime - lastSpamTime < SPAM_INTERVAL) {
+      incrementBanCount();
+      return;
+    }
+    setLastSpamTime(currentTime);
+
     // Immediately add the user's message to chat history and clear the input
-    const newMessage = { role: "user", parts: [{ text: userMessage }], timestamp: moment().format('h:mm A') };
+    const newMessage = {
+      role: "user",
+      parts: [{ text: userMessage }],
+      timestamp: moment().format("h:mm A"),
+    };
     setChatHistory((prevHistory) => [...prevHistory, newMessage]);
     setForm({ ...form, message: "" }); // Clear input after sending
 
@@ -108,11 +134,18 @@ const ChatPopup = ({ onClose }) => {
 
     try {
       const response = await axios.request(config);
-      const botResponse = { role: "model", parts: [{ text: response.data?.text }], timestamp: moment().format('h:mm A') };
+      const botResponse = {
+        role: "model",
+        parts: [{ text: response.data?.text }],
+        timestamp: moment().format("h:mm A"),
+      };
 
       setChatHistory((prevHistory) => [...prevHistory, botResponse]);
     } catch (error) {
-      toast.warning("Too many requests. Please try again later.", { duration: 3000 });
+      toast.warning("Too many requests. Please try again later.", {
+        duration: 3000,
+      });
+      incrementBanCount();
     } finally {
       setLoading(false);
       setIsTyping(false); // Hide typing indicator after response
@@ -148,7 +181,7 @@ const ChatPopup = ({ onClose }) => {
   const incrementBanCount = () => {
     if (banCount < BAN_THRESHOLD) {
       setBanCount(banCount + 1);
-      toast.warning("Chill daddy chill...", { duration: 3000 });
+      toast.warning("Please slow down your requests.", { duration: 3000 });
     } else {
       handleBan();
     }
@@ -159,19 +192,33 @@ const ChatPopup = ({ onClose }) => {
     const endTime = new Date(new Date().getTime() + BAN_DURATION);
     setBanEndTime(endTime);
     localStorage.setItem("banEndTime", endTime);
-    toast.error("You are banned from asking for 3 minutes. Until this alert closes!", {
-      duration: BAN_DURATION,
-      onclose: () => {
-        if (showingBannedAlert) return;
-      },
-    });
+    toast.error(
+      "You've been temporarily banned for 3 minutes due to excessive requests.",
+      {
+        duration: BAN_DURATION,
+      }
+    );
     displayBanMessages(BAN_DURATION);
     setShowingBannedAlert(true);
   };
 
   const displayBanMessages = (remainingBanTime) => {
-    setTimeout(() => setForm({ ...form, answer: "Please wait... You are temporarily banned." }), 60 * 1000);
-    setTimeout(() => setForm({ ...form, answer: "1 minute and 20 seconds more. Please wait..." }), 1.67 * 60 * 1000);
+    setTimeout(
+      () =>
+        setForm((prevForm) => ({
+          ...prevForm,
+          answer: "Please wait... You are temporarily banned.",
+        })),
+      1000
+    );
+    setTimeout(
+      () =>
+        setForm((prevForm) => ({
+          ...prevForm,
+          answer: "1 minute and 20 seconds more. Please wait...",
+        })),
+      1000 + 1000 * 20
+    );
   };
 
   const isMoreThanADay = (dateA, dateB) => {
@@ -186,100 +233,230 @@ const ChatPopup = ({ onClose }) => {
   };
 
   const handleClearAllChats = () => {
+    setShowClearModal(true); // Open confirmation modal
+  };
+
+  const confirmClearAllChats = () => {
     setChatHistory([]);
+    toast.success("All chats have been cleared.", { duration: 3000 });
+    setShowClearModal(false);
+  };
+
+  const cancelClearAllChats = () => {
+    setShowClearModal(false);
+  };
+
+  const handleDownloadChat = () => {
+    const element = document.createElement("a");
+    const file = new Blob(
+      [
+        chatHistory
+          .map(
+            (msg) =>
+              `${msg.timestamp} - ${msg.role === "user" ? "You" : "AI"}: ${
+                msg.parts[0].text
+              }`
+          )
+          .join("\n"),
+      ],
+      { type: "text/plain" }
+    );
+    element.href = URL.createObjectURL(file);
+    element.download = "chat_history.txt";
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.8 }} 
-      animate={{ opacity: 1, scale: 1 }} 
-      exit={{ opacity: 0, scale: 0.8 }} 
-      className="fixed bottom-24 right-5 w-[400px] md:w-[500px] md:h-[600px] bg-black-100 p-8 rounded-2xl shadow-md z-50 border border-gray-700 flex flex-col"
-      style={{ maxWidth: '95%', height: '75%', maxHeight: '75%' }} // Adaptive sizing for different screens
-    >
-      {/* Chat Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-bold text-white text-xl">Chat with Daraboth AI</h3>
-        <button onClick={onClose} className="text-white hover:text-red-400">
-          <MdClose size={24} />
-        </button>
-      </div>
-
-      {/* Chat History Area */}
-      <div
-        className="flex-grow overflow-y-auto mb-4 p-3 bg-black-200 rounded-lg flex flex-col gap-2"
-        onScroll={handleScroll}
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        className="fixed bottom-24 right-5 w-full max-w-lg md:max-w-xl lg:max-w-2xl h-[75vh] bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg z-50 border border-gray-300 dark:border-gray-700 flex flex-col"
+        style={{
+          maxWidth: "95%",
+          height: "75%",
+          maxHeight: "75%",
+        }} // Adaptive sizing for different screens
       >
-        {chatHistory.map((msg, index) => (
-          <div
-            key={index}
-            className={`relative p-3 rounded-xl max-w-[70%] ${
-              msg.role === 'user' ? 'bg-tertiary text-white self-end ml-auto' : 'bg-gray-700 text-white self-start mr-auto'
-            }`}
-            onMouseEnter={() => setHoveredMessageIndex(index)} // Set hover index on mouse enter
-            onMouseLeave={() => setHoveredMessageIndex(null)} // Clear hover index on mouse leave
-            onClick={() => setHoveredMessageIndex(index)} // For mobile: show delete button on tap
-          >
-            <ReactMarkdown className="prose prose-invert break-words">{msg.parts[0].text}</ReactMarkdown>
-            <div className="text-xs text-gray-400 mt-1">{msg.timestamp}</div> {/* Timestamp with top margin */}
-            {hoveredMessageIndex === index && ( // Show delete button only on hover or tap
-              <button
-                className="absolute top-1 right-2 cursor-pointer hover:text-red-500"
-                onClick={() => handleDeleteMessage(index)}
-              >
-                <MdDelete />
-              </button>
-            )}
-          </div>
-        ))}
-        {isTyping && (
-          <div className="p-2 text-sm text-gray-400">Typing...</div> // Typing indicator
-        )}
-        <div ref={messagesEndRef} /> {/* Ref to scroll into view */}
-      </div>
-
-      {/* Scroll to Bottom Button */}
-      {showScrollButton && (
-        <button
-          type="button"
-          className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-all"
-          onClick={scrollToBottom}
-        >
-          <MdArrowDownward size={20} />
-        </button>
-      )}
-
-      {/* Chat Input Area */}
-      <form ref={formRef} onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
-        <textarea
-          rows={1}
-          name="message"
-          value={form.message}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your message..."
-          className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
-          style={{ maxHeight: '60px' }} // Max 3 lines
-        />
-        <div className="flex justify-between items-center mt-2">
+        {/* Chat Header */}
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-lg md:text-xl">
+            Chat with Daraboth AI
+          </h3>
           <button
-            type="submit"
-            disabled={loading || (banEndTime && new Date() < new Date(banEndTime))}
-            className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
+            onClick={onClose}
+            className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-colors"
+            aria-label="Close Chat"
           >
-            {loading ? <ClipLoader size={18} color="#ffffff" /> : <MdSend size={20} />}
-          </button>
-          <button
-            type="button"
-            onClick={handleClearAllChats}
-            className="bg-red-600 py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md hover:bg-red-700"
-          >
-            Clear All Chats
+            <MdClose size={24} />
           </button>
         </div>
-      </form>
-    </motion.div>
+
+        {/* Chat Actions */}
+        <div className="flex justify-end mb-2 space-x-2">
+          <button
+            onClick={handleDownloadChat}
+            className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
+            data-tooltip-id="download-tooltip"
+          >
+            <MdDownload size={20} />
+          </button>
+          <button
+            onClick={handleClearAllChats}
+            className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-colors"
+            data-tooltip-id="clear-tooltip"
+          >
+            <MdClear size={20} />
+          </button>
+          {/* Render Tooltip Components */}
+          <Tooltip id="download-tooltip" place="top" variant="dark">
+            Download Chat History
+          </Tooltip>
+          <Tooltip id="clear-tooltip" place="top" variant="dark">
+            Clear All Chats
+          </Tooltip>
+        </div>
+
+        {/* Chat History Area */}
+        <div className="flex-grow overflow-y-auto mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+          <VirtualizedChatHistory
+            chatHistory={chatHistory}
+            handleDeleteMessage={handleDeleteMessage}
+            hoveredMessageIndex={hoveredMessageIndex}
+            setHoveredMessageIndex={setHoveredMessageIndex}
+          />
+          {/* Typing Indicator */}
+          {/* Typing Indicator */}
+          {isTyping && (
+            <div className="flex items-center mt-2">
+              <div className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center mr-2">
+                AI
+              </div>
+              <div className="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100 p-3 rounded-lg rounded-bl-none flex items-center space-x-2">
+                <div className="flex space-x-1">
+                  <motion.div
+                    className="w-2 h-2 bg-blue-500 rounded-full"
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{
+                      duration: 0.6,
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      delay: 0,
+                    }}
+                  />
+                  <motion.div
+                    className="w-2 h-2 bg-blue-500 rounded-full"
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{
+                      duration: 0.6,
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      delay: 0.2,
+                    }}
+                  />
+                  <motion.div
+                    className="w-2 h-2 bg-blue-500 rounded-full"
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{
+                      duration: 0.6,
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      delay: 0.4,
+                    }}
+                  />
+                </div>
+                <span>Typing...</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Scroll to Bottom Button */}
+        <AnimatePresence>
+          {showScrollButton && (
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              type="button"
+              className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-all"
+              onClick={scrollToBottom}
+              aria-label="Scroll to Bottom"
+            >
+              <MdArrowDownward size={20} />
+            </motion.button>
+          )}
+        </AnimatePresence>
+
+        {/* Chat Input Area */}
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="mt-4 flex flex-col gap-3"
+        >
+          <textarea
+            rows={1}
+            name="message"
+            value={form.message}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your message..."
+            className="bg-gray-200 dark:bg-gray-600 py-3 px-4 placeholder-gray-500 dark:placeholder-gray-400 text-gray-800 dark:text-gray-100 rounded-lg outline-none resize-none focus:ring-2 focus:ring-blue-500 transition"
+            style={{ maxHeight: "100px" }} // Max 5 lines
+          />
+          <div className="flex justify-between items-center">
+            <button
+              type="submit"
+              disabled={
+                loading || (banEndTime && new Date() < new Date(banEndTime))
+              }
+              className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Send Message"
+            >
+              {loading ? (
+                <ClipLoader size={18} color="#ffffff" />
+              ) : (
+                <MdSend size={20} />
+              )}
+            </button>
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                onClick={() => setShowClearModal(true)}
+                className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-md transition-colors"
+                aria-label="Clear All Chats"
+                data-tooltip-id="clear-tooltip"
+              >
+                <MdClear size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={handleDownloadChat}
+                className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-md transition-colors"
+                aria-label="Download Chat History"
+                data-tooltip-id="download-tooltip"
+              >
+                <MdDownload size={20} />
+              </button>
+            </div>
+            {/* Tooltip components are already rendered above */}
+          </div>
+        </form>
+
+        {/* Confirmation Modal for Clearing Chats */}
+        <Modal
+          show={showClearModal}
+          onClose={cancelClearAllChats}
+          onConfirm={confirmClearAllChats}
+          title="Confirm Clear All Chats"
+          message="Are you sure you want to delete all your chat history? This action cannot be undone."
+        />
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
-export default ChatPopup;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(ChatPopup);
