@@ -114,4 +114,4 @@ const Feedbacks = ({ refreshToggle }) => { // Accept refreshToggle as a prop
   );
 };
 
-export default SectionWrapper(Feedbacks, "");
+export default SectionWrapper(Feedbacks, "feedbacks");

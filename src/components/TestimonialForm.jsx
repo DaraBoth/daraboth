@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import axios from "axios";
-import PropTypes from 'prop-types'; // Optional: For prop type checking
+import PropTypes from 'prop-types'; // For prop type checking
+import { SectionWrapper } from "../hoc";
 
 const TestimonialForm = ({ onSuccess }) => { // Accept onSuccess as a prop
   const [formData, setFormData] = useState({
     name: "",
+    email: "", // Added email field
     designation: "",
     company: "",
     message: "",
@@ -14,7 +16,7 @@ const TestimonialForm = ({ onSuccess }) => { // Accept onSuccess as a prop
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null); // Added success message
+  const [successMessage, setSuccessMessage] = useState(null); // Success message state
 
   // Handle input changes
   const handleChange = (e) => {
@@ -41,6 +43,7 @@ const TestimonialForm = ({ onSuccess }) => { // Accept onSuccess as a prop
         // Optionally, reset the form
         setFormData({
           name: "",
+          email: "", // Reset email field
           designation: "",
           company: "",
           message: "",
@@ -61,56 +64,85 @@ const TestimonialForm = ({ onSuccess }) => { // Accept onSuccess as a prop
   };
 
   return (
-    <div className="mt-12 bg-black-100 rounded-[20px] p-8 mx-12">
-      <h2 className="text-white text-2xl mb-4">Submit Your Testimonial</h2>
+    <div className="mt-12 bg-black-100 rounded-[20px] p-8">
+      <h2 className="text-white text-2xl mb-4 text-center">Submit Your Testimonial</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Your Name"
-          required
-          className="p-2 rounded bg-gray-800 text-white"
-        />
-        <input
-          type="text"
-          name="designation"
-          value={formData.designation}
-          onChange={handleChange}
-          placeholder="Your Designation"
-          className="p-2 rounded bg-gray-800 text-white"
-        />
-        <input
-          type="text"
-          name="company"
-          value={formData.company}
-          onChange={handleChange}
-          placeholder="Your Company"
-          className="p-2 rounded bg-gray-800 text-white"
-        />
-        <textarea
-          name="message"
-          value={formData.message}
-          onChange={handleChange}
-          placeholder="Your Testimonial"
-          required
-          className="p-2 rounded bg-gray-800 text-white"
-        />
-        <input
-          type="url"
-          name="photo_url"
-          value={formData.photo_url}
-          onChange={handleChange}
-          placeholder="Photo URL (optional)"
-          className="p-2 rounded bg-gray-800 text-white"
-        />
-        {error && <p className="text-red-500">{error}</p>}
-        {successMessage && <p className="text-green-500">{successMessage}</p>}
+        <label className="flex flex-col">
+          <span className="text-white font-medium mb-2">Your Name</span>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Your Name"
+            required
+            className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+          />
+        </label>
+        <label className="flex flex-col">
+          <span className="text-white font-medium mb-2">Your Email</span>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Your Email"
+            required
+            className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+          />
+        </label>
+        <label className="flex flex-col">
+          <span className="text-white font-medium mb-2">Your Designation</span>
+          <input
+            type="text"
+            name="designation"
+            value={formData.designation}
+            onChange={handleChange}
+            placeholder="Your Designation"
+            className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+          />
+        </label>
+        <label className="flex flex-col">
+          <span className="text-white font-medium mb-2">Your Company</span>
+          <input
+            type="text"
+            name="company"
+            value={formData.company}
+            onChange={handleChange}
+            placeholder="Your Company"
+            className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+          />
+        </label>
+        <label className="flex flex-col">
+          <span className="text-white font-medium mb-2">Your Testimonial</span>
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            placeholder="Your Testimonial"
+            required
+            className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium resize-none h-32"
+          />
+        </label>
+        <label className="flex flex-col">
+          <span className="text-white font-medium mb-2">Photo URL (optional)</span>
+          <input
+            type="url"
+            name="photo_url"
+            value={formData.photo_url}
+            onChange={handleChange}
+            placeholder="Photo URL (optional)"
+            className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+          />
+        </label>
+        {error && <p className="text-red-500 text-center">{error}</p>}
+        {successMessage && <p className="text-green-500 text-center">{successMessage}</p>}
         <button
           type="submit"
           disabled={submitting}
-          className="bg-blue-500 text-white p-2 rounded"
+          className={`bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary hover:bg-tertiary-dark transition duration-200 ${
+            submitting ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
           {submitting ? "Submitting..." : "Submit Testimonial"}
         </button>
@@ -129,4 +161,4 @@ TestimonialForm.defaultProps = {
   onSuccess: () => {}, // Default to a no-operation function
 };
 
-export default TestimonialForm;
+export default SectionWrapper(TestimonialForm, "testimonial");
