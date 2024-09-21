@@ -15,6 +15,8 @@ import FloatingChatButton from "./components/FloatingChatButton"; // New Compone
 import FloatingChat from "./components/ChatPopup"; // New Component
 import { useState } from "react";
 import NotificationPrompt from "./components/NotificationPrompt";
+import TestimonialForm from "./components/TestimonialForm";
+import TestimonialFormWrapper from "./components/TestimonialFormWrapper";
 // import usePushNotifications from "./hock/usePushNotifications";
 
 const App = () => {
@@ -47,7 +49,7 @@ const App = () => {
         <Experience />
         <Tech />
         <Works />
-        {/* <Feedbacks /> */}
+        <TestimonialFormWrapper />
         <div className="relative z-0">
           <Contact />
           <StarsCanvas />

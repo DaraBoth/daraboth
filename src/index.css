@@ -291,3 +291,18 @@
   display: block; /* Ensure lines stack vertically */
   margin-bottom: 2px; /* Add spacing between lines */
 }
+
+.required {
+  color: red;
+}
+
+.loader {
+  border-top-color: #3498db; /* Customize the color as desired */
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

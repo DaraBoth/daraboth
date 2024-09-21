@@ -6,9 +6,15 @@ import ReactMarkdown from "react-markdown";
 import { MdDelete } from "react-icons/md";
 import clsx from "clsx";
 import { motion } from "framer-motion";
+import PropTypes from "prop-types";
 
 const Row = ({ index, style, data }) => {
-  const { chatHistory, handleDeleteMessage, hoveredMessageIndex, setHoveredMessageIndex } = data;
+  const {
+    chatHistory,
+    handleDeleteMessage,
+    hoveredMessageIndex,
+    setHoveredMessageIndex,
+  } = data;
   const msg = chatHistory[index];
 
   return (
@@ -64,8 +70,25 @@ const Row = ({ index, style, data }) => {
   );
 };
 
+Row.propTypes = {
+  index: PropTypes.number.isRequired,
+  style: PropTypes.object.isRequired,
+  data: PropTypes.shape({
+    chatHistory: PropTypes.array.isRequired,
+    handleDeleteMessage: PropTypes.func.isRequired,
+    hoveredMessageIndex: PropTypes.number,
+    setHoveredMessageIndex: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
 const VirtualizedChatHistory = forwardRef((props, ref) => {
-  const { chatHistory, handleDeleteMessage, hoveredMessageIndex, setHoveredMessageIndex } = props;
+  const {
+    chatHistory,
+    handleDeleteMessage,
+    hoveredMessageIndex,
+    setHoveredMessageIndex,
+    onItemsRendered,
+  } = props;
 
   const itemSize = 80; // Adjust based on message size
   const height = 400; // Adjust based on container size or make it dynamic
@@ -85,11 +108,20 @@ const VirtualizedChatHistory = forwardRef((props, ref) => {
       width="100%"
       itemData={itemData}
       overscanCount={5}
-      ref={ref} // Forwarded ref to access List's methods
+      ref={ref}
+      onItemsRendered={onItemsRendered}
     >
       {Row}
     </List>
   );
 });
+
+VirtualizedChatHistory.propTypes = {
+  chatHistory: PropTypes.array.isRequired,
+  handleDeleteMessage: PropTypes.func.isRequired,
+  hoveredMessageIndex: PropTypes.number,
+  setHoveredMessageIndex: PropTypes.func.isRequired,
+  onItemsRendered: PropTypes.func,
+};
 
 export default VirtualizedChatHistory;

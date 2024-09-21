@@ -1,6 +1,6 @@
 // src/components/ChatPopup.jsx
 
-import React, { useEffect, useState, useRef, memo } from "react";
+import React, { useEffect, useState, useRef, memo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
@@ -8,24 +8,23 @@ import {
   MdClose,
   MdSend,
   MdArrowDownward,
-  MdDelete,
   MdDownload,
   MdClear,
 } from "react-icons/md";
 import { ClipLoader } from "react-spinners";
 import moment from "moment";
 import { Tooltip } from "react-tooltip";
-import Modal from "./Modal"; // Import the custom Modal component
-import VirtualizedChatHistory from "./VirtualizedChatHistory"; // Import the virtualized chat history component
+import Modal from "./Modal";
+import VirtualizedChatHistory from "./VirtualizedChatHistory";
+import { v4 as uuidv4 } from "uuid";
 
 const BAN_DURATION = 3 * 60 * 1000; // 3 minutes in milliseconds
 const BAN_THRESHOLD = 10; // Number of attempts before ban
 const SPAM_INTERVAL = 500; // Interval in milliseconds to consider as spam
 
 const ChatPopup = ({ onClose }) => {
-  const formRef = useRef();
-  const messagesEndRef = useRef(null);
-  const [form, setForm] = useState({ message: "", answer: "" });
+  const listRef = useRef(); // Ref for the virtualized list
+  const [form, setForm] = useState({ message: "" });
   const [loading, setLoading] = useState(false);
   const [banCount, setBanCount] = useState(0);
   const [banEndTime, setBanEndTime] = useState(null);
@@ -39,6 +38,7 @@ const ChatPopup = ({ onClose }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [hoveredMessageIndex, setHoveredMessageIndex] = useState(null); // Track hovered message for delete button
   const [showClearModal, setShowClearModal] = useState(false); // State for confirmation modal
+  const [showNewMessageIndicator, setShowNewMessageIndicator] = useState(false); // State for "New Messages" indicator
 
   useEffect(() => {
     const lastDate = localStorage.getItem("today");
@@ -83,11 +83,10 @@ const ChatPopup = ({ onClose }) => {
   }, [banEndTime]);
 
   useEffect(() => {
-    scrollToBottom(); // Scroll to bottom when chat opens
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom(); // Scroll to bottom when new message arrives
+    // Auto-scroll to bottom when a new message is added
+    if (chatHistory.length > 0 && listRef.current) {
+      listRef.current.scrollToItem(chatHistory.length - 1, "end");
+    }
   }, [chatHistory]);
 
   const handleChange = (e) => {
@@ -98,6 +97,7 @@ const ChatPopup = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (banEndTime && new Date() < new Date(banEndTime)) {
+      toast.error("You're temporarily banned. Please wait.", { duration: 3000 });
       return; // Prevent submission during ban
     }
 
@@ -114,6 +114,7 @@ const ChatPopup = ({ onClose }) => {
 
     // Immediately add the user's message to chat history and clear the input
     const newMessage = {
+      id: uuidv4(), // Assign a unique ID
       role: "user",
       parts: [{ text: userMessage }],
       timestamp: moment().format("h:mm A"),
@@ -135,6 +136,7 @@ const ChatPopup = ({ onClose }) => {
     try {
       const response = await axios.request(config);
       const botResponse = {
+        id: uuidv4(), // Assign a unique ID
         role: "model",
         parts: [{ text: response.data?.text }],
         timestamp: moment().format("h:mm A"),
@@ -165,16 +167,13 @@ const ChatPopup = ({ onClose }) => {
     }
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   const handleScroll = (e) => {
     const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
     if (scrollHeight - scrollTop === clientHeight) {
       setShowScrollButton(false); // Hide button when scrolled to bottom
+      setShowNewMessageIndicator(false); // Hide new message indicator if at bottom
     } else {
-      setShowScrollButton(true); // Show button when not at the bottom
+      setShowScrollButton(true); // Show button when not at bottom
     }
   };
 
@@ -207,7 +206,7 @@ const ChatPopup = ({ onClose }) => {
       () =>
         setForm((prevForm) => ({
           ...prevForm,
-          answer: "Please wait... You are temporarily banned.",
+          message: "Please wait... You are temporarily banned.",
         })),
       1000
     );
@@ -215,7 +214,7 @@ const ChatPopup = ({ onClose }) => {
       () =>
         setForm((prevForm) => ({
           ...prevForm,
-          answer: "1 minute and 20 seconds more. Please wait...",
+          message: "1 minute and 20 seconds more. Please wait...",
         })),
       1000 + 1000 * 20
     );
@@ -226,9 +225,8 @@ const ChatPopup = ({ onClose }) => {
     return differenceInMilliseconds > 1000 * 60 * 60 * 24;
   };
 
-  const handleDeleteMessage = (index) => {
-    const updatedHistory = [...chatHistory];
-    updatedHistory.splice(index, 1);
+  const handleDeleteMessage = (id) => {
+    const updatedHistory = chatHistory.filter((msg) => msg.id !== id);
     setChatHistory(updatedHistory);
   };
 
@@ -253,9 +251,9 @@ const ChatPopup = ({ onClose }) => {
         chatHistory
           .map(
             (msg) =>
-              `${msg.timestamp} - ${msg.role === "user" ? "You" : "AI"}: ${
-                msg.parts[0].text
-              }`
+              `${msg.timestamp} - ${
+                msg.role === "user" ? "You" : "AI"
+              }: ${msg.parts[0].text}`
           )
           .join("\n"),
       ],
@@ -265,7 +263,26 @@ const ChatPopup = ({ onClose }) => {
     element.download = "chat_history.txt";
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
+    document.body.removeChild(element); // Clean up after download
   };
+
+  // Easing function for smooth scroll (optional)
+  const easeOutCubic = (t) => (--t) * t * t + 1;
+
+  // Enhanced handler for items rendered with smooth scroll
+  const handleItemsRendered = useCallback(
+    ({ visibleStartIndex, visibleStopIndex }) => {
+      if (chatHistory.length > 0 && visibleStopIndex >= chatHistory.length - 1) {
+        if (listRef.current) {
+          listRef.current.scrollToItem(chatHistory.length - 1, "end");
+        }
+        setShowNewMessageIndicator(false); // Hide indicator if at bottom
+      } else {
+        setShowNewMessageIndicator(true); // Show indicator if not at bottom
+      }
+    },
+    [chatHistory.length]
+  );
 
   return (
     <AnimatePresence>
@@ -273,7 +290,7 @@ const ChatPopup = ({ onClose }) => {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className="fixed bottom-24 right-5 w-full max-w-lg md:max-w-xl lg:max-w-2xl h-[75vh] bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg z-50 border border-gray-300 dark:border-gray-700 flex flex-col"
+        className="fixed bottom-5 right-5 w-full max-w-lg md:max-w-xl lg:max-w-2xl h-[75vh] bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg z-50 border border-gray-300 dark:border-gray-700 flex flex-col"
         style={{
           maxWidth: "95%",
           height: "75%",
@@ -320,14 +337,18 @@ const ChatPopup = ({ onClose }) => {
         </div>
 
         {/* Chat History Area */}
-        <div className="flex-grow overflow-y-auto mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+        <div
+          className="flex-grow overflow-y-auto mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg"
+          onScroll={handleScroll}
+        >
           <VirtualizedChatHistory
             chatHistory={chatHistory}
             handleDeleteMessage={handleDeleteMessage}
             hoveredMessageIndex={hoveredMessageIndex}
             setHoveredMessageIndex={setHoveredMessageIndex}
+            ref={listRef} // Attach the ref to the virtualized list
+            onItemsRendered={handleItemsRendered} // Attach handler
           />
-          {/* Typing Indicator */}
           {/* Typing Indicator */}
           {isTyping && (
             <div className="flex items-center mt-2">
@@ -382,7 +403,11 @@ const ChatPopup = ({ onClose }) => {
               exit={{ opacity: 0, y: 20 }}
               type="button"
               className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-all"
-              onClick={scrollToBottom}
+              onClick={() => {
+                if (listRef.current) {
+                  listRef.current.scrollToItem(chatHistory.length - 1, "end");
+                }
+              }}
               aria-label="Scroll to Bottom"
             >
               <MdArrowDownward size={20} />
@@ -390,12 +415,29 @@ const ChatPopup = ({ onClose }) => {
           )}
         </AnimatePresence>
 
+        {/* New Messages Indicator */}
+        <AnimatePresence>
+          {showNewMessageIndicator && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition"
+              onClick={() => {
+                if (listRef.current) {
+                  listRef.current.scrollToItem(chatHistory.length - 1, "end");
+                }
+                setShowNewMessageIndicator(false);
+              }}
+              aria-label="Scroll to New Messages"
+            >
+              New Messages
+            </motion.button>
+          )}
+        </AnimatePresence>
+
         {/* Chat Input Area */}
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className="mt-4 flex flex-col gap-3"
-        >
+        <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3">
           <textarea
             rows={1}
             name="message"
@@ -447,7 +489,7 @@ const ChatPopup = ({ onClose }) => {
 
         {/* Confirmation Modal for Clearing Chats */}
         <Modal
-          show={showClearModal}
+          isOpen={showClearModal}
           onClose={cancelClearAllChats}
           onConfirm={confirmClearAllChats}
           title="Confirm Clear All Chats"
