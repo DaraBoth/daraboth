@@ -5,19 +5,20 @@ import { Canvas } from "@react-three/fiber";
 import CanvasLoader from "../Loader";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
-
 const Gojo = memo(({ isMobile }) => {
   const gojo = useGLTF("/gojo/scene.gltf");
 
   return (
     <primitive
       object={gojo.scene}
-      scale={isMobile ? 0.40 : 0.45}
+      scale={isMobile ? 0.4 : 0.45}
       position-y={-1}
       rotation-y={0}
     />
   );
 });
+
+
 
 const GojoCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -53,7 +54,6 @@ const GojoCanvas = () => {
       <Suspense fallback={<CanvasLoader />}>
         {/* Consider customizing OrbitControls as mentioned earlier */}
         <OrbitControls
-          // autoRotate
           enableZoom={false}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
