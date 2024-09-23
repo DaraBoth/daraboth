@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { styles } from "../styles";
-import GojoCanvas from "./canvas/GojoCanvas";
+// import GojoCanvas from "./canvas/GojoCanvas";
 import ComputersCanvas from "./canvas/Computers";
 import { TypeAnimation } from "react-type-animation";
 
