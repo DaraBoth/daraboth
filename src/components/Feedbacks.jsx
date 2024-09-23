@@ -101,7 +101,7 @@ const Feedbacks = ({ refreshToggle }) => { // Accept refreshToggle as a prop
               index={index}
               testimonial={testimonial.message}
               name={testimonial.name}
-              designation={testimonial.designation || "Customer"}
+              designation={testimonial.title || "Customer"}
               company={testimonial.company || "Our Company"}
               image={testimonial.photo_url || "/9720009.jpg"} // Provide a default image if none
             />

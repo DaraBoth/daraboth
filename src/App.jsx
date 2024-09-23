@@ -17,6 +17,7 @@ import { useState } from "react";
 import NotificationPrompt from "./components/NotificationPrompt";
 import TestimonialForm from "./components/TestimonialForm";
 import TestimonialFormWrapper from "./components/TestimonialFormWrapper";
+import VisitorTracker from "./components/VisitorTracker";
 // import usePushNotifications from "./hock/usePushNotifications";
 
 const App = () => {
@@ -29,6 +30,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      <VisitorTracker />
       <Toaster
         richColors
         expand

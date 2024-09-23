@@ -5,11 +5,11 @@ import axios from "axios";
 import PropTypes from 'prop-types'; // For prop type checking
 import { SectionWrapper } from "../hoc";
 
-const TestimonialForm = ({ onSuccess }) => { // Accept onSuccess as a prop
+const TestimonialForm = ({ onSuccess=()=>{} }) => { // Accept onSuccess as a prop
   const [formData, setFormData] = useState({
     name: "",
     email: "", // Added email field
-    designation: "",
+    title: "",
     company: "",
     message: "",
     photo_url: "",
@@ -44,7 +44,7 @@ const TestimonialForm = ({ onSuccess }) => { // Accept onSuccess as a prop
         setFormData({
           name: "",
           email: "", // Reset email field
-          designation: "",
+          title: "",
           company: "",
           message: "",
           photo_url: "",
@@ -92,13 +92,13 @@ const TestimonialForm = ({ onSuccess }) => { // Accept onSuccess as a prop
           />
         </label>
         <label className="flex flex-col">
-          <span className="text-white font-medium mb-2">Your Designation</span>
+          <span className="text-white font-medium mb-2">Your Title</span>
           <input
             type="text"
-            name="designation"
-            value={formData.designation}
+            name="title"
+            value={formData.title}
             onChange={handleChange}
-            placeholder="Your Designation"
+            placeholder="Your Title"
             className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
           />
         </label>
@@ -154,11 +154,6 @@ const TestimonialForm = ({ onSuccess }) => { // Accept onSuccess as a prop
 // Define prop types for better type checking
 TestimonialForm.propTypes = {
   onSuccess: PropTypes.func, // Made onSuccess optional
-};
-
-// Define default props to prevent "onSuccess is not a function" error
-TestimonialForm.defaultProps = {
-  onSuccess: () => {}, // Default to a no-operation function
 };
 
 export default SectionWrapper(TestimonialForm, "testimonial");
