@@ -11,20 +11,11 @@ import {
 } from "@/components";
 import { Toaster } from "sonner";
 import FloatingChatButton from "@/components/FloatingChatButton"; // New Component
-import FloatingChat from "@/components/ChatPopup"; // New Component
-import { useState } from "react";
 import NotificationPrompt from "@/components/NotificationPrompt";
 import TestimonialFormWrapper from "@/components/TestimonialFormWrapper";
 import VisitorTracker from "@/components/VisitorTracker";
-// import usePushNotifications from "./hock/usePushNotifications";
-
 const HomePage = () => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const toggleChat = () => {
-    setIsChatOpen(!isChatOpen);
-  };
-  // usePushNotifications();
-
+  
   return (
     <>
       <VisitorTracker />
@@ -52,8 +43,7 @@ const HomePage = () => {
         <div className="relative z-0">
           <Contact />
           <StarsCanvas />
-          <FloatingChatButton isChatOpen={isChatOpen} onClick={toggleChat} />
-          {isChatOpen && <FloatingChat onClose={toggleChat} />}
+          <FloatingChatButton />
         </div>
       </div>
     </>

@@ -8,6 +8,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/feedbacks" element={<TestimonialFormWrapper isHomePage={false} />} />
+        {/* <Redirect from="*" to="/" /> */}
       </Routes>
     </BrowserRouter>
   );
