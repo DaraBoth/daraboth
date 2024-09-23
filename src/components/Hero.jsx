@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { styles } from "../styles";
 import GojoCanvas from "./canvas/GojoCanvas";
+import ComputersCanvas from "./canvas/Computers";
 import { TypeAnimation } from "react-type-animation";
 
 const Hero = () => {
@@ -21,7 +22,9 @@ const Hero = () => {
             Hi, I'm <span className="text-[#ffb6c1]">DaraBoth</span>
           </h1>
           <TypeAnimation
-            sequence={["I am a skilled software engineer \nI develop websites."]}
+            sequence={[
+              "I am a skilled software engineer \nI develop websites.",
+            ]}
             wrapper="p"
             cursor={true}
             speed={70}
@@ -35,7 +38,8 @@ const Hero = () => {
         </div>
       </div>
 
-      <GojoCanvas />
+      <ComputersCanvas />
+      {/* <GojoCanvas /> */}
 
       <div className="absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center">
         <a href="#about">
