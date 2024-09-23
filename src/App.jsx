@@ -15,7 +15,6 @@ import FloatingChatButton from "./components/FloatingChatButton"; // New Compone
 import FloatingChat from "./components/ChatPopup"; // New Component
 import { useState } from "react";
 import NotificationPrompt from "./components/NotificationPrompt";
-import TestimonialForm from "./components/TestimonialForm";
 import TestimonialFormWrapper from "./components/TestimonialFormWrapper";
 import VisitorTracker from "./components/VisitorTracker";
 // import usePushNotifications from "./hock/usePushNotifications";

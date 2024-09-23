@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { ClipLoader } from "react-spinners";
+import NumberTicker from "./magic-ui/NumberTicker";
+import moment from "moment/moment";
 
 const VisitorTracker = () => {
   const [loading, setLoading] = useState(false);
@@ -15,6 +16,7 @@ const VisitorTracker = () => {
         setLoading(true); // Show loading state
         const visitorData = {
           visitedRoute: "/vongpichdaraboth",
+          visit_time: moment().format("YYYY-MM-DD HH:mm:ss"),
         };
 
         const response = await axios.post(apiEndpoint, visitorData);
@@ -47,11 +49,11 @@ const VisitorTracker = () => {
   }, [apiEndpoint]);
 
   return (
-    <div className="z-50 fixed bottom-5 left-5 p-2 bg-white rounded-lg shadow-lg">
-      <h3 className="text-lg text-black font-semibold align-middle">
-        {loading ? <ClipLoader  size={15} color="#000000" /> : count} visitors
-      </h3>
-    </div>
+    count && (
+      <div className="z-50 fixed bottom-5 left-5 p-2 rounded-lg shadow-lg">
+        <NumberTicker value={count} /> visitor{count > 1 && "s"}
+      </div>
+    )
   );
 };
 
