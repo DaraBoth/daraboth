@@ -49,7 +49,8 @@ const VisitorTracker = () => {
   }, [apiEndpoint]);
 
   return (
-    count && (
+    count &&
+    count > 0 && (
       <div className="z-50 fixed bottom-5 left-5 p-2 rounded-lg shadow-lg">
         <NumberTicker value={count} /> visitor{count > 1 && "s"}
       </div>
