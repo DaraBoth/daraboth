@@ -19,14 +19,10 @@ const VisitorTracker = () => {
 
         const response = await axios.post(apiEndpoint, visitorData);
         if (response.status !== 200) {
-          //   console.warn("Error adding visitor. Status code:", response.status); // Log warning but don't throw
           setError("Error adding visitor.");
-        } else {
-          //   console.log("Visitor added successfully.");
         }
       } catch (err) {
         setError("Error adding visitor.");
-        // console.error("Error in POST request:", err);
       }
     };
 
@@ -35,17 +31,15 @@ const VisitorTracker = () => {
         const response = await axios.get(
           `${apiEndpoint}?visitedRoute=/vongpichdaraboth`
         );
-        setCount(response.data[0].visitor_count);
-        // console.log("Fetched visitors:", response.data[0].visitor_count);
+        setCount(response.data.data[0].visitor_count);
       } catch (err) {
         setError("Error fetching visitors.");
-        // console.error("Error in GET request:", err);
       }
     };
 
     const runSequentially = async () => {
-      await handleAddVisitor(); // Run POST first, handle errors internally
-      await fetchVisitors(); // Run GET after POST, regardless of POST result
+      await handleAddVisitor(); // Run POST first
+      await fetchVisitors(); // Run GET after POST
       setLoading(false); // Turn off loading state
     };
 
@@ -53,10 +47,10 @@ const VisitorTracker = () => {
   }, [apiEndpoint]);
 
   return (
-    <div className="z-50 fixed bottom-5 right-5 bg-white p-4 rounded-lg shadow-lg w-72">
-      <h3 className="text-lg font-semibold mb-3">{count}Visitors</h3>
-
-      {loading && <ClipLoader size={30} color="#4A90E2" />}
+    <div className="z-50 fixed bottom-5 left-5 p-2 bg-white rounded-lg shadow-lg">
+      <h3 className="text-lg text-black font-semibold align-middle">
+        {loading ? <ClipLoader  size={15} color="#000000" /> : count} visitors
+      </h3>
     </div>
   );
 };
