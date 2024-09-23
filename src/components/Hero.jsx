@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { styles } from "../styles";
 import GojoCanvas from "./canvas/GojoCanvas";
+import { TypeAnimation } from "react-type-animation";
 
 const Hero = () => {
   return (
@@ -19,10 +20,18 @@ const Hero = () => {
           <h1 className={`${styles.heroHeadText} text-white`}>
             Hi, I'm <span className="text-[#ffb6c1]">DaraBoth</span>
           </h1>
-          <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-            I am a skilled software engineer <br className="sm:block hidden" />
-            I develop websites.
-          </p>
+          <TypeAnimation
+            sequence={["I am a skilled software engineer \nI develop websites."]}
+            wrapper="p"
+            cursor={true}
+            speed={70}
+            repeat={1}
+            className={`${styles.heroSubText} mt-2 text-white-100`}
+          />
+          {/* <p className={`${styles.heroSubText} mt-2 text-white-100`}>
+            I am a skilled software engineer <br className="sm:block hidden" />I
+            develop websites.
+          </p> */}
         </div>
       </div>
 
