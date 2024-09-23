@@ -74,12 +74,12 @@ const Feedbacks = ({ refreshToggle }) => {
         <div className="mt-20 pb-14 ${styles.paddingX} flex flex-wrap gap-7">
           {testimonials.length > 0 ? (
             <>
-              <Marquee pauseOnHover repeat={2} className="[--duration:20s]">
+              <Marquee pauseOnHover repeat={1} className="[--duration:20s]">
                 {testimonials.map((review) => (
                   <ReviewCard key={review.id} {...review} />
                 ))}
               </Marquee>
-              <Marquee reverse pauseOnHover repeat={2} className="[--duration:20s]">
+              <Marquee reverse pauseOnHover repeat={1} className="[--duration:20s]">
                 {testimonials.reverse().map((review) => (
                   <ReviewCard key={review.id} {...review} />
                 ))}
