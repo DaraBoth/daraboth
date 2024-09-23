@@ -9,6 +9,7 @@ import { SectionWrapper } from "../hoc";
 import { fadeIn, slideIn, textVariant } from "../utils/motion";
 import Marquee from "./magic-ui/Marquee";
 import ReviewCard from "./magic-ui/ReviewCard";
+import { Link } from "react-router-dom";
 
 const Feedbacks = ({ refreshToggle }) => {
   const [testimonials, setTestimonials] = useState([]);
@@ -69,17 +70,23 @@ const Feedbacks = ({ refreshToggle }) => {
       className={`xl:mt-12  flex xl:flex-row flex-col-reverse gap-10 overflow-hidden`}
     >
       <motion.div className="flex-[0.75] bg-black-100 p-8 rounded-2xl">
-        <p className={styles.sectionSubText}>What others say</p>
-        <h2 className={styles.sectionHeadText}>Testimonials.</h2>
+        <p className={styles.sectionSubText}>What others say </p>
+        <h2 className={styles.sectionHeadText}>Testimonials. <Link to={"/feedbacks"}>✍️</Link></h2>
+
         <div className="mt-20 pb-14 ${styles.paddingX} flex flex-wrap gap-7">
           {testimonials.length > 0 ? (
             <>
-              <Marquee pauseOnHover repeat={1} className="[--duration:20s]">
+              <Marquee pauseOnHover repeat={2} className="[--duration:20s]">
                 {testimonials.map((review) => (
                   <ReviewCard key={review.id} {...review} />
                 ))}
               </Marquee>
-              <Marquee reverse pauseOnHover repeat={1} className="[--duration:20s]">
+              <Marquee
+                reverse
+                pauseOnHover
+                repeat={2}
+                className="[--duration:20s]"
+              >
                 {testimonials.reverse().map((review) => (
                   <ReviewCard key={review.id} {...review} />
                 ))}
