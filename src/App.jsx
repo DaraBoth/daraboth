@@ -54,7 +54,7 @@ const App = () => {
         <div className="relative z-0">
           <Contact />
           <StarsCanvas />
-          <FloatingChatButton onClick={toggleChat} />
+          <FloatingChatButton isChatOpen={isChatOpen} onClick={toggleChat} />
           {isChatOpen && <FloatingChat onClose={toggleChat} />}
         </div>
       </div>

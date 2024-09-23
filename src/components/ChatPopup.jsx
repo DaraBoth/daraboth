@@ -23,6 +23,7 @@ const BAN_THRESHOLD = 10; // Number of attempts before ban
 const SPAM_INTERVAL = 500; // Interval in milliseconds to consider as spam
 
 const ChatPopup = ({ onClose }) => {
+  const isMobile = window.matchMedia("(max-width: 500px)").matches;
   const listRef = useRef(); // Ref for the virtualized list
   const [form, setForm] = useState({ message: "" });
   const [loading, setLoading] = useState(false);
@@ -97,7 +98,9 @@ const ChatPopup = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (banEndTime && new Date() < new Date(banEndTime)) {
-      toast.error("You're temporarily banned. Please wait.", { duration: 3000 });
+      toast.error("You're temporarily banned. Please wait.", {
+        duration: 3000,
+      });
       return; // Prevent submission during ban
     }
 
@@ -251,9 +254,9 @@ const ChatPopup = ({ onClose }) => {
         chatHistory
           .map(
             (msg) =>
-              `${msg.timestamp} - ${
-                msg.role === "user" ? "You" : "AI"
-              }: ${msg.parts[0].text}`
+              `${msg.timestamp} - ${msg.role === "user" ? "You" : "AI"}: ${
+                msg.parts[0].text
+              }`
           )
           .join("\n"),
       ],
@@ -266,13 +269,13 @@ const ChatPopup = ({ onClose }) => {
     document.body.removeChild(element); // Clean up after download
   };
 
-  // Easing function for smooth scroll (optional)
-  const easeOutCubic = (t) => (--t) * t * t + 1;
-
   // Enhanced handler for items rendered with smooth scroll
   const handleItemsRendered = useCallback(
     ({ visibleStartIndex, visibleStopIndex }) => {
-      if (chatHistory.length > 0 && visibleStopIndex >= chatHistory.length - 1) {
+      if (
+        chatHistory.length > 0 &&
+        visibleStopIndex >= chatHistory.length - 1
+      ) {
         if (listRef.current) {
           listRef.current.scrollToItem(chatHistory.length - 1, "end");
         }
@@ -290,11 +293,13 @@ const ChatPopup = ({ onClose }) => {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className="fixed bottom-5 right-5 w-full max-w-lg md:max-w-xl lg:max-w-2xl h-[75vh] bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg z-50 border border-gray-300 dark:border-gray-700 flex flex-col"
+        className={`${
+          isMobile ? "bottom-24 right-2" : "bottom-24 right-5"
+        } fixed w-full max-w-lg md:max-w-xl lg:max-w-2xl h-[75vh] bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg z-50 border border-gray-300 dark:border-gray-700 flex flex-col`}
         style={{
-          maxWidth: "95%",
+          maxWidth: isMobile ? "calc(100% - 15px)" : "450px",
           height: "75%",
-          maxHeight: "75%",
+          // maxHeight: "75%",
         }} // Adaptive sizing for different screens
       >
         {/* Chat Header */}
@@ -438,17 +443,17 @@ const ChatPopup = ({ onClose }) => {
 
         {/* Chat Input Area */}
         <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3">
-          <textarea
-            rows={1}
-            name="message"
-            value={form.message}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-            className="bg-gray-200 dark:bg-gray-600 py-3 px-4 placeholder-gray-500 dark:placeholder-gray-400 text-gray-800 dark:text-gray-100 rounded-lg outline-none resize-none focus:ring-2 focus:ring-blue-500 transition"
-            style={{ maxHeight: "100px" }} // Max 5 lines
-          />
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2">
+            <textarea
+              rows={1}
+              name="message"
+              value={form.message}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your message..."
+              className="bg-gray-200 dark:bg-gray-600 py-3 px-4 placeholder-gray-500 dark:placeholder-gray-400 text-gray-800 dark:text-gray-100 rounded-lg outline-none resize-none focus:ring-2 focus:ring-blue-500 transition flex-1"
+              style={{ maxHeight: "100px" }} // Max 5 lines
+            />
             <button
               type="submit"
               disabled={
@@ -463,30 +468,8 @@ const ChatPopup = ({ onClose }) => {
                 <MdSend size={20} />
               )}
             </button>
-            <div className="flex space-x-2">
-              <button
-                type="button"
-                onClick={() => setShowClearModal(true)}
-                className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-md transition-colors"
-                aria-label="Clear All Chats"
-                data-tooltip-id="clear-tooltip"
-              >
-                <MdClear size={20} />
-              </button>
-              <button
-                type="button"
-                onClick={handleDownloadChat}
-                className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-md transition-colors"
-                aria-label="Download Chat History"
-                data-tooltip-id="download-tooltip"
-              >
-                <MdDownload size={20} />
-              </button>
-            </div>
-            {/* Tooltip components are already rendered above */}
           </div>
         </form>
-
         {/* Confirmation Modal for Clearing Chats */}
         <Modal
           isOpen={showClearModal}
