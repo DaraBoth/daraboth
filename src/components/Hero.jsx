@@ -5,12 +5,13 @@ import { styles } from "../styles";
 // import GojoCanvas from "./canvas/GojoCanvas";
 import ComputersCanvas from "./canvas/Computers";
 import { TypeAnimation } from "react-type-animation";
+import RetroGrid from "./magic-ui/RetroGrid";
 
 const Hero = () => {
   return (
     <section className="relative w-full h-screen mx-auto">
       <div
-        className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5`}
+        className={`absolute inset-0 top-[180px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5`}
       >
         <div className="flex flex-col justify-center items-center mt-5">
           <div className="w-5 h-5 rounded-full bg-[#ffb6c1]" />
@@ -19,11 +20,14 @@ const Hero = () => {
 
         <div>
           <h1 className={`${styles.heroHeadText} text-white`}>
-            Hi, I'm <span className="text-[#ffb6c1]">DaraBoth</span>
+            Hi, I'm{" "}
+            <span className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center text-6x1 font-bold leading-none tracking-tighter text-transparent">
+              DaraBoth
+            </span>
           </h1>
           <TypeAnimation
             sequence={[
-              "I am a skilled software engineer \nI develop websites.",
+              "I’m a software engineer who builds websites that don’t just look good but work like magic. My code is clean, efficient, and, on rare occasions, it even behaves. I live for solving problems and making the web a more beautiful place. When I’m not coding, I’m probably debugging... because let’s be real, that’s half the job. Let’s create something amazing together!",
             ]}
             wrapper="p"
             cursor={true}
@@ -38,7 +42,8 @@ const Hero = () => {
         </div>
       </div>
 
-      <ComputersCanvas />
+      <RetroGrid />
+      {/* <ComputersCanvas /> */}
       {/* <GojoCanvas /> */}
 
       <div className="absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center">
