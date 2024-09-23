@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Feedbacks from "./Feedbacks";
 import TestimonialForm from "./TestimonialForm";
 
-const TestimonialFormWrapper = () => {
+const TestimonialFormWrapper = ({ isHomePage }) => {
   // State to trigger refresh in Feedbacks
   const [refreshToggle, setRefreshToggle] = useState(false);
 
@@ -16,9 +16,9 @@ const TestimonialFormWrapper = () => {
   return (
     <>
       {/* Pass refreshToggle to Feedbacks */}
-      <Feedbacks refreshToggle={refreshToggle} />
+      {isHomePage && <Feedbacks refreshToggle={refreshToggle} />}
       {/* Pass handleSuccess to TestimonialForm */}
-      <TestimonialForm onSuccess={handleSuccess} />
+      {!isHomePage && <TestimonialForm onSuccess={handleSuccess} />}
     </>
   );
 };
