@@ -1,12 +1,14 @@
 "use client"  
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import { styles } from "../styles";
 import { navLinks } from "../constants";
 import { menu, close } from "../assets";
 import profile from "../assets/profile.jpg";
 import { useMotionValueEvent, motion, useScroll } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
 
 const Navbar = () => {
   const [hidden, setHidden] = useState(false);
@@ -36,16 +38,18 @@ const Navbar = () => {
     >
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
         <Link
-          to="/"
+          href="/"
           className="flex items-center gap-2"
           onClick={() => {
             setActive("");
             window.scrollTo(0, 0);
           }}
         >
-          <img
+          <Image
             src={profile.src}
             alt="logo"
+            width={9}
+            height={9}
             className="w-9 rounded-full ring-1 h-9 object-contain"
           />
           <p className="text-white text-[18px] font-bold cursor-pointer flex ">
@@ -69,7 +73,7 @@ const Navbar = () => {
 
         <div className="sm:hidden flex flex-1 justify-end items-center">
           <img
-            src={toggle ? close : menu}
+            src={toggle ? close.src : menu.src}
             alt="menu"
             className="w-[28px] h-[28px] object-contain"
             onClick={() => setToggle(!toggle)}

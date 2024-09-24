@@ -1,8 +1,10 @@
+import "../../src/index.css";
 
 export const metadata = {
-  title: 'DaraBoth',
-  description: 'by Vong Pich Daraboth | Software Engineer | Full Stack Developer',
-}
+  title: "DaraBoth",
+  description:
+    "by Vong Pich Daraboth | Software Engineer | Full Stack Developer",
+};
 
 export default function RootLayout({ children }) {
   return (
@@ -22,7 +24,6 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
         ></script>
         <link rel="manifest" href="/manifest.json" />
-        <title></title>
       </head>
 
       <body>

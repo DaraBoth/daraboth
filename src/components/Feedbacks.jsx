@@ -9,7 +9,8 @@ import { SectionWrapper } from "../hoc";
 import { fadeIn, slideIn, textVariant } from "../utils/motion";
 import Marquee from "./magic-ui/Marquee";
 import ReviewCard from "./magic-ui/ReviewCard";
-import { Link } from "react-router-dom";
+import Link from "next/link";
+// import { Link } from "react-router-dom";
 
 const Feedbacks = ({ refreshToggle }) => {
   const [testimonials, setTestimonials] = useState([]);
@@ -71,7 +72,7 @@ const Feedbacks = ({ refreshToggle }) => {
     >
       <motion.div className="flex-[0.75] bg-black-100 p-8 rounded-2xl">
         <p className={styles.sectionSubText}>What others say </p>
-        <h2 className={styles.sectionHeadText}>Testimonials. <Link to={"/feedbacks"}>✍️</Link></h2>
+        <h2 className={styles.sectionHeadText}>Testimonials. <Link href={"/feedbacks"}>✍️</Link></h2>
 
         <div className="mt-20 pb-14 ${styles.paddingX} flex flex-wrap gap-7">
           {testimonials.length > 0 ? (

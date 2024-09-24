@@ -21,7 +21,7 @@ const Hero = () => {
         <div>
           <h1 className={`${styles.heroHeadText} text-white`}>
             Hi, I'm{" "}
-            <span className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center text-6x1 font-bold leading-none tracking-tighter text-transparent">
+            <span className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center lg:text-[50px] sm:text-[45px] xs:text-[25px] text-4x1 font-bold leading-none tracking-tighter text-transparent">
               DaraBoth
             </span>
           </h1>
@@ -33,12 +33,8 @@ const Hero = () => {
             cursor={true}
             speed={70}
             repeat={1}
-            className={`${styles.heroSubText} mt-2 text-white-100`}
+            className={`${styles.heroSubText} mt-2 text-white-100 z-50`}
           />
-          {/* <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-            I am a skilled software engineer <br className="sm:block hidden" />I
-            develop websites.
-          </p> */}
         </div>
       </div>
 
@@ -47,7 +43,7 @@ const Hero = () => {
       {/* <GojoCanvas /> */}
 
       <div className="absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center">
-        <a href="#about">
+        <a about="autoscroll" aria-label="autoscroll" accessKey="a" href="#about">
           <div className="w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2">
             <motion.div
               animate={{
