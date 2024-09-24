@@ -1,21 +1,21 @@
+"use client"
 import {
   About,
   Contact,
-  // Experience,
+  Experience,
   Feedbacks,
   Hero,
   Navbar,
   Tech,
   Works,
   StarsCanvas,
-} from "../components";
+} from "../../components";
 import { Toaster } from "sonner";
-import FloatingChatButton from "../components/FloatingChatButton"; // New Component
-import NotificationPrompt from "../components/NotificationPrompt";
-import TestimonialFormWrapper from "../components/TestimonialFormWrapper";
-import VisitorTracker from "../components/VisitorTracker";
+import FloatingChatButton from "../../components/FloatingChatButton"; // New Component
+import NotificationPrompt from "../../components/NotificationPrompt";
+import TestimonialFormWrapper from "../../components/TestimonialFormWrapper";
+import VisitorTracker from "../../components/VisitorTracker";
 import dynamic from "next/dynamic";
-const Experience = dynamic(() => import('../components/Experience'), { ssr: false });
 
 const HomePage = () => {
   return (

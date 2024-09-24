@@ -76,9 +76,9 @@ const About = () => {
 export const OpenAiChat = ({ text }) => {
   const [apiResponse, setApiResponse] = useState("");
   const [loading, setLoading] = useState(false);
-  const about = localStorage.getItem("about");
-
+  
   useEffect(() => {
+    const about = sessionStorage.getItem("about");
     async function getChat() {
       try {
         setLoading(true);
@@ -94,7 +94,7 @@ export const OpenAiChat = ({ text }) => {
         axios
           .request(config)
           .then((response) => {
-            localStorage.setItem("about", response.data?.text);
+            sessionStorage.setItem("about", response.data?.text);
             setApiResponse(response.data?.text);
             setLoading(false);
           })
