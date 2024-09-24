@@ -49,70 +49,70 @@ export const navLinks = [
 const services = [
   {
     title: "Side Hustle",
-    icon: creator,
+    icon: creator.src,
   },
   {
     title: "Content Creator",
-    icon: creator,
+    icon: creator.src,
   },
   {
     title: "Web Developer",
-    icon: web,
+    icon: web.src,
   },
   {
     title: "Full Stack Web Developer",
-    icon: web,
+    icon: web.src,
   },
 ];
 
 const technologies = [
   {
     name: "HTML 5",
-    icon: html,
+    icon: html.src,
   },
   {
     name: "CSS 3",
-    icon: css,
+    icon: css.src,
   },
   {
     name: "JavaScript",
-    icon: javascript,
+    icon: javascript.src,
   },
   {
     name: "TypeScript",
-    icon: typescript,
+    icon: typescript.src,
   },
   {
     name: "React JS",
-    icon: reactjs,
+    icon: reactjs.src,
   },
   {
     name: "Redux Toolkit",
-    icon: redux,
+    icon: redux.src,
   },
   {
     name: "Tailwind CSS",
-    icon: tailwind,
+    icon: tailwind.src,
   },
   {
     name: "Node JS",
-    icon: nodejs,
+    icon: nodejs.src,
   },
   {
     name: "NextJS",
-    icon: nextjs,
+    icon: nextjs.src,
   },
   {
     name: "git",
-    icon: git,
+    icon: git.src,
   },
   {
     name: "figma",
-    icon: figma,
+    icon: figma.src,
   },
   {
     name: "docker",
-    icon: docker,
+    icon: docker.src,
   },
 ];
 
@@ -120,7 +120,7 @@ const experiences = [
   {
     title: "Side Hustle",
     company_name: "Google Adsense",
-    icon: googleadsense,
+    icon: googleadsense.src,
     iconBg: "#383E56",
     date: "2016 - 2017",
     points: ["Make money with ads content on Website and Youtube"],
@@ -128,7 +128,7 @@ const experiences = [
   {
     title: "Bachelor Degree",
     company_name: " Computer Science at RUPP",
-    icon: rupp,
+    icon: rupp.src,
     iconBg: "#383E56",
     date: "2017 - 2021",
     points: ["Learning C program", "Learning C++", "Learning C#", "Learning Java", "Data Structure and Algorythm"],
@@ -136,7 +136,7 @@ const experiences = [
   {
     title: "Angular Developer",
     company_name: "Phsar Tech",
-    icon: phsatech,
+    icon: phsatech.src,
     iconBg: "#383E56",
     date: "October 2019 - March 2020",
     points: [
@@ -146,7 +146,7 @@ const experiences = [
   {
     title: "Content Creator",
     company_name: "ACC Premium Wraps",
-    icon: acc,
+    icon: acc.src,
     iconBg: "#383E56",
     date: "2020 - 2021",
     points: [
@@ -156,7 +156,7 @@ const experiences = [
   {
     title: "Content Creator",
     company_name: "Manker Light Cambodia",
-    icon: makerlight,
+    icon: makerlight.src,
     iconBg: "#383E56",
     date: "2021 - 2022",
     points: [
@@ -167,7 +167,7 @@ const experiences = [
   {
     title: "HRD Center Trainee",
     company_name: "Korea Software HRD Center",
-    icon: hrd,
+    icon: hrd.src,
     iconBg: "#E6DEDD",
     date: "February 14th - July 21st ,2022, Mon-Fri",
     points: [
@@ -181,7 +181,7 @@ const experiences = [
   {
     title: "Software Engineer",
     company_name: "KOSIGN",
-    icon: kosign,
+    icon: kosign.src,
     iconBg: "#383E56",
     date: "Argust 2022 14th - Current",
     points: [
@@ -234,7 +234,7 @@ const projects = [
         color: "pink-text-gradient",
       },
     ],
-    image: mankerlightkh,
+    image: mankerlightkh.src,
     source_code_link: "https://mankerlightkh.web.app/",
   },
   {
@@ -251,7 +251,7 @@ const projects = [
         color: "pink-text-gradient",
       },
     ],
-    image: accpremiumwrap,
+    image: accpremiumwrap.src,
     source_code_link: "https://acc-premium-wraps.web.app/",
   },
   {
@@ -272,7 +272,7 @@ const projects = [
         color: "pink-text-gradient",
       },
     ],
-    image: wewallet,
+    image: wewallet.src,
     source_code_link: "https://wewalletkh.web.app/",
   },
   {
@@ -297,7 +297,7 @@ const projects = [
         color: "blue-text-gradient",
       },
     ],
-    image: kshrdregi,
+    image: kshrdregi.src,
     source_code_link: "https://kshrdregistraion.web.app/",
   },
   {
@@ -322,7 +322,7 @@ const projects = [
         color: "blue-text-gradient",
       },
     ],
-    image: tinynotie,
+    image: tinynotie.src,
     source_code_link: "https://www.tinynotie.bio/",
   },
 ];

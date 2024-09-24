@@ -1,5 +1,6 @@
+"use client"  
 import React, { useState } from "react";
-import FloatingChat from "@/components/ChatPopup"; // New Component
+import FloatingChat from "../components/ChatPopup"; // New Component
 import { RainbowButton } from "./magic-ui/RainbowButton";
 
 const FloatingChatButton = () => {

@@ -1,3 +1,4 @@
+"use client"  
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -43,7 +44,7 @@ const Navbar = () => {
           }}
         >
           <img
-            src={profile}
+            src={profile.src}
             alt="logo"
             className="w-9 rounded-full ring-1 h-9 object-contain"
           />

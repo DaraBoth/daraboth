@@ -1,3 +1,4 @@
+"use client"  
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion"; // Import from framer-motion for animations
 import { AiOutlineBell, AiOutlineClose } from "react-icons/ai"; // Icons from react-icons
