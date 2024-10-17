@@ -17,7 +17,7 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 [build]
-  command = "npm run build"
+  command = "yarn build"
   publish = ".next"
 
 [[plugins]]
