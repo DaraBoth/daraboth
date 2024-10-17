@@ -45,6 +45,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.8.0",
     "@types/prop-types": "^15.7.13",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",

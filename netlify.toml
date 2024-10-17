@@ -15,3 +15,10 @@
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
