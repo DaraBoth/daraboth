@@ -1,5 +1,7 @@
 [build]
   environment = { NODE_VERSION = "20.3.0" }
+  command = "yarn build"
+  publish = ".next"
 
 [[redirects]]
   from = "/*"
@@ -15,10 +17,6 @@
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-
-[build]
-  command = "yarn build"
-  publish = ".next"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
