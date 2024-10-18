@@ -11,12 +11,10 @@ import { styles } from "../styles";
 import { experiences } from "../constants";
 import { SectionWrapper } from "../hoc";
 import { textVariant } from "../utils/motion";
-import Image from "next/image";
 
 const ExperienceCard = ({ experience }) => {
   return (
     <VerticalTimelineElement
-    visible={true}
       contentStyle={{
         background: "#1d1836",
         color: "#fff",
@@ -25,13 +23,11 @@ const ExperienceCard = ({ experience }) => {
       date={experience.date}
       iconStyle={{ background: experience.iconBg }}
       icon={
-        <div className='flex justify-center items-center w-full h-full overflow-hidden'>
-          <Image
+        <div className='flex justify-center items-center w-full h-full'>
+          <img
             src={experience.icon}
             alt={experience.company_name}
-            width={100}
-            height={100}
-            className='w-[60%] h-[60%] object-scale-down '
+            className='w-[60%] h-[60%] object-contain'
           />
         </div>
       }

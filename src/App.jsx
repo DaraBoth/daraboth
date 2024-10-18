@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/homePage";
-import TestimonialFormWrapper from "./components/TestimonialFormWrapper";
+import TestimonialFormWrapper from "@/components/TestimonialFormWrapper";
 
 const App = () => {
   return (

@@ -27,7 +27,3 @@ dist-ssr
 
 # vscode
 .vscode
-
-.next
-next-env.d.ts
-dist

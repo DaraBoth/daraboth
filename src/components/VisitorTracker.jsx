@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import NumberTicker from "./magic-ui/NumberTicker";
@@ -50,11 +49,11 @@ const VisitorTracker = () => {
   }, [apiEndpoint]);
 
   return (
-    <div
-      className={`z-50 fixed bottom-5 left-5 p-2 rounded-lg shadow-lg ${count <= 0 && "hidden"}`}
-    >
-      <NumberTicker value={count} /> visitor{count > 1 && "s"}
-    </div>
+    count > 0 && (
+      <div className="z-50 fixed bottom-5 left-5 p-2 rounded-lg shadow-lg">
+        <NumberTicker value={count} /> visitor{count > 1 && "s"}
+      </div>
+    )
   );
 };
 
