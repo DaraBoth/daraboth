@@ -183,7 +183,7 @@ const experiences = [
     company_name: "KOSIGN",
     icon: kosign,
     iconBg: "#383E56",
-    date: "Argust 2022 14th - Current",
+    date: "August 2022 14th - Current",
     points: [
       "Developing and maintaining web applications.",
       "Collaborating with cross-functional teams including designers, product managers, and other developers to create high-quality products.",
