@@ -130,7 +130,7 @@ const experiences = [
     company_name: " Computer Science at RUPP",
     icon: rupp,
     iconBg: "#383E56",
-    date: "2017 - 2021",
+    date: "----",
     points: ["Learning C program", "Learning C++", "Learning C#", "Learning Java", "Data Structure and Algorythm"],
   },
   {
@@ -169,7 +169,7 @@ const experiences = [
     company_name: "Korea Software HRD Center",
     icon: hrd,
     iconBg: "#E6DEDD",
-    date: "February 14th - July 21st ,2022, Mon-Fri",
+    date: "----",
     points: [
       "JAVA, J2SE (Basic Java and OOP concepts), J2EE (Maven and MVC pattern).",
       "WEB, HTML, CSS, JavaScript, CSS FlexBox, Bootstrap 4, Tailwind, ReactJS, JSON.",
@@ -183,7 +183,7 @@ const experiences = [
     company_name: "KOSIGN",
     icon: kosign,
     iconBg: "#383E56",
-    date: "Argust 2022 14th - Current",
+    date: "August 2022 14th - Current",
     points: [
       "Developing and maintaining web applications.",
       "Collaborating with cross-functional teams including designers, product managers, and other developers to create high-quality products.",
