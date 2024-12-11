@@ -9,6 +9,7 @@ self.addEventListener("push", (event) => {
     icon: "/icons/maskable_icon_x72.png", // Replace with your icon
     badge: "/icons/maskable_icon_x72.png", // Replace with your badge
   };
+  console.log({options});
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
