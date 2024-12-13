@@ -2,6 +2,7 @@ self.addEventListener("push", (event) => {
   let data = {};
   if (event.data) {
     data = event.data.json(); // Parse the push event data as JSON
+    data = JSON.parse(data); // Parse the JSON string
   }
   const title = data.title || "Notification";
   const options = {
