@@ -1,22 +1,21 @@
 import React, { useState } from "react";
-import FloatingChat from "@/components/ChatPopup"; // New Component
-import { RainbowButton } from "./magic-ui/RainbowButton";
+import ChatPopup from "@/components/ChatPopup"; // Updated import
+import { Fab } from "@mui/material";
+import { MdChat, MdClose } from "react-icons/md";
 
 const FloatingChatButton = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   return (
     <>
-      <div className="fixed bottom-5 right-5 z-50">
-        <RainbowButton
-          onClick={(e) => {
-            e.preventDefault();
-            setIsChatOpen(!isChatOpen);
-          }}
-        >
-          {isChatOpen ? "❌" : "💬"}
-        </RainbowButton>
-      </div>
-      {isChatOpen && <FloatingChat onClose={() => setIsChatOpen(false)} />}
+      <Fab
+        color="primary"
+        aria-label="chat"
+        onClick={() => setIsChatOpen(!isChatOpen)}
+        style={{ position: "fixed", bottom: 16, right: 16, zIndex: 50 }}
+      >
+        {isChatOpen ? <MdClose /> : <MdChat />}
+      </Fab>
+      {isChatOpen && <ChatPopup onClose={() => setIsChatOpen(false)} />}
     </>
   );
 };

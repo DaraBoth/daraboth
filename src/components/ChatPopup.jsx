@@ -1,29 +1,37 @@
 // src/components/ChatPopup.jsx
 
-import React, { useEffect, useState, useRef, memo, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState, useRef, memo } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import {
-  MdClose,
+  MdMinimize,
   MdSend,
-  MdArrowDownward,
   MdDownload,
   MdClear,
 } from "react-icons/md";
 import { ClipLoader } from "react-spinners";
 import moment from "moment";
-import { Tooltip } from "react-tooltip";
 import Modal from "./Modal";
 import VirtualizedChatHistory from "./VirtualizedChatHistory";
 import { v4 as uuidv4 } from "uuid";
+import {
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Typography,
+  Paper,
+  Tooltip,
+  AppBar,
+  Toolbar,
+} from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
 
 const BAN_DURATION = 3 * 60 * 1000; // 3 minutes in milliseconds
 const BAN_THRESHOLD = 10; // Number of attempts before ban
 const SPAM_INTERVAL = 500; // Interval in milliseconds to consider as spam
 
 const ChatPopup = ({ onClose }) => {
-  const isMobile = window.matchMedia("(max-width: 500px)").matches;
   const listRef = useRef(); // Ref for the virtualized list
   const [form, setForm] = useState({ message: "" });
   const [loading, setLoading] = useState(false);
@@ -82,13 +90,6 @@ const ChatPopup = ({ onClose }) => {
       }
     }
   }, [banEndTime]);
-
-  useEffect(() => {
-    // Auto-scroll to bottom when a new message is added
-    if (chatHistory.length > 0 && listRef.current) {
-      listRef.current.scrollToItem(chatHistory.length - 1, "end");
-    }
-  }, [chatHistory]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -167,16 +168,6 @@ const ChatPopup = ({ onClose }) => {
     } else if (event.ctrlKey && event.key === "Enter") {
       // Insert newline on Ctrl + Enter
       setForm({ ...form, message: form.message + "\n" });
-    }
-  };
-
-  const handleScroll = (e) => {
-    const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
-    if (scrollHeight - scrollTop === clientHeight) {
-      setShowScrollButton(false); // Hide button when scrolled to bottom
-      setShowNewMessageIndicator(false); // Hide new message indicator if at bottom
-    } else {
-      setShowScrollButton(true); // Show button when not at bottom
     }
   };
 
@@ -269,215 +260,111 @@ const ChatPopup = ({ onClose }) => {
     document.body.removeChild(element); // Clean up after download
   };
 
-  // Enhanced handler for items rendered with smooth scroll
-  const handleItemsRendered = useCallback(
-    ({ visibleStartIndex, visibleStopIndex }) => {
-      if (
-        chatHistory.length > 0 &&
-        visibleStopIndex >= chatHistory.length - 1
-      ) {
-        if (listRef.current) {
-          listRef.current.scrollToItem(chatHistory.length - 1, "end");
-        }
-        setShowNewMessageIndicator(false); // Hide indicator if at bottom
-      } else {
-        setShowNewMessageIndicator(true); // Show indicator if not at bottom
-      }
-    },
-    [chatHistory.length]
-  );
-
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.8 }}
-        className={`${
-          isMobile ? "bottom-24 right-2" : "bottom-24 right-5"
-        } fixed w-full max-w-lg md:max-w-xl lg:max-w-2xl h-[75vh] bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg z-50 border border-gray-300 dark:border-gray-700 flex flex-col`}
-        style={{
-          maxWidth: isMobile ? "calc(100% - 15px)" : "450px",
-          height: "75%",
-          // maxHeight: "75%",
-        }} // Adaptive sizing for different screens
+        initial={{ opacity: 0, x: 300 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 300 }}
+        transition={{ duration: 0.3 }}
+        style={{ position: "fixed", bottom: "80px", right: "24px", zIndex: 50 }}
       >
-        {/* Chat Header */}
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-lg md:text-xl">
-            Chat with Daraboth AI
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-colors"
-            aria-label="Close Chat"
+        <Paper elevation={3} style={{ maxWidth: "450px", minWidth: "350px",height: "80vh", display: "flex", flexDirection: "column",  }}>
+          {/* Chat Header */}
+          <AppBar position="static" color="primary">
+            <Toolbar>
+              <Typography variant="h6" style={{ flexGrow: 1 }}>
+                Chat with Daraboth AI
+              </Typography>
+              <IconButton onClick={onClose} color="inherit">
+                <MdMinimize size={24} />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+
+          {/* Chat Actions */}
+          <Box 
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              p: 1,
+              position: "absolute",
+              top: -45,
+              right: 0,
+            }}
           >
-            <MdClose size={24} />
-          </button>
-        </div>
+            <Tooltip title="Download Chat History" color="primary">
+              <IconButton onClick={handleDownloadChat}>
+                <MdDownload size={20} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Clear All Chats" color="primary">
+              <IconButton onClick={handleClearAllChats}>
+                <MdClear size={20} />
+              </IconButton>
+            </Tooltip>
+          </Box>
 
-        {/* Chat Actions */}
-        <div className="flex justify-end mb-2 space-x-2">
-          <button
-            onClick={handleDownloadChat}
-            className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
-            data-tooltip-id="download-tooltip"
-          >
-            <MdDownload size={20} />
-          </button>
-          <button
-            onClick={handleClearAllChats}
-            className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-colors"
-            data-tooltip-id="clear-tooltip"
-          >
-            <MdClear size={20} />
-          </button>
-          {/* Render Tooltip Components */}
-          <Tooltip id="download-tooltip" place="top" variant="dark">
-            Download Chat History
-          </Tooltip>
-          <Tooltip id="clear-tooltip" place="top" variant="dark">
-            Clear All Chats
-          </Tooltip>
-        </div>
-
-        {/* Chat History Area */}
-        <div
-          className="flex-grow overflow-y-auto mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg"
-          onScroll={handleScroll}
-        >
-          <VirtualizedChatHistory
-            chatHistory={chatHistory}
-            handleDeleteMessage={handleDeleteMessage}
-            hoveredMessageIndex={hoveredMessageIndex}
-            setHoveredMessageIndex={setHoveredMessageIndex}
-            ref={listRef} // Attach the ref to the virtualized list
-            onItemsRendered={handleItemsRendered} // Attach handler
-          />
-          {/* Typing Indicator */}
-          {isTyping && (
-            <div className="flex items-center mt-2">
-              <div className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center mr-2">
-                AI
-              </div>
-              <div className="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100 p-3 rounded-lg rounded-bl-none flex items-center space-x-2">
-                <div className="flex space-x-1">
-                  <motion.div
-                    className="w-2 h-2 bg-blue-500 rounded-full"
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{
-                      duration: 0.6,
-                      repeat: Infinity,
-                      repeatType: "loop",
-                      delay: 0,
-                    }}
-                  />
-                  <motion.div
-                    className="w-2 h-2 bg-blue-500 rounded-full"
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{
-                      duration: 0.6,
-                      repeat: Infinity,
-                      repeatType: "loop",
-                      delay: 0.2,
-                    }}
-                  />
-                  <motion.div
-                    className="w-2 h-2 bg-blue-500 rounded-full"
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{
-                      duration: 0.6,
-                      repeat: Infinity,
-                      repeatType: "loop",
-                      delay: 0.4,
-                    }}
-                  />
-                </div>
-                <span>Typing...</span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Scroll to Bottom Button */}
-        <AnimatePresence>
-          {showScrollButton && (
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              type="button"
-              className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-all"
-              onClick={() => {
-                if (listRef.current) {
-                  listRef.current.scrollToItem(chatHistory.length - 1, "end");
-                }
-              }}
-              aria-label="Scroll to Bottom"
-            >
-              <MdArrowDownward size={20} />
-            </motion.button>
-          )}
-        </AnimatePresence>
-
-        {/* New Messages Indicator */}
-        <AnimatePresence>
-          {showNewMessageIndicator && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition"
-              onClick={() => {
-                if (listRef.current) {
-                  listRef.current.scrollToItem(chatHistory.length - 1, "end");
-                }
-                setShowNewMessageIndicator(false);
-              }}
-              aria-label="Scroll to New Messages"
-            >
-              New Messages
-            </motion.button>
-          )}
-        </AnimatePresence>
-
-        {/* Chat Input Area */}
-        <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3">
-          <div className="flex justify-between items-center gap-2">
-            <textarea
-              rows={1}
-              name="message"
-              value={form.message}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
-              className="bg-gray-200 dark:bg-gray-600 py-3 px-4 placeholder-gray-500 dark:placeholder-gray-400 text-gray-800 dark:text-gray-100 rounded-lg outline-none resize-none focus:ring-2 focus:ring-blue-500 transition flex-1"
-              style={{ maxHeight: "100px" }} // Max 5 lines
+          {/* Chat History Area */}
+          <Box flexGrow={1} overflow="auto" p={1} bgcolor="#f5f5f5">
+            <VirtualizedChatHistory
+              chatHistory={chatHistory}
+              handleDeleteMessage={handleDeleteMessage}
+              hoveredMessageIndex={hoveredMessageIndex}
+              setHoveredMessageIndex={setHoveredMessageIndex}
+              ref={listRef} // Attach the ref to the virtualized list
             />
-            <button
-              type="submit"
-              disabled={
-                loading || (banEndTime && new Date() < new Date(banEndTime))
-              }
-              className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label="Send Message"
-            >
-              {loading ? (
-                <ClipLoader size={18} color="#ffffff" />
-              ) : (
-                <MdSend size={20} />
-              )}
-            </button>
-          </div>
-        </form>
-        {/* Confirmation Modal for Clearing Chats */}
-        <Modal
-          isOpen={showClearModal}
-          onClose={cancelClearAllChats}
-          onConfirm={confirmClearAllChats}
-          title="Confirm Clear All Chats"
-          message="Are you sure you want to delete all your chat history? This action cannot be undone."
-        />
+            {/* Typing Indicator */}
+            {isTyping && (
+              <Box display="flex" alignItems="center" mt={2}>
+                <Box width={40} height={40} bgcolor="green" color="white" display="flex" alignItems="center" justifyContent="center" mr={2}>
+                  AI
+                </Box>
+                <Box bgcolor="gray" color="white" p={2} borderRadius={4}>
+                  Typing...
+                </Box>
+              </Box>
+            )}
+          </Box>
+
+          {/* Chat Input Area */}
+          <Box p={1} bgcolor="#e0e0e0">
+            <form onSubmit={handleSubmit}>
+              <Box display="flex" alignItems="center" gap={1}>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={1}
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Type your message..."
+                  variant="outlined"
+                />
+                <Button
+                  type="submit"
+                  variant="text"
+                  color="primary"
+                  disabled={loading || (banEndTime && new Date() < new Date(banEndTime))}
+                  sx={{
+                    height:"100%"
+                  }}
+                >
+                  {loading ? <ClipLoader size={18} color={"#ffffff"} /> : <MdSend />}
+                </Button>
+              </Box>
+            </form>
+          </Box>
+          {/* Confirmation Modal for Clearing Chats */}
+          <Modal
+            isOpen={showClearModal}
+            onClose={cancelClearAllChats}
+            onConfirm={confirmClearAllChats}
+            title="Confirm Clear All Chats"
+            message="Are you sure you want to delete all your chat history? This action cannot be undone."
+          />
+        </Paper>
       </motion.div>
     </AnimatePresence>
   );
