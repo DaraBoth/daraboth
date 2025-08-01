@@ -1,94 +1,117 @@
 // src/components/Modal.jsx
 
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MdClose } from "react-icons/md";
-import PropTypes from "prop-types";
+import React, { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import PropTypes from 'prop-types';
 
-const backdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 0.5 },
-  exit: { opacity: 0 },
-};
+const Modal = ({
+  isOpen,
+  onClose,
+  children,
+  title,
+  img,
+  name,
+  designation,
+  company,
+  testimonialId,
+}) => {
+  useEffect(() => {
+    // Get the scrollbar width
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 
-const modalVariants = {
-  hidden: { opacity: 0, scale: 0.95, y: 20 },
-  visible: { opacity: 1, scale: 1, y: 0 },
-  exit: { opacity: 0, scale: 0.95, y: 20 },
-};
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`; // Add padding to compensate for scrollbar
+    } else {
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px'; // Remove padding
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px'; // Clean up on unmount
+    };
+  }, [isOpen]);
 
-const Modal = ({ isOpen, onClose, onConfirm, title, message }) => {
+  const backdropVariants = {
+    hidden: { opacity: 0, backdropFilter: 'blur(0px)' },
+    visible: { opacity: 1, backdropFilter: 'blur(10px)', transition: { duration: 0.3 } },
+    exit: { opacity: 0, backdropFilter: 'blur(0px)', transition: { duration: 0.3 } },
+  };
+
+  const modalVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        type: "spring",
+        duration: 0.5,
+        damping: 25,
+        stiffness: 500,
+      },
+    },
+    exit: { opacity: 0, transition: { duration: 0.3 } },
+  };
+
+  if (!isOpen) return null;
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* Background Overlay */}
+        <motion.div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm"
+          variants={backdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          onClick={onClose}
+        >
           <motion.div
-            className="absolute inset-0 bg-black"
-            variants={backdropVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-          />
-
-          {/* Modal Content */}
-          <motion.div
-            className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 z-10 max-w-md w-full"
+            layoutId={testimonialId}
+            className="bg-gray-800 p-8 rounded-lg shadow-xl max-w-lg w-full max-h-[80vh] overflow-y-auto relative"
             variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{ duration: 0.3 }}
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 text-gray-600 dark:text-gray-300 hover:text-red-500 transition-colors"
-              aria-label="Close Modal"
+              className="absolute top-4 right-4 text-white text-2xl font-bold"
             >
-              <MdClose size={24} />
+              &times;
             </button>
-
-            {/* Modal Header */}
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
-              {title}
-            </h3>
-
-            {/* Modal Body */}
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
-              {message}
-            </p>
-
-            {/* Modal Actions */}
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={onClose}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={onConfirm}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-              >
-                Confirm
-              </button>
+            <h2 className="text-white text-2xl mb-4 text-center">{title}</h2>
+            <div className="flex flex-row items-center gap-2 mb-4">
+              <img className="rounded-full" width="48" height="48" alt={name} src={img || "/9720009.jpg"} />
+              <div className="flex flex-col">
+                <p className="text-white font-medium text-lg">
+                  {name} says:
+                </p>
+                <p className="text-sm text-gray-400">
+                  {designation}
+                  {designation && company ? ' of ' : ''}
+                  {company}
+                  {!designation && !company ? 'Customer / Company Info Unavailable' : ''}
+                </p>
+              </div>
+            </div>
+            <div className="text-white text-base leading-relaxed whitespace-pre-wrap">
+              {children}
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
 };
 
-// Prop type validation
 Modal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
   title: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
+  img: PropTypes.string,
+  name: PropTypes.string,
+  designation: PropTypes.string,
+  company: PropTypes.string,
+  testimonialId: PropTypes.string,
 };
 
 export default Modal;

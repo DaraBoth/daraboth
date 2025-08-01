@@ -314,3 +314,15 @@
     transform: rotate(360deg);
   }
 }
+
+html,
+body {
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  border-radius: 0.5rem; /* Apply rounded corners to the entire page */
+}
+
+body {
+  min-height: 100vh; /* Ensure body takes full viewport height */
+  display: flex;
+  flex-direction: column;
+}
