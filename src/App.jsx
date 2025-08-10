@@ -3,7 +3,6 @@ import HomePage from "./pages/homePage";
 import TestimonialFormWrapper from "@/components/TestimonialFormWrapper";
 
 const App = () => {
-  console.log("I'm here");
   return (
     <BrowserRouter>
       <Routes>
