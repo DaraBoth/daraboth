@@ -7,18 +7,7 @@ if ("serviceWorker" in navigator) {
       .then((registration) => {
         console.log("Service worker registered: ", registration.scope);
 
-        // Request permission for notifications
-        Notification.requestPermission().then((permission) => {
-          console.log(`Notification permission status: ${permission}`);
-          if (permission === "granted") {
-            console.log("Notification permission granted.");
-            subscribeUserToPush(registration);  // Subscribe user to push notifications
-          } else {
-            console.log("Notification permission denied.");
-          }
-        }).catch((error) => {
-          console.error("Error requesting notification permission:", error);
-        });
+
       })
       .catch((error) => {
         console.error("Service worker registration failed: ", error);
@@ -26,11 +15,11 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-const PUBLIC_VAPID_KEY = 'BGfjmqSQgx7J6HXnvhxAGSOJ2h5W7mwrWYN8Cqa0Nql5nkoyyhlc49v_x-dIckFRm0rIeAgNxgfAfekqCwX8TNo';
+const PUBLIC_VAPID_KEY = 'BGfjmQSQgx7J6HXnvhxAGSOJ2h5W7mwrWYNY8Cqa0Nql5nkoyyhlc49v_x-dIckFRm0rIeAgNxgfAfekqCwX8TNo';
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
   const rawData = window.atob(base64);
   return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
 }
@@ -51,22 +40,22 @@ function subscribeUserToPush(registration) {
   
   registration.pushManager.subscribe(subscribeOptions)
     .then((pushSubscription) => {
-      console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
+        console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
 
-      // Generate a unique device ID if not already generated
-      const deviceId = getOrCreateDeviceId();
+        // Generate a unique device ID if not already generated
+        const deviceId = getOrCreateDeviceId();
 
-      // Capture user agent and other device info
-      const deviceInfo = {
-        deviceId: deviceId,
-        userAgent: navigator.userAgent,  // Device user agent
-        subscription: pushSubscription   // Push subscription object
-      };
+        // Capture user agent and other device info
+        const deviceInfo = {
+          deviceId: deviceId,
+          userAgent: navigator.userAgent,   // Device user agent
+          subscription: pushSubscription   // Push subscription object
+        };
 
-      console.log('Device info to be sent to backend:', deviceInfo);
+        console.log('Device info to be sent to backend:', deviceInfo);
 
-      // Send device info and subscription to your backend
-      sendDeviceInfoToBackend(deviceInfo);
+        // Send device info and subscription to your backend
+        sendDeviceInfoToBackend(deviceInfo);
     })
     .catch((error) => {
       console.error('Failed to subscribe the user: ', error);
