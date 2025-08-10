@@ -1,12 +1,12 @@
 # Daraboth Portfolio Website
 
-A modern, interactive portfolio website built with React, Three.js, and advanced web technologies. This project showcases the work and skills of DaraBoth, a software engineer specializing in full-stack web development.
+A modern, interactive portfolio website built with React, Three.js, and advanced web technologies. This project showcases the work and skills of Daraboth, a software engineer specializing in full-stack web development.
 
-## 🌟 Live Demo
+## 🚀 Live Demo
 
 **Website**: [https://vongpichdaraboth.netlify.app/](https://vongpichdaraboth.netlify.app/)
 
-## 📋 Table of Contents
+## 📝 Table of Contents
 
 - [Features](#-features)
 - [Technologies Used](#-technologies-used)
@@ -19,6 +19,9 @@ A modern, interactive portfolio website built with React, Three.js, and advanced
 - [PWA Features](#-pwa-features)
 - [Deployment](#-deployment)
 - [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
+- [Acknowledgments](#-acknowledgments)
 
 ## ✨ Features
 
@@ -39,7 +42,7 @@ A modern, interactive portfolio website built with React, Three.js, and advanced
 - **Magic UI Components**: Custom animated components (RetroGrid, NumberTicker, etc.)
 - **Real-time Updates**: Live visitor tracking and dynamic content updates
 
-## 🛠 Technologies Used
+## 🛠️ Technologies Used
 
 ### Frontend Framework
 - **React 18.2.0** - Main UI framework
@@ -76,41 +79,41 @@ A modern, interactive portfolio website built with React, Three.js, and advanced
 
 ```
 daraboth/
-├── public/                          # Static assets
-│   ├── icons/                       # PWA icons
-│   ├── screenshots/                 # App screenshots
-│   ├── desktop_pc/                  # 3D model assets
-│   ├── gojo/                        # 3D model assets
-│   ├── planet/                      # 3D model assets
-│   ├── manifest.json               # PWA manifest
-│   └── sw.js                       # Service worker
+├── public/                     # Static assets
+│   ├── icons/                  # PWA icons
+│   ├── screenshots/            # App screenshots
+│   ├── desktop_pc/             # 3D model assets
+│   ├── gojo/                   # 3D model assets
+│   ├── planet/                 # 3D model assets
+│   ├── manifest.json           # PWA manifest
+│   └── sw.js                   # Service worker
 ├── src/
-│   ├── app/                        # App router components
-│   ├── assets/                     # Images and static files
-│   │   ├── company/                # Company logos
-│   │   ├── tech/                   # Technology icons
-│   │   └── work/                   # Project images
-│   ├── components/                 # React components
-│   │   ├── canvas/                 # 3D canvas components
-│   │   ├── magic-ui/               # Custom UI components
-│   │   └── pages/                  # Page components
-│   ├── constants/                  # Data constants
-│   ├── hoc/                        # Higher-order components
-│   ├── hock/                       # Custom hooks
-│   ├── lib/                        # Utility libraries
-│   ├── magic/                      # Magic UI components
-│   ├── utils/                      # Utility functions
-│   ├── App.jsx                     # Main app component
-│   ├── main.jsx                    # App entry point
-│   └── index.css                   # Global styles
-├── package.json                    # Dependencies and scripts
-├── vite.config.js                  # Vite configuration
-├── tailwind.config.js              # Tailwind configuration
-├── netlify.toml                    # Netlify deployment config
-└── README.md                       # Project documentation
+│   ├── app/                    # App router components
+│   ├── assets/                 # Images and static files
+│   │   ├── company/            # Company logos
+│   │   ├── tech/               # Technology icons
+│   │   └── work/               # Project images
+│   ├── components/             # React components
+│   │   ├── canvas/             # 3D canvas components
+│   │   ├── magic-ui/           # Custom UI components
+│   │   └── pages/              # Page components
+│   ├── constants/              # Data constants
+│   ├── hoc/                    # Higher-order components
+│   ├── hock/                   # Custom hooks
+│   ├── lib/                    # Utility libraries
+│   ├── magic/                  # Magic UI components
+│   ├── utils/                  # Utility functions
+│   ├── App.jsx                 # Main app component
+│   ├── main.jsx                # App entry point
+│   └── index.css               # Global styles
+├── package.json                # Dependencies and scripts
+├── vite.config.js              # Vite configuration
+├── tailwind.config.js          # Tailwind configuration
+├── netlify.toml                # Netlify deployment config
+└── README.md                   # Project documentation
 ```
 
-## 🚀 Installation & Setup
+## ⚙️ Installation & Setup
 
 ### Prerequisites
 - Node.js (v16 or higher)
@@ -154,10 +157,9 @@ VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
 VITE_OPENAI_API_KEY=your_openai_api_key
 ```
 
-## 🧩 Key Components
+## 🔑 Key Components
 
 ### Main Components
-
 #### `Hero.jsx`
 - Animated hero section with type animation
 - Gradient text effects
@@ -195,7 +197,6 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - Responsive design
 
 ### Special Components
-
 #### `VisitorTracker.jsx`
 - Real-time visitor counting
 - API integration for tracking
@@ -214,7 +215,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - Real-time updates
 - Responsive design
 
-## 🎨 3D Canvas Components
+## 🌌 3D Canvas Components
 
 ### `Stars.jsx`
 - Animated 3D stars background
@@ -240,7 +241,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - Texture loading
 - Performance optimization
 
-## ✨ Magic UI Components
+## 🌠 Magic UI Components
 
 ### `RetroGrid.jsx`
 - Animated grid background
@@ -266,7 +267,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - Customizable colors
 - Modern design
 
-## 🔌 API Integration
+## 🔗 API Integration
 
 ### OpenAI Integration
 - Dynamic content generation
@@ -286,7 +287,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - Data persistence
 - Analytics integration
 
-## 📱 PWA Features
+## 🌐 PWA Features
 
 ### Service Worker
 - Offline functionality
@@ -297,7 +298,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 ### Manifest Configuration
 - App icons (multiple sizes)
 - Theme colors
-- Display modes
+- Display mode
 - Screenshots
 
 ### Push Notifications
@@ -356,7 +357,7 @@ export default {
 };
 ```
 
-## 🎯 Key Features Breakdown
+## 💡 Key Features Breakdown
 
 ### Animation System
 - **Framer Motion**: Page transitions, component animations
@@ -394,9 +395,9 @@ export default {
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## 🧑‍💻❤️‍🔥 Author
 
-**DaraBoth** - Software Engineer
+**Daraboth** - Software Engineer
 - Portfolio: [https://vongpichdaraboth.netlify.app/](https://vongpichdaraboth.netlify.app/)
 - Experience: Full-stack development, React, Three.js, Node.js
 - Specialties: Frontend development, 3D graphics, PWA development
@@ -408,7 +409,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Tailwind CSS for utility-first styling
 - React community for component ecosystem
 - Netlify for hosting and deployment
-
 ---
 
 **Note**: This project uses several external APIs and services. Make sure to configure the necessary API keys and environment variables before running the application. 
