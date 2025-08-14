@@ -1,20 +1,18 @@
 import React, { useState } from "react";
-import ChatPopup from "@/components/ChatPopup"; // Updated import
-import { Fab } from "@mui/material";
+import ChatPopup from "@/components/ChatPopup";
 import { MdChat, MdClose } from "react-icons/md";
 
 const FloatingChatButton = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   return (
     <>
-      <Fab
-        color="primary"
-        aria-label="chat"
+      <button
         onClick={() => setIsChatOpen(!isChatOpen)}
-        style={{ position: "fixed", bottom: 16, right: 16, zIndex: 50 }}
+        className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
+        aria-label="Toggle chat"
       >
-        {isChatOpen ? <MdClose /> : <MdChat />}
-      </Fab>
+        {isChatOpen ? <MdClose size={24} /> : <MdChat size={24} />}
+      </button>
       {isChatOpen && <ChatPopup onClose={() => setIsChatOpen(false)} />}
     </>
   );
