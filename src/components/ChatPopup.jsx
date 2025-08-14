@@ -14,17 +14,6 @@ import moment from "moment";
 import Modal from "./Modal";
 import VirtualizedChatHistory from "./VirtualizedChatHistory";
 import { v4 as uuidv4 } from "uuid";
-import {
-  Box,
-  Button,
-  IconButton,
-  TextField,
-  Typography,
-  Paper,
-  Tooltip,
-  AppBar,
-  Toolbar,
-} from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BAN_DURATION = 3 * 60 * 1000; // 3 minutes in milliseconds
@@ -167,7 +156,8 @@ const ChatPopup = ({ onClose }) => {
       }
     } else if (event.ctrlKey && event.key === "Enter") {
       // Insert newline on Ctrl + Enter
-      setForm({ ...form, message: form.message + "\n" });
+      setForm({ ...form, message: form.message + "
+" });
     }
   };
 
@@ -249,7 +239,8 @@ const ChatPopup = ({ onClose }) => {
                 msg.parts[0].text
               }`
           )
-          .join("\n"),
+          .join("
+"),
       ],
       { type: "text/plain" }
     );
@@ -267,46 +258,37 @@ const ChatPopup = ({ onClose }) => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 300 }}
         transition={{ duration: 0.3 }}
-        style={{ position: "fixed", bottom: "80px", right: "24px", zIndex: 50 }}
+        className="fixed bottom-20 right-6 z-50"
       >
-        <Paper elevation={3} style={{ maxWidth: "450px", minWidth: "350px",height: "80vh", display: "flex", flexDirection: "column",  }}>
+        <div className="bg-white rounded-lg shadow-xl max-w-sm min-w-[350px] h-[80vh] flex flex-col">
           {/* Chat Header */}
-          <AppBar position="static" color="primary">
-            <Toolbar>
-              <Typography variant="h6" style={{ flexGrow: 1 }}>
-                Chat with Daraboth AI
-              </Typography>
-              <IconButton onClick={onClose} color="inherit">
-                <MdMinimize size={24} />
-              </IconButton>
-            </Toolbar>
-          </AppBar>
+          <div className="bg-gray-800 text-white p-4 rounded-t-lg flex justify-between items-center">
+            <h6 className="text-lg font-semibold">Chat with Daraboth AI</h6>
+            <button onClick={onClose} className="text-white hover:text-gray-300">
+              <MdMinimize size={24} />
+            </button>
+          </div>
 
           {/* Chat Actions */}
-          <Box 
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              p: 1,
-              position: "absolute",
-              top: -45,
-              right: 0,
-            }}
-          >
-            <Tooltip title="Download Chat History" color="primary">
-              <IconButton onClick={handleDownloadChat}>
-                <MdDownload size={20} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Clear All Chats" color="primary">
-              <IconButton onClick={handleClearAllChats}>
-                <MdClear size={20} />
-              </IconButton>
-            </Tooltip>
-          </Box>
+          <div className="flex justify-end p-2 absolute -top-12 right-0">
+            <button
+              onClick={handleDownloadChat}
+              className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200"
+              title="Download Chat History"
+            >
+              <MdDownload size={20} />
+            </button>
+            <button
+              onClick={handleClearAllChats}
+              className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200"
+              title="Clear All Chats"
+            >
+              <MdClear size={20} />
+            </button>
+          </div>
 
           {/* Chat History Area */}
-          <Box flexGrow={1} overflow="auto" p={1} bgcolor="#f5f5f5">
+          <div className="flex-grow overflow-auto p-4 bg-gray-50">
             <VirtualizedChatHistory
               chatHistory={chatHistory}
               handleDeleteMessage={handleDeleteMessage}
@@ -316,46 +298,48 @@ const ChatPopup = ({ onClose }) => {
             />
             {/* Typing Indicator */}
             {isTyping && (
-              <Box display="flex" alignItems="center" mt={2}>
-                <Box width={40} height={40} bgcolor="green" color="white" display="flex" alignItems="center" justifyContent="center" mr={2}>
+              <div className="flex items-center mt-2">
+                <div className="w-10 h-10 bg-green-500 text-white flex items-center justify-center mr-2 rounded-full">
                   AI
-                </Box>
-                <Box bgcolor="gray" color="white" p={2} borderRadius={4}>
+                </div>
+                <div className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg">
                   Typing...
-                </Box>
-              </Box>
+                </div>
+              </div>
             )}
-          </Box>
+          </div>
 
           {/* Chat Input Area */}
-          <Box p={1} bgcolor="#e0e0e0">
+          <div className="p-4 bg-gray-200 border-t border-gray-300">
             <form onSubmit={handleSubmit}>
-              <Box display="flex" alignItems="center" gap={1}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={1}
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
                   name="message"
                   value={form.message}
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                   placeholder="Type your message..."
-                  variant="outlined"
+                  className="flex-grow p-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <Button
+                <button
                   type="submit"
-                  variant="text"
-                  color="primary"
+                  className={`p-2 rounded-lg ${
+                    loading || (banEndTime && new Date() < new Date(banEndTime))
+                      ? "bg-blue-300 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  } text-white transition-colors duration-200`}
                   disabled={loading || (banEndTime && new Date() < new Date(banEndTime))}
-                  sx={{
-                    height:"100%"
-                  }}
                 >
-                  {loading ? <ClipLoader size={18} color={"#ffffff"} /> : <MdSend />}
-                </Button>
-              </Box>
+                  {loading ? (
+                    <ClipLoader size={18} color={"#ffffff"} />
+                  ) : (
+                    <MdSend size={24} />
+                  )}
+                </button>
+              </div>
             </form>
-          </Box>
+          </div>
           {/* Confirmation Modal for Clearing Chats */}
           <Modal
             isOpen={showClearModal}
@@ -364,7 +348,7 @@ const ChatPopup = ({ onClose }) => {
             title="Confirm Clear All Chats"
             message="Are you sure you want to delete all your chat history? This action cannot be undone."
           />
-        </Paper>
+        </div>
       </motion.div>
     </AnimatePresence>
   );
