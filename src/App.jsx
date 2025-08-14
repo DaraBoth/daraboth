@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/homePage";
 import TestimonialFormWrapper from "@/components/TestimonialFormWrapper";
-import Chat from "@/components/Chat"; // Add this line
+import Chat from "@/components/Chat"; // Import the Chat component
 
 const App = () => {
   return (
@@ -11,7 +11,7 @@ const App = () => {
         <Route path="/feedbacks" element={<TestimonialFormWrapper isHomePage={false} />} />
         {/* <Redirect from="*" to="/" /> */}
       </Routes>
-      <Chat /> {/* Add this line */}
+      <Chat /> {/* Render the Chat component */}
     </BrowserRouter>
   );
 };
