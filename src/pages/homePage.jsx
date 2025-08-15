@@ -9,11 +9,11 @@ import {
   StarsCanvas,
 } from "@/components";
 import { Toaster } from "sonner";
-// import FloatingChatButton from "@/components/FloatingChatButton"; // New Component
+import FloatingChatButton from "@/components/FloatingChatButton"; // New Component
 import NotificationPrompt from "@/components/NotificationPrompt";
 import TestimonialFormWrapper from "@/components/TestimonialFormWrapper";
 import VisitorTracker from "@/components/VisitorTracker";
-// import ChatPopup from "../components/ChatPopup";
+import ChatPopup from "../components/ChatPopup";
 
 const HomePage = () => {
   
@@ -44,9 +44,9 @@ const HomePage = () => {
         <div className="relative z-0">
           <Contact />
           <StarsCanvas />
-          {/* <FloatingChatButton>
+          <FloatingChatButton>
             <ChatPopup />
-          </FloatingChatButton> */}
+          </FloatingChatButton>
         </div>
       </div>
     </>

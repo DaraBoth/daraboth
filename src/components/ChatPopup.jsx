@@ -6,12 +6,9 @@ import { toast } from "sonner";
 import {
   MdMinimize,
   MdSend,
-  MdDownload,
-  MdClear,
 } from "react-icons/md";
 import { ClipLoader } from "react-spinners";
 import moment from "moment";
-import Modal from "./Modal";
 import VirtualizedChatHistory from "./VirtualizedChatHistory";
 import { v4 as uuidv4 } from "uuid";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const BAN_DURATION = 3 * 60 * 1000; // 3 minutes in milliseconds
 const BAN_THRESHOLD = 10; // Number of attempts before ban
 const SPAM_INTERVAL = 500; // Interval in milliseconds to consider as spam
+const WEBHOOK_TIMEOUT = 10 * 60 * 1000; // 10 minutes timeout for webhook
 
 const ChatPopup = ({ onClose }) => {
   const listRef = useRef(); // Ref for the virtualized list
@@ -35,8 +33,7 @@ const ChatPopup = ({ onClose }) => {
   });
   const [isTyping, setIsTyping] = useState(false);
   const [hoveredMessageIndex, setHoveredMessageIndex] = useState(null); // Track hovered message for delete button
-  const [showClearModal, setShowClearModal] = useState(false); // State for confirmation modal
-  const [showNewMessageIndicator, setShowNewMessageIndicator] = useState(false); // State for "New Messages" indicator
+  const [pendingMessages, setPendingMessages] = useState(new Map()); // Track pending webhook responses
 
   useEffect(() => {
     const lastDate = localStorage.getItem("today");
@@ -106,8 +103,9 @@ const ChatPopup = ({ onClose }) => {
     setLastSpamTime(currentTime);
 
     // Immediately add the user's message to chat history and clear the input
+    const userMessageId = uuidv4();
     const newMessage = {
-      id: uuidv4(), // Assign a unique ID
+      id: userMessageId,
       role: "user",
       parts: [{ text: userMessage }],
       timestamp: moment().format("h:mm A"),
@@ -118,32 +116,95 @@ const ChatPopup = ({ onClose }) => {
     setLoading(true);
     setIsTyping(true); // Show typing indicator
 
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "https://tinynotie-api.vercel.app/openai/ask",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      data: { text: userMessage, chatHistory },
+    // Add a placeholder message for the pending response
+    const pendingMessageId = uuidv4();
+    const pendingMessage = {
+      id: pendingMessageId,
+      role: "model",
+      parts: [{ text: "Processing your request..." }],
+      timestamp: moment().format("h:mm A"),
+      isPending: true,
     };
+    setChatHistory((prevHistory) => [...prevHistory, pendingMessage]);
+    setPendingMessages(prev => new Map(prev.set(pendingMessageId, true)));
 
+    // Call webhook with message and user_id
     try {
-      const response = await axios.request(config);
-      const botResponse = {
-        id: uuidv4(), // Assign a unique ID
-        role: "model",
-        parts: [{ text: response.data?.text }],
-        timestamp: moment().format("h:mm A"),
-      };
-
-      setChatHistory((prevHistory) => [...prevHistory, botResponse]);
-    } catch (error) {
-      toast.warning("Too many requests. Please try again later.", {
-        duration: 3000,
+      const webhookUrl = `https://n8n.srv946699.hstgr.cloud/webhook-test/chat-agents?message=${encodeURIComponent(userMessage)}&user_id=DARAA`;
+      
+      // Set up timeout for webhook response
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Webhook timeout')), WEBHOOK_TIMEOUT);
       });
-      incrementBanCount();
+
+      const webhookPromise = axios.post(webhookUrl);
+      
+      const response = await Promise.race([webhookPromise, timeoutPromise]);
+      
+      // Process the response
+      if (response.data && response.data.message) {
+        const botResponse = {
+          id: pendingMessageId,
+          role: "model",
+          parts: [{ text: response.data.message }],
+          timestamp: moment().format("h:mm A"),
+          isPending: false,
+        };
+        
+        setChatHistory((prevHistory) => 
+          prevHistory.map(msg => 
+            msg.id === pendingMessageId ? botResponse : msg
+          )
+        );
+      } else {
+        // If no response data, show an error message
+        const botResponse = {
+          id: pendingMessageId,
+          role: "model",
+          parts: [{ text: "Sorry, I couldn't process your request. Please try again." }],
+          timestamp: moment().format("h:mm A"),
+          isPending: false,
+        };
+        
+        setChatHistory((prevHistory) => 
+          prevHistory.map(msg => 
+            msg.id === pendingMessageId ? botResponse : msg
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Webhook call failed:", error);
+      
+      // Show error message in chat
+      const errorMessage = error.message === 'Webhook timeout' 
+        ? "Sorry, the request is taking longer than expected. Please try again later."
+        : "Sorry, there was an issue processing your request. Please try again.";
+      
+      const botResponse = {
+        id: pendingMessageId,
+        role: "model",
+        parts: [{ text: errorMessage }],
+        timestamp: moment().format("h:mm A"),
+        isPending: false,
+      };
+      
+      setChatHistory((prevHistory) => 
+        prevHistory.map(msg => 
+          msg.id === pendingMessageId ? botResponse : msg
+        )
+      );
+      
+      toast.error("There was an issue with the request. Please try again.", {
+        duration: 5000,
+      });
     } finally {
       setLoading(false);
       setIsTyping(false); // Hide typing indicator after response
+      setPendingMessages(prev => {
+        const newMap = new Map(prev);
+        newMap.delete(pendingMessageId);
+        return newMap;
+      });
     }
   };
 
@@ -156,8 +217,7 @@ const ChatPopup = ({ onClose }) => {
       }
     } else if (event.ctrlKey && event.key === "Enter") {
       // Insert newline on Ctrl + Enter
-      setForm({ ...form, message: form.message + "
-" });
+      setForm({ ...form, message: form.message + "\n" });
     }
   };
 
@@ -214,81 +274,37 @@ const ChatPopup = ({ onClose }) => {
     setChatHistory(updatedHistory);
   };
 
-  const handleClearAllChats = () => {
-    setShowClearModal(true); // Open confirmation modal
-  };
-
-  const confirmClearAllChats = () => {
-    setChatHistory([]);
-    toast.success("All chats have been cleared.", { duration: 3000 });
-    setShowClearModal(false);
-  };
-
-  const cancelClearAllChats = () => {
-    setShowClearModal(false);
-  };
-
-  const handleDownloadChat = () => {
-    const element = document.createElement("a");
-    const file = new Blob(
-      [
-        chatHistory
-          .map(
-            (msg) =>
-              `${msg.timestamp} - ${msg.role === "user" ? "You" : "AI"}: ${
-                msg.parts[0].text
-              }`
-          )
-          .join("
-"),
-      ],
-      { type: "text/plain" }
-    );
-    element.href = URL.createObjectURL(file);
-    element.download = "chat_history.txt";
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-    document.body.removeChild(element); // Clean up after download
-  };
-
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, x: 300 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: 300 }}
-        transition={{ duration: 0.3 }}
+        initial={{ opacity: 0, x: 300, scale: 0.8 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        exit={{ opacity: 0, x: 300, scale: 0.8 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
         className="fixed bottom-20 right-6 z-50"
       >
-        <div className="bg-white rounded-lg shadow-xl max-w-sm min-w-[350px] h-[80vh] flex flex-col">
+        <div className="bg-black-100 backdrop-blur-sm border border-secondary/20 rounded-2xl shadow-2xl max-w-sm min-w-[380px] h-[85vh] flex flex-col overflow-hidden">
           {/* Chat Header */}
-          <div className="bg-gray-800 text-white p-4 rounded-t-lg flex justify-between items-center">
-            <h6 className="text-lg font-semibold">Chat with Daraboth AI</h6>
-            <button onClick={onClose} className="text-white hover:text-gray-300">
+          <div className="bg-gradient-to-r from-[#915EFF] to-[#804dee] p-4 rounded-t-2xl flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">AI</span>
+              </div>
+              <div>
+                <h6 className="text-white text-lg font-semibold">Website AI Agent</h6>
+                <p className="text-white/80 text-xs">I can update your website</p>
+              </div>
+            </div>
+            <button 
+              onClick={onClose} 
+              className="text-white hover:text-white/80 transition-colors duration-200 p-1 rounded-full hover:bg-white/10"
+            >
               <MdMinimize size={24} />
             </button>
           </div>
 
-          {/* Chat Actions */}
-          <div className="flex justify-end p-2 absolute -top-12 right-0">
-            <button
-              onClick={handleDownloadChat}
-              className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200"
-              title="Download Chat History"
-            >
-              <MdDownload size={20} />
-            </button>
-            <button
-              onClick={handleClearAllChats}
-              className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200"
-              title="Clear All Chats"
-            >
-              <MdClear size={20} />
-            </button>
-          </div>
-
           {/* Chat History Area */}
-          <div className="flex-grow overflow-auto p-4 bg-gray-50">
+          <div className="flex-grow overflow-auto p-4 bg-black-100/50">
             <VirtualizedChatHistory
               chatHistory={chatHistory}
               handleDeleteMessage={handleDeleteMessage}
@@ -298,56 +314,71 @@ const ChatPopup = ({ onClose }) => {
             />
             {/* Typing Indicator */}
             {isTyping && (
-              <div className="flex items-center mt-2">
-                <div className="w-10 h-10 bg-green-500 text-white flex items-center justify-center mr-2 rounded-full">
-                  AI
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center mt-4"
+              >
+                <div className="w-8 h-8 bg-gradient-to-r from-[#915EFF] to-[#804dee] text-white flex items-center justify-center mr-3 rounded-full">
+                  <span className="text-xs font-bold">AI</span>
                 </div>
-                <div className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg">
-                  Typing...
+                <div className="bg-tertiary text-white px-4 py-2 rounded-2xl border border-secondary/20">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             )}
           </div>
 
           {/* Chat Input Area */}
-          <div className="p-4 bg-gray-200 border-t border-gray-300">
+          <div className="p-4 bg-black-200/30 border-t border-secondary/10">
             <form onSubmit={handleSubmit}>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Type your message..."
-                  className="flex-grow p-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
+              <div className="flex items-center gap-3">
+                <div className="flex-grow relative">
+                  <textarea
+                    name="message"
+                    value={form.message}
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Change background color"
+                    className="w-full p-3 bg-tertiary border border-secondary/20 rounded-xl text-white placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-[#915EFF]/50 focus:border-[#915EFF] transition-all duration-200 resize-none overflow-hidden"
+                    style={{
+                      minHeight: '48px',
+                      maxHeight: '120px',
+                      height: 'auto'
+                    }}
+                    rows={1}
+                    disabled={banEndTime && new Date() < new Date(banEndTime)}
+                    onInput={(e) => {
+                      // Auto-resize the textarea
+                      e.target.style.height = 'auto';
+                      e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                    }}
+                  />
+                </div>
+                <motion.button
                   type="submit"
-                  className={`p-2 rounded-lg ${
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`p-3 rounded-xl transition-all duration-200 ${
                     loading || (banEndTime && new Date() < new Date(banEndTime))
-                      ? "bg-blue-300 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  } text-white transition-colors duration-200`}
+                      ? "bg-secondary/30 cursor-not-allowed"
+                      : "bg-gradient-to-r from-[#915EFF] to-[#804dee] hover:from-[#804dee] hover:to-[#915EFF] shadow-lg"
+                  } text-white`}
                   disabled={loading || (banEndTime && new Date() < new Date(banEndTime))}
                 >
                   {loading ? (
                     <ClipLoader size={18} color={"#ffffff"} />
                   ) : (
-                    <MdSend size={24} />
+                    <MdSend size={20} />
                   )}
-                </button>
+                </motion.button>
               </div>
             </form>
           </div>
-          {/* Confirmation Modal for Clearing Chats */}
-          <Modal
-            isOpen={showClearModal}
-            onClose={cancelClearAllChats}
-            onConfirm={confirmClearAllChats}
-            title="Confirm Clear All Chats"
-            message="Are you sure you want to delete all your chat history? This action cannot be undone."
-          />
         </div>
       </motion.div>
     </AnimatePresence>

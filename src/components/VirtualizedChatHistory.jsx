@@ -3,7 +3,8 @@ import { FixedSizeList as List } from "react-window";
 import ReactMarkdown from "react-markdown";
 import { MdDelete } from "react-icons/md";
 import PropTypes from "prop-types";
-import { Box, IconButton, Paper, Typography } from "@mui/material";
+import { motion } from "framer-motion";
+import { ClipLoader } from "react-spinners";
 
 const Row = ({ index, style, data }) => {
   const {
@@ -15,59 +16,106 @@ const Row = ({ index, style, data }) => {
   const msg = chatHistory[index];
 
   return (
-    <Box
+    <motion.div
       style={style}
-      display="flex"
-      alignItems="flex-start"
-      justifyContent={msg.role === "user" ? "flex-end" : "flex-start"}
+      className="flex items-start justify-start p-2"
       onMouseEnter={() => setHoveredMessageIndex(index)}
       onMouseLeave={() => setHoveredMessageIndex(null)}
-      p={1}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
     >
       {/* Avatar */}
-      <Box
-        width={40}
-        height={40}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        bgcolor={msg.role === "user" ? "blue" : "green"}
-        color="white"
-        borderRadius="50%"
-        mr={2}
-      >
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
+        msg.role === "user" 
+          ? "bg-gradient-to-r from-[#915EFF] to-[#804dee]" 
+          : "bg-gradient-to-r from-[#915EFF] to-[#804dee]"
+      } text-white text-xs font-bold`}>
         {msg.role === "user" ? "U" : "AI"}
-      </Box>
+      </div>
 
       {/* Message Bubble */}
-      <Paper
-        elevation={3}
-        style={{
-          padding: "10px",
-          borderRadius: msg.role === "user" ? "16px 16px 0 16px" : "16px 16px 16px 0",
-          backgroundColor: msg.role === "user" ? "#1976d2" : "#e0e0e0",
-          color: msg.role === "user" ? "white" : "black",
-          maxWidth: "75%",
-          wordBreak: "break-word",
-        }}
-      >
-        <ReactMarkdown>{msg.parts[0].text}</ReactMarkdown>
-        <Typography variant="caption" display="block" textAlign="right" mt={1}>
-          {msg.timestamp}
-        </Typography>
-      </Paper>
+      <div className={`relative max-w-[75%] ${
+        msg.role === "user" ? "ml-auto" : ""
+      }`}>
+        <div className={`p-3 rounded-2xl border ${
+          msg.role === "user"
+            ? "bg-gradient-to-r from-[#915EFF] to-[#804dee] text-white border-[#915EFF]/20"
+            : msg.isPending
+            ? "bg-tertiary text-white border-secondary/20"
+            : "bg-tertiary text-white border-secondary/20"
+        }`}>
+          {msg.isPending ? (
+            <div className="flex items-center space-x-2">
+              <ClipLoader size={16} color="#915EFF" />
+              <span className="text-sm">Thinking...</span>
+            </div>
+          ) : (
+            <div className="prose prose-invert prose-sm max-w-none">
+              <ReactMarkdown
+                components={{
+                  // Custom styling for markdown elements
+                  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                  h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+                  h2: ({ children }) => <h2 className="text-base font-bold mb-2">{children}</h2>,
+                  h3: ({ children }) => <h3 className="text-sm font-bold mb-2">{children}</h3>,
+                  ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+                  ol: ({ children }) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
+                  li: ({ children }) => <li className="text-sm">{children}</li>,
+                  code: ({ children }) => (
+                    <code className="bg-black-200 px-1 py-0.5 rounded text-xs font-mono">
+                      {children}
+                    </code>
+                  ),
+                  pre: ({ children }) => (
+                    <pre className="bg-black-200 p-2 rounded-lg overflow-x-auto text-xs font-mono mb-2">
+                      {children}
+                    </pre>
+                  ),
+                  blockquote: ({ children }) => (
+                    <blockquote className="border-l-4 border-[#915EFF] pl-3 italic text-sm mb-2">
+                      {children}
+                    </blockquote>
+                  ),
+                  a: ({ children, href }) => (
+                    <a 
+                      href={href} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[#915EFF] hover:text-[#804dee] underline"
+                    >
+                      {children}
+                    </a>
+                  ),
+                  strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                  em: ({ children }) => <em className="italic">{children}</em>,
+                }}
+              >
+                {msg.parts[0].text}
+              </ReactMarkdown>
+            </div>
+          )}
+          
+          <div className={`text-xs mt-2 ${
+            msg.role === "user" ? "text-white/70" : "text-secondary"
+          }`}>
+            {msg.timestamp}
+          </div>
+        </div>
 
-      {/* Delete Button */}
-      {hoveredMessageIndex === index && msg.role === "user" && (
-        <IconButton
-          size="small"
-          onClick={() => handleDeleteMessage(msg.id)}
-          style={{ position: "absolute", top: 8, right: 8 }}
-        >
-          <MdDelete size={18} color="red" />
-        </IconButton>
-      )}
-    </Box>
+        {/* Delete Button */}
+        {hoveredMessageIndex === index && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            onClick={() => handleDeleteMessage(msg.id)}
+            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors duration-200"
+          >
+            <MdDelete size={14} />
+          </motion.button>
+        )}
+      </div>
+    </motion.div>
   );
 };
 
@@ -91,8 +139,8 @@ const VirtualizedChatHistory = forwardRef((props, ref) => {
     onItemsRendered,
   } = props;
 
-  const itemSize = 80; // Adjust based on message size
-  const height = 550; // Adjust based on container size or make it dynamic
+  const itemSize = 100; // Increased for better spacing
+  const height = 500; // Adjust based on container size
 
   const itemData = {
     chatHistory,
@@ -101,16 +149,29 @@ const VirtualizedChatHistory = forwardRef((props, ref) => {
     setHoveredMessageIndex,
   };
 
+  if (chatHistory.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full text-secondary">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-[#915EFF] to-[#804dee] rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-white text-2xl">💬</span>
+          </div>
+          <p className="text-lg font-medium">Start a conversation</p>
+          <p className="text-sm">Ask me to update this website or make changes</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <List
+      ref={ref}
       height={height}
       itemCount={chatHistory.length}
       itemSize={itemSize}
-      width="100%"
       itemData={itemData}
-      overscanCount={5}
-      ref={ref}
       onItemsRendered={onItemsRendered}
+      className="scrollbar-thin scrollbar-thumb-[#915EFF] scrollbar-track-transparent"
     >
       {Row}
     </List>
@@ -124,5 +185,7 @@ VirtualizedChatHistory.propTypes = {
   setHoveredMessageIndex: PropTypes.func.isRequired,
   onItemsRendered: PropTypes.func,
 };
+
+VirtualizedChatHistory.displayName = "VirtualizedChatHistory";
 
 export default VirtualizedChatHistory;
