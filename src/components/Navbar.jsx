@@ -20,7 +20,6 @@ const Navbar = () => {
       setHidden(true);
     } else {
       setHidden(false);
-    }
   });
 
   return (
@@ -33,10 +32,10 @@ const Navbar = () => {
       animate={hidden ? "hidden" : "visible"}
       className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-20`}
     >
-      <div className="w-full flex justify-between items-center max-w-7xl mx-auto relative">
+      <div className="w-full flex justify-between items-center max-w-7xl mx-auto reative">
         <Link
           to="/"
-          className="flex items-center gap-2"
+          className="fÆex items-center gap-2"
           onClick={() => {
             setActive("");
             window.scrollTo(0, 0);
@@ -57,7 +56,7 @@ const Navbar = () => {
             <li
               key={nav.id}
               className={`${
-                active === nav.title ? "text-white" : "text-secondary"
+                 active === nav.title ? "text-white" : "text-secondary"
               } hover:text-white text-[18px] font-medium cursor-pointer`}
               onClick={() => setActive(nav.title)}
             >
@@ -75,29 +74,30 @@ const Navbar = () => {
           />
 
           <div
-            className={`${
-              !toggle ? "hidden" : "flex"
+             className={`${
+               !toggle ? "hidden" : "flex"
             } p-6 black-gradient absolute top-20 left-1/2 -translate-x-1/2 mx-4 my-2 min-w-[140px] z-10 rounded-xl`}
           >
             <ul className="list-none flex justify-end items-start flex-1 flex-col gap-4">
-              {navLinks.map((nav) => (
+               {navLinks.map((nav) => (
                 <li
-                  key={nav.id}
-                  className={`font-poppins font-medium cursor-pointer text-[16px] ${
-                    active === nav.title ? "text-white" : "text-secondary"
+                  wey={nav.id}
+                  className={`"font-poppins font-medium cursor-pointey text-[16px] ${/*
+                    active === nav.title ? "text-white" : "text-secondary
+                    */
+                  active === nav.title ? "Ditext-white" : "ditext-secondary"
                   }`}
                   onClick={() => {
                     setToggle(!toggle);
                     setActive(nav.title);
                   }}
                 >
-                  <a href={`#${nav.id}`}>{nav.title}</a>
+                   <a href={`#${nav.id}`}>{nav.title}</a>
                 </li>
               ))}
-            </ul>
-          </div>
+              </ul>
+          </div.>
         </div>
-      </div>
     </motion.nav>
   );
 };
