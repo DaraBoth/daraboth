@@ -15,8 +15,8 @@ const Navbar = () => {
   const [toggle, setToggle] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const prevoius = scrollY.getPrevious();
-    if (latest > prevoius && latest > 100) {
+    const previous = scrollY.getPrevious();
+    if (latest > previous && latest > 100) {
       setHidden(true);
     } else {
       setHidden(false);
@@ -33,7 +33,7 @@ const Navbar = () => {
       animate={hidden ? "hidden" : "visible"}
       className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-20`}
     >
-      <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
+      <div className="w-full flex justify-between items-center max-w-7xl mx-auto relative">
         <Link
           to="/"
           className="flex items-center gap-2"
@@ -66,7 +66,7 @@ const Navbar = () => {
           ))}
         </ul>
 
-        <div className="sm:hidden flex flex-1 justify-end items-center">
+        <div className="sm:hidden absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center">
           <img
             src={toggle ? close : menu}
             alt="menu"
@@ -77,7 +77,7 @@ const Navbar = () => {
           <div
             className={`${
               !toggle ? "hidden" : "flex"
-            } p-6 black-gradient absolute top-20 right-0 mx-4 my-2 min-w-[140px] z-10 rounded-xl`}
+            } p-6 black-gradient absolute top-20 left-1/2 -translate-x-1/2 mx-4 my-2 min-w-[140px] z-10 rounded-xl`}
           >
             <ul className="list-none flex justify-end items-start flex-1 flex-col gap-4">
               {navLinks.map((nav) => (
