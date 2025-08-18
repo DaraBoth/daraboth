@@ -6,7 +6,7 @@ A modern, interactive portfolio website built with React, Three.js, and advanced
 
 **Website**: [https://vongpichdaraboth.netlify.app/](https://vongpichdaraboth.netlify.app/)
 
-## 📝 Table of Contents
+## 📖 Table of Contents
 
 - [Features](#-features)
 - [Technologies Used](#-technologies-used)
@@ -17,6 +17,7 @@ A modern, interactive portfolio website built with React, Three.js, and advanced
 - [Magic UI Components](#-magic-ui-components)
 - [API Integration](#-api-integration)
 - [PWA Features](#-pwa-features)
+- [SEO](#-seo)
 - [Deployment](#-deployment)
 - [Contributing](#-contributing)
 - [License](#-license)
@@ -71,7 +72,7 @@ A modern, interactive portfolio website built with React, Three.js, and advanced
 - **React Tilt 1.0.2** - 3D tilt effects
 - **React Tooltip 5.28.0** - Tooltip components
 - **React Window 1.8.10** - Virtualized lists
-- **Sonner 1.5.0** - Toast notifications
+- **Sonnar 1.5.0** - Toast notifications
 - **Moment.js 2.30.1** - Date manipulation
 - **UUID 10.0.0** - Unique identifier generation
 
@@ -79,38 +80,38 @@ A modern, interactive portfolio website built with React, Three.js, and advanced
 
 ```
 daraboth/
-├── public/                     # Static assets
-│   ├── icons/                  # PWA icons
-│   ├── screenshots/            # App screenshots
-│   ├── desktop_pc/             # 3D model assets
-│   ├── gojo/                   # 3D model assets
-│   ├── planet/                 # 3D model assets
-│   ├── manifest.json           # PWA manifest
-│   └── sw.js                   # Service worker
+├── public/               # Static assets
+│   ├── icons/            # PWA icons
+│   ├── screenshots/      # App screenshots
+│   ├── desktop_pc/       # 3D model assets
+│   ├── gojo/             # 3D model assets
+│   ├── planet/           # 3D model assets
+│   ├── manifest.json     # PWA manifest
+│   └── sw.js             # Service worker
 ├── src/
-│   ├── app/                    # App router components
-│   ├── assets/                 # Images and static files
-│   │   ├── company/            # Company logos
-│   │   ├── tech/               # Technology icons
-│   │   └── work/               # Project images
-│   ├── components/             # React components
-│   │   ├── canvas/             # 3D canvas components
-│   │   ├── magic-ui/           # Custom UI components
-│   │   └── pages/              # Page components
-│   ├── constants/              # Data constants
-│   ├── hoc/                    # Higher-order components
-│   ├── hock/                   # Custom hooks
-│   ├── lib/                    # Utility libraries
-│   ├── magic/                  # Magic UI components
-│   ├── utils/                  # Utility functions
-│   ├── App.jsx                 # Main app component
-│   ├── main.jsx                # App entry point
-│   └── index.css               # Global styles
-├── package.json                # Dependencies and scripts
-├── vite.config.js              # Vite configuration
-├── tailwind.config.js          # Tailwind configuration
-├── netlify.toml                # Netlify deployment config
-└── README.md                   # Project documentation
+│   ├── app/              # App router components
+│   ├── assets/           # Images and static files
+│   │   ├── company/      # Company logos
+│   │   ├── tech/         # Technology icons
+│   │   └── work/         # Project images
+│   ├── components/       # React components
+│   │   ├── canvas/       # 3D canvas components
+│   │   ├── magic-ui/     # Custom UI components
+│   │   └── pages/        # Page components
+│   ├── constants/        # Data constants
+│   ├── hoc/              # Higher-order components
+│   ├── hook/             # Custom hooks
+│   ├── lib/              # Utility libraries
+│   ├── magic/            # Magic UI components
+│   ├── utils/            # Utility functions
+│   ├── App.jsx           # Main app component
+│   ├── main.jsx          # App entry point
+│   └── index.css         # Global styles
+├── package.json          # Dependencies and scripts
+├── vite.config.js        # Vite configuration
+├── tailwind.config.js    # Tailwind configuration
+├── netlify.toml          # Netlify deployment config
+└── README.md             # Project documentation
 ```
 
 ## ⚙️ Installation & Setup
@@ -160,56 +161,56 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 ## 🔑 Key Components
 
 ### Main Components
-#### `Hero.jsx`
+### `Hero.jsx`
 - Animated hero section with type animation
 - Gradient text effects
 - Interactive scroll indicator
 - RetroGrid background animation
 
-#### `About.jsx`
+### `About.jsx`
 - AI-powered dynamic content using OpenAI API
 - Service cards with tilt effects
 - Framer Motion animations
 - Responsive grid layout
 
-#### `Experience.jsx`
+### `Experience.jsx`
 - Timeline component with work experience
 - Company logos and details
 - Animated progress indicators
 - Responsive design
 
-#### `Tech.jsx`
+### `Tech.jsx`
 - Technology stack display
 - Interactive technology cards
 - Hover effects and animations
 - Grid layout with icons
 
-#### `Works.jsx`
+### `Works.jsx`
 - Project showcase with images
 - Technology tags
 - Source code links
 - Responsive project cards
 
-#### `Contact.jsx`
+### `Contact.jsx`
 - Contact form with EmailJS integration
 - Form validation
 - Success/error notifications
 - Responsive design
 
 ### Special Components
-#### `VisitorTracker.jsx`
+### `VisitorTracker.jsx`
 - Real-time visitor counting
 - API integration for tracking
 - NumberTicker animation
 - Persistent visitor data
 
-#### `NotificationPrompt.jsx`
+### `NotificationPrompt.jsx`
 - Push notification setup
 - VAPID key integration
 - Service worker registration
 - User permission handling
 
-#### `TestimonialFormWrapper.jsx`
+### `TestimonialFormWrapper.jsx`
 - Dynamic testimonial system
 - Form validation
 - Real-time updates
@@ -227,7 +228,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - Interactive 3D Earth model
 - Rotation controls
 - Texture mapping
-- Responsive sizing
+- Responsive sizing.
 
 ### `Ball.jsx`
 - 3D ball animation
@@ -241,7 +242,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - Texture loading
 - Performance optimization
 
-## 🌠 Magic UI Components
+## 🎨 Magic UI Components
 
 ### `RetroGrid.jsx`
 - Animated grid background
@@ -267,7 +268,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - Customizable colors
 - Modern design
 
-## 🔗 API Integration
+## 🔌 API Integration
 
 ### OpenAI Integration
 - Dynamic content generation
@@ -287,8 +288,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - Data persistence
 - Analytics integration
 
-## 🌐 PWA Features
-
+## 💡 PWA Features
 ### Service Worker
 - Offline functionality
 - Cache management
@@ -306,6 +306,14 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 - User subscription management
 - Device identification
 - Backend integration
+
+## 🔍 SEO
+
+This project includes a complete SEO setup:
+- Per-route metadata using `react-helmet-async` (titles, descriptions, Open Graph, Twitter cards)
+- Canonical URLs and social preview images for better sharing
+- `robots.txt` and `sitemap.xml` for crawlability and indexing
+- PWA manifest and service worker for enhanced user experience
 
 ## 🚀 Deployment
 
@@ -357,7 +365,7 @@ export default {
 };
 ```
 
-## 💡 Key Features Breakdown
+## 🌟 Key Features Breakdown
 
 ### Animation System
 - **Framer Motion**: Page transitions, component animations
@@ -395,14 +403,14 @@ export default {
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🧑‍💻❤️‍🔥 Author
+## 👤 Author
 
 **Daraboth** - Software Engineer
 - Portfolio: [https://vongpichdaraboth.netlify.app/](https://vongpichdaraboth.netlify.app/)
 - Experience: Full-stack development, React, Three.js, Node.js
 - Specialties: Frontend development, 3D graphics, PWA development
 
-## 🙏 Acknowledgments
+## 🙌 Acknowledgments
 
 - Three.js community for 3D graphics support
 - Framer Motion team for animation library
@@ -411,4 +419,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Netlify for hosting and deployment
 ---
 
-**Note**: This project uses several external APIs and services. Make sure to configure the necessary API keys and environment variables before running the application. 
+**Note**: This project uses several external APIs and services. Make sure to configure the necessary API keys and environment variables before running the application.
