@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://vongpichdaraboth.netlify.app/sitemap.xml
