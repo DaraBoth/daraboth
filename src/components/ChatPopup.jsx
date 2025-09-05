@@ -283,24 +283,37 @@ const ChatPopup = ({ onClose }) => {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="fixed bottom-20 right-6 z-50"
       >
-        <div className="bg-black-100 backdrop-blur-sm border border-secondary/20 rounded-2xl shadow-2xl max-w-sm min-w-[380px] h-[85vh] flex flex-col overflow-hidden">
-          {/* Chat Header */}
-          <div className="bg-gradient-to-r from-[#915EFF] to-[#804dee] p-4 rounded-t-2xl flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">AI</span>
+        <div className="relative glass-primary backdrop-blur-2xl bg-gradient-to-br from-white/15 via-white/8 to-white/5 border border-white/20 rounded-3xl shadow-2xl max-w-sm min-w-[400px] h-[85vh] flex flex-col overflow-hidden">
+          {/* Background Decorative Elements */}
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#915EFF]/10 to-transparent rounded-full blur-xl" />
+          <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-[#804dee]/10 to-transparent rounded-full blur-lg" />
+
+          {/* Enhanced Chat Header */}
+          <div className="relative glass-accent backdrop-blur-xl bg-gradient-to-r from-[#915EFF]/30 via-[#804dee]/20 to-[#915EFF]/30 border-b border-white/20 p-5 rounded-t-3xl flex justify-between items-center overflow-hidden">
+            {/* Header Background Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#915EFF]/20 to-[#804dee]/20 opacity-50" />
+
+            <div className="relative z-10 flex items-center gap-4">
+              <div className="relative">
+                <div className="w-10 h-10 glass-secondary backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30">
+                  <span className="text-white font-bold text-sm">AI</span>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white/50 animate-pulse" />
               </div>
               <div>
-                <h6 className="text-white text-lg font-semibold">Website AI Agent</h6>
-                <p className="text-white/80 text-xs">I can update your website</p>
+                <h6 className="text-white text-lg font-bold">Website AI Agent</h6>
+                <p className="text-white/80 text-sm">I can help with your website</p>
               </div>
             </div>
-            <button 
-              onClick={onClose} 
-              className="text-white hover:text-white/80 transition-colors duration-200 p-1 rounded-full hover:bg-white/10"
+
+            <motion.button
+              onClick={onClose}
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+              className="relative z-10 w-10 h-10 glass-button-secondary backdrop-blur-md rounded-2xl flex items-center justify-center text-white border border-white/30 hover:bg-white/20 transition-all duration-300"
             >
-              <MdMinimize size={24} />
-            </button>
+              <MdMinimize size={20} />
+            </motion.button>
           </div>
 
           {/* Chat History Area */}
@@ -333,20 +346,20 @@ const ChatPopup = ({ onClose }) => {
             )}
           </div>
 
-          {/* Chat Input Area */}
-          <div className="p-4 bg-black-200/30 border-t border-secondary/10">
+          {/* Enhanced Chat Input Area */}
+          <div className="relative p-5 glass-secondary backdrop-blur-xl border-t border-white/20 rounded-b-3xl">
             <form onSubmit={handleSubmit}>
-              <div className="flex items-center gap-3">
+              <div className="flex items-end gap-3">
                 <div className="flex-grow relative">
                   <textarea
                     name="message"
                     value={form.message}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    placeholder="Change background color"
-                    className="w-full p-3 bg-tertiary border border-secondary/20 rounded-xl text-white placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-[#915EFF]/50 focus:border-[#915EFF] transition-all duration-200 resize-none overflow-hidden"
+                    placeholder="Ask me anything about the website..."
+                    className="w-full p-4 glass-tertiary backdrop-blur-md bg-gradient-to-r from-white/10 to-white/5 border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#915EFF]/50 focus:border-[#915EFF]/60 focus:shadow-lg focus:shadow-[#915EFF]/25 transition-all duration-300 resize-none overflow-hidden"
                     style={{
-                      minHeight: '48px',
+                      minHeight: '52px',
                       maxHeight: '120px',
                       height: 'auto'
                     }}
@@ -358,23 +371,35 @@ const ChatPopup = ({ onClose }) => {
                       e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
                     }}
                   />
+
+                  {/* Input Decorative Elements */}
+                  <div className="absolute top-2 right-2 w-2 h-2 bg-[#915EFF]/40 rounded-full animate-pulse" />
                 </div>
+
                 <motion.button
                   type="submit"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: "0 8px 25px rgba(145, 94, 255, 0.4)"
+                  }}
                   whileTap={{ scale: 0.95 }}
-                  className={`p-3 rounded-xl transition-all duration-200 ${
+                  className={`relative w-12 h-12 rounded-2xl transition-all duration-300 overflow-hidden ${
                     loading || (banEndTime && new Date() < new Date(banEndTime))
-                      ? "bg-secondary/30 cursor-not-allowed"
-                      : "bg-gradient-to-r from-[#915EFF] to-[#804dee] hover:from-[#804dee] hover:to-[#915EFF] shadow-lg"
-                  } text-white`}
+                      ? "glass-tertiary cursor-not-allowed opacity-50"
+                      : "glass-button bg-gradient-to-r from-[#915EFF]/30 to-[#804dee]/20 border border-[#915EFF]/40 hover:from-[#915EFF]/40 hover:to-[#804dee]/30 shadow-lg shadow-[#915EFF]/25"
+                  } text-white flex items-center justify-center`}
                   disabled={loading || (banEndTime && new Date() < new Date(banEndTime))}
                 >
-                  {loading ? (
-                    <ClipLoader size={18} color={"#ffffff"} />
-                  ) : (
-                    <MdSend size={20} />
-                  )}
+                  {/* Button Background Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#915EFF]/20 to-[#804dee]/20 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+
+                  <div className="relative z-10">
+                    {loading ? (
+                      <ClipLoader size={20} color={"#ffffff"} />
+                    ) : (
+                      <MdSend size={22} />
+                    )}
+                  </div>
                 </motion.button>
               </div>
             </form>

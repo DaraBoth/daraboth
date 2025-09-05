@@ -13,11 +13,10 @@ const Computers = ({ isMobile }) => {
         position={[-20, 50, 10]}
         angle={0.12}
         penumbra={1}
-        intensity={1}
-        castShadow
-        shadow-mapSize={1024}
+        intensity={0.8} // Reduced intensity for performance
+        castShadow={false} // Disable shadows for performance
       />
-      <pointLight intensity={1} />
+      <pointLight intensity={0.8} /> {/* Reduced intensity */}
       <primitive
         object={computer.scene}
         scale={isMobile ? 0.7 : 0.75}
@@ -55,14 +54,22 @@ const ComputersCanvas = () => {
   return (
     <Canvas
       frameloop='demand'
-      shadows
-      dpr={[1, 2]}
+      shadows={false} // Disable shadows for performance
+      dpr={[1, 1.5]} // Reduced DPR
       camera={{ position: [20, 3, 5], fov: 25 }}
-      gl={{ preserveDrawingBuffer: true }}
+      gl={{
+        preserveDrawingBuffer: false,
+        antialias: false,
+        alpha: true,
+        powerPreference: "high-performance"
+      }}
+      performance={{ min: 0.5 }}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
           enableZoom={false}
+          enablePan={false}
+          enableDamping={false}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
         />

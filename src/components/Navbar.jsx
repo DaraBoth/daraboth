@@ -31,7 +31,7 @@ const Navbar = () => {
       }}
       transition={{ duration: 0.35, ease: "easeInOut" }}
       animate={hidden ? "hidden" : "visible"}
-      className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-20`}
+      className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-20 glass-navbar`}
     >
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto relative">
         <Link
@@ -45,7 +45,7 @@ const Navbar = () => {
           <img
             src={profile}
             alt="logo"
-            className="w-9 rounded-full ring-1 h-9 object-contain"
+            className="w-9 rounded-full ring-2 ring-white/20 h-9 object-contain"
           />
           <p className="text-white text-[18px] font-bold cursor-pointer flex ">
             Vong Pich Daraboth &nbsp;
@@ -77,7 +77,7 @@ const Navbar = () => {
           <div
             className={`${
               !toggle ? "hidden" : "flex"
-            } p-6 black-gradient absolute top-20 left-1/2 -translate-x-1/2 mx-4 my-2 min-w-[140px] z-10 rounded-xl`}
+            } p-6 glass-modal-content absolute top-20 left-1/2 -translate-x-1/2 mx-4 my-2 min-w-[140px] z-10 rounded-xl`}
           >
             <ul className="list-none flex justify-end items-start flex-1 flex-col gap-4">
               {navLinks.map((nav) => (

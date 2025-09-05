@@ -129,64 +129,141 @@ const Feedbacks = ({ refreshToggle }) => {
   }
 
   return (
-    <div
-      className={`xl:mt-12 ${styles.paddingX} flex xl:flex-row flex-col-reverse gap-10`}
-    >
-      <motion.div className="flex-[0.75] bg-black-100 rounded-2xl p-8">
-        <p className={styles.sectionSubText}>What others say </p>
-        <h2 className={styles.sectionHeadText}>Beyond the Portfolio. <Link to={"/feedbacks"}>✍️</Link></h2>
+    <div className="relative max-w-7xl mx-auto">
+      {/* Enhanced Section Header */}
+      <div className="text-center mb-16">
+        <motion.div variants={textVariant()}>
+          <p className={`${styles.sectionSubText} text-[#915EFF] mb-4`}>
+            What Others Say
+          </p>
+          <h2 className={`${styles.sectionHeadText} mb-8`}>
+            Beyond the Portfolio<span className="text-[#915EFF]">.</span>{" "}
+            <Link
+              to={"/feedbacks"}
+              className="inline-block ml-2 text-2xl hover:scale-110 transition-transform duration-300"
+            >
+              ✍️
+            </Link>
+          </h2>
+        </motion.div>
 
-        <LayoutGroup>
-          <div ref={marqueeContainerRef} className="mt-20 pb-14 flex flex-wrap gap-7">
-            {testimonials.length > 0 ? (
-              <>
-                <Marquee pauseOnHover repeat={2} className="[--duration:100s]" shouldAnimate={shouldMarqueeAnimate}>
-                  {testimonials.map((review) => (
-                    <ReviewCard
-                      key={review.id}
-                      {...review}
-                      onShowMore={handleShowMore}
-                      hideOriginal={isCardAnimating && selectedTestimonial?.id === review.id}
-                    />
-                  ))}
-                </Marquee>
-                <Marquee
-                  reverse
-                  pauseOnHover
-                  repeat={2}
-                  className="[--duration:100s]"
-                  shouldAnimate={shouldMarqueeAnimate}
-                >
-                  {testimonials.reverse().map((review) => (
-                    <ReviewCard
-                      key={review.id}
-                      {...review}
-                      onShowMore={handleShowMore}
-                      hideOriginal={isCardAnimating && selectedTestimonial?.id === review.id}
-                    />
-                  ))}
-                </Marquee>
-              </>
-            ) : (
-              <p className="text-white">
-                No testimonials available at the moment.
-              </p>
-            )}
+        {/* Decorative Line */}
+        <div className="w-32 h-1 bg-gradient-to-r from-[#915EFF] to-[#804dee] mx-auto rounded-full" />
+      </div>
+
+      {/* Enhanced Testimonials Container */}
+      <motion.div
+        variants={fadeIn("up", "", 0.1, 1)}
+        className="relative"
+      >
+        {/* Glass Container with Enhanced Effects */}
+        <div className="relative glass-primary rounded-3xl p-8 lg:p-12 backdrop-blur-2xl bg-gradient-to-br from-white/15 via-white/8 to-white/5 border border-white/20 shadow-2xl overflow-hidden">
+
+          {/* Background Decorative Elements */}
+          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#915EFF]/10 to-transparent rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-[#804dee]/10 to-transparent rounded-full blur-2xl" />
+
+          {/* Content */}
+          <div className="relative z-10">
+            <LayoutGroup>
+              <div ref={marqueeContainerRef} className="space-y-8">
+                {testimonials.length > 0 ? (
+                  <>
+                    {/* First Marquee Row */}
+                    <div className="relative">
+                      <Marquee
+                        pauseOnHover
+                        repeat={2}
+                        className="[--duration:120s]"
+                        shouldAnimate={shouldMarqueeAnimate}
+                      >
+                        {testimonials.map((review) => (
+                          <div key={review.id} className="mx-4">
+                            <ReviewCard
+                              {...review}
+                              onShowMore={handleShowMore}
+                              hideOriginal={isCardAnimating && selectedTestimonial?.id === review.id}
+                            />
+                          </div>
+                        ))}
+                      </Marquee>
+                    </div>
+
+                    {/* Second Marquee Row (Reverse) */}
+                    <div className="relative">
+                      <Marquee
+                        reverse
+                        pauseOnHover
+                        repeat={2}
+                        className="[--duration:120s]"
+                        shouldAnimate={shouldMarqueeAnimate}
+                      >
+                        {[...testimonials].reverse().map((review) => (
+                          <div key={`reverse-${review.id}`} className="mx-4">
+                            <ReviewCard
+                              {...review}
+                              onShowMore={handleShowMore}
+                              hideOriginal={isCardAnimating && selectedTestimonial?.id === review.id}
+                            />
+                          </div>
+                        ))}
+                      </Marquee>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-16">
+                    <div className="glass-secondary rounded-2xl p-8 backdrop-blur-md border border-white/20 max-w-md mx-auto">
+                      <p className="text-white/80 text-lg">
+                        No testimonials available at the moment.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Enhanced Modal */}
+              <Modal
+                isOpen={showModal}
+                onClose={handleCloseModal}
+                title={selectedTestimonial?.name ? `A Word From ${selectedTestimonial.name}` : "Their Thoughts"}
+                img={selectedTestimonial?.img}
+                name={selectedTestimonial?.name}
+                designation={selectedTestimonial?.designation}
+                company={selectedTestimonial?.company}
+                testimonialId={selectedTestimonial?.id}
+              >
+                {selectedTestimonial?.message || ""}
+              </Modal>
+            </LayoutGroup>
           </div>
+        </div>
 
-          <Modal
-            isOpen={showModal}
-            onClose={handleCloseModal}
-            title={selectedTestimonial?.name ? `A Word From ${selectedTestimonial.name}` : "Their Thoughts"}
-            img={selectedTestimonial?.img}
-            name={selectedTestimonial?.name}
-            designation={selectedTestimonial?.designation}
-            company={selectedTestimonial?.company}
-            testimonialId={selectedTestimonial?.id}
-          >
-            {selectedTestimonial?.message}
-          </Modal>
-        </LayoutGroup>
+        {/* Background Decorative Elements */}
+        <div className="absolute -top-20 -left-20 w-40 h-40 bg-gradient-to-br from-[#915EFF]/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -bottom-20 -right-20 w-32 h-32 bg-gradient-to-tl from-[#804dee]/5 to-transparent rounded-full blur-2xl" />
+
+        {/* Floating Background Particles */}
+        {[...Array(4)].map((_, i) => (
+          <motion.div
+            key={i}
+            animate={{
+              x: [0, 50, 0],
+              y: [0, -30, 0],
+              opacity: [0.1, 0.3, 0.1]
+            }}
+            transition={{
+              duration: 8 + i * 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 2
+            }}
+            className={`absolute w-2 h-2 bg-[#915EFF] rounded-full`}
+            style={{
+              top: `${20 + i * 15}%`,
+              left: `${10 + i * 20}%`,
+            }}
+          />
+        ))}
       </motion.div>
     </div>
   );
