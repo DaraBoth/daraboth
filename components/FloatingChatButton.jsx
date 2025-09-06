@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ChatPopup from "@/components/ChatPopup";
+import ChatPopup from "./ChatPopup";
 import { MdChat, MdClose } from "react-icons/md";
 import { motion } from "framer-motion";
 

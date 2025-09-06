@@ -9,7 +9,7 @@ import { SectionWrapper } from "../hoc";
 import { fadeIn, slideIn, textVariant } from "../utils/motion";
 import Marquee from "./magic-ui/Marquee";
 import ReviewCard from "./magic-ui/ReviewCard";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import Modal from "./Modal";
 
 const Feedbacks = ({ refreshToggle }) => {
@@ -139,7 +139,7 @@ const Feedbacks = ({ refreshToggle }) => {
           <h2 className={`${styles.sectionHeadText} mb-8`}>
             Beyond the Portfolio<span className="text-[#915EFF]">.</span>{" "}
             <Link
-              to={"/feedbacks"}
+              href={"/feedbacks"}
               className="inline-block ml-2 text-2xl hover:scale-110 transition-transform duration-300"
             >
               ✍️

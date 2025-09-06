@@ -47,8 +47,8 @@ A modern, interactive portfolio website built with React, Three.js, and advanced
 
 ### Frontend Framework
 - **React 18.2.0** - Main UI framework
-- **Vite 4.1.0** - Build tool and development server
-- **React Router DOM 6.8.1** - Client-side routing
+- **Next.js 15.5.2** - React framework with SSR/SSG capabilities
+- **Next.js Router** - File-based routing system
 
 ### Styling & UI
 - **Tailwind CSS 3.3.5** - Utility-first CSS framework
