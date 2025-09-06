@@ -1,27 +1,27 @@
 import React, { Suspense, lazy } from "react";
-import { Helmet } from 'react-helmet-async';
+import Head from 'next/head';
 import { Toaster } from "sonner";
-import { Navbar, Hero, StarsCanvas } from "@/components"; // Keep critical above-fold components
-import VisitorTracker from "@/components/VisitorTracker";
-import NotificationPrompt from "@/components/NotificationPrompt";
-import PerformanceMonitor from "@/components/PerformanceMonitor";
-import { SimpleLoader } from "@/components/Loader";
+import { Navbar, Hero, StarsCanvas } from "../components"; // Keep critical above-fold components
+import VisitorTracker from "../components/VisitorTracker";
+import NotificationPrompt from "../components/NotificationPrompt";
+import PerformanceMonitor from "../components/PerformanceMonitor";
+import { SimpleLoader } from "../components/Loader";
 
 // Lazy load below-fold components for better performance
-const About = lazy(() => import("@/components/About"));
-const Experience = lazy(() => import("@/components/Experience"));
-const Tech = lazy(() => import("@/components/Tech"));
-const Works = lazy(() => import("@/components/Works"));
-const Contact = lazy(() => import("@/components/Contact"));
-const TestimonialFormWrapper = lazy(() => import("@/components/TestimonialFormWrapper"));
-const FloatingChatButton = lazy(() => import("@/components/FloatingChatButton"));
+const About = lazy(() => import("../components/About"));
+const Experience = lazy(() => import("../components/Experience"));
+const Tech = lazy(() => import("../components/Tech"));
+const Works = lazy(() => import("../components/Works"));
+const Contact = lazy(() => import("../components/Contact"));
+const TestimonialFormWrapper = lazy(() => import("../components/TestimonialFormWrapper"));
+const FloatingChatButton = lazy(() => import("../components/FloatingChatButton"));
 const ChatPopup = lazy(() => import("../components/ChatPopup"));
 
 const HomePage = () => {
 
   return (
     <>
-      <Helmet>
+      <Head>
         <title>DaraBoth | Software Engineer – Portfolio</title>
         <meta name="description" content="Portfolio of Vong Pich Daraboth – Full‑Stack Engineer specializing in React, Three.js, and modern web apps." />
         <link rel="canonical" href="https://vongpichdaraboth.netlify.app/" />
@@ -37,7 +37,7 @@ const HomePage = () => {
         <meta name="twitter:title" content="DaraBoth | Software Engineer – Portfolio" />
         <meta name="twitter:description" content="Portfolio of Vong Pich Daraboth – Full‑Stack Engineer specializing in React, Three.js, and modern web apps." />
         <meta name="twitter:image" content="https://vongpichdaraboth.netlify.app/screenshots/screenshot.png" />
-      </Helmet>
+      </Head>
       <VisitorTracker />
       <PerformanceMonitor />
       <Toaster
