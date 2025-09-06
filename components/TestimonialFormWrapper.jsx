@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Feedbacks from "./Feedbacks";
 import TestimonialForm from "./TestimonialForm";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Helmet } from 'react-helmet-async';
 
 const TestimonialFormWrapper = ({ isHomePage }) => {
@@ -17,7 +17,7 @@ const TestimonialFormWrapper = ({ isHomePage }) => {
 
   return (
     <>
-      {!isHomePage && <Link to={"/"} className="z-40 fixed top-5 left-5">🔙</Link>}
+      {!isHomePage && <Link href={"/"} className="z-40 fixed top-5 left-5">🔙</Link>}
       {!isHomePage && (
         <Helmet>
           <title>Testimonials – DaraBoth</title>

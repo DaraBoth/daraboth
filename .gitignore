@@ -27,3 +27,10 @@ dist-ssr
 
 # vscode
 .vscode
+
+# Next.js
+.next/
+out/
+
+# Build files
+*.tsbuildinfo
