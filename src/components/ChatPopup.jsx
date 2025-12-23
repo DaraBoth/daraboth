@@ -130,7 +130,7 @@ const ChatPopup = ({ onClose }) => {
 
     // Call webhook with message and user_id
     try {
-      const webhookUrl = `https://n8n.srv946699.hstgr.cloud/webhook-test/chat-agents?message=${encodeURIComponent(userMessage)}&user_id=DARAA`;
+      const webhookUrl = `https://n8n.tonlaysab.com/webhook/b214e690-dc99-4809-a3dc-01bfb2789e86/chat`;
       
       // Set up timeout for webhook response
       const timeoutPromise = new Promise((_, reject) => {

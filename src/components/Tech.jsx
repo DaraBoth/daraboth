@@ -22,7 +22,7 @@ const TechBall = ({ technology, index }) => {
         whileHover={{
           scale: 1.1,
           rotateY: 15,
-          z: 50
+          zIndex: 50
         }}
         transition={{
           type: "spring",
@@ -171,12 +171,11 @@ const Tech = () => {
         >
         {technologies.map((technology, index) => (
           <motion.div
-            key={technology.name}
-            layout
-            transition={{
-              layout: { duration: 1, ease: "easeInOut" },
-              delay: index * 0.05
-            }}
+              key={technology.name}
+              layout="position"
+              transition={{
+                delay: index * 0.05
+              }}
             style={arrangement === 'circle' ? {
               gridColumn: `${(index % 6) + 1}`,
               gridRow: `${Math.floor(index / 6) + 1}`,
