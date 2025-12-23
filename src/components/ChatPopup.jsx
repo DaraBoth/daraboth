@@ -131,47 +131,50 @@ const ChatPopup = ({ onClose }) => {
     // Call webhook with message and user_id
     try {
       const webhookUrl = `https://n8n.tonlaysab.com/webhook/b214e690-dc99-4809-a3dc-01bfb2789e86/chat`;
-      
+
       // Set up timeout for webhook response
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Webhook timeout')), WEBHOOK_TIMEOUT);
+        setTimeout(() => reject(new Error("Webhook timeout")), WEBHOOK_TIMEOUT);
       });
 
-      const webhookPromise = axios.post(webhookUrl);
-      
+      // Send payload: message and a user identifier
+      const payload = {
+        message: userMessage,
+        user_id: userMessageId,
+      };
+
+      const webhookPromise = axios.post(webhookUrl, payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+
       const response = await Promise.race([webhookPromise, timeoutPromise]);
-      
-      // Process the response
-      if (response.data && response.data.message) {
-        const botResponse = {
-          id: pendingMessageId,
-          role: "model",
-          parts: [{ text: response.data.message }],
-          timestamp: moment().format("h:mm A"),
-          isPending: false,
-        };
-        
-        setChatHistory((prevHistory) => 
-          prevHistory.map(msg => 
-            msg.id === pendingMessageId ? botResponse : msg
-          )
-        );
+
+      // Normalize different possible response shapes from the webhook
+      const data = response && response.data ? response.data : {};
+      let responseParts = [];
+
+      if (Array.isArray(data.parts) && data.parts.length > 0) {
+        responseParts = data.parts.map((p) => ({ text: typeof p === "string" ? p : p.text || JSON.stringify(p) }));
+      } else if (Array.isArray(data.messages) && data.messages.length > 0) {
+        responseParts = data.messages.map((m) => ({ text: typeof m === "string" ? m : m.text || JSON.stringify(m) }));
+      } else if (typeof data.message === "string") {
+        responseParts = [{ text: data.message }];
+      } else if (typeof data === "string") {
+        responseParts = [{ text: data }];
       } else {
-        // If no response data, show an error message
-        const botResponse = {
-          id: pendingMessageId,
-          role: "model",
-          parts: [{ text: "Sorry, I couldn't process your request. Please try again." }],
-          timestamp: moment().format("h:mm A"),
-          isPending: false,
-        };
-        
-        setChatHistory((prevHistory) => 
-          prevHistory.map(msg => 
-            msg.id === pendingMessageId ? botResponse : msg
-          )
-        );
+        // Fallback: stringify entire payload if no known key
+        responseParts = [{ text: "Sorry, I couldn't process your request. Please try again." }];
       }
+
+      const botResponse = {
+        id: pendingMessageId,
+        role: "model",
+        parts: responseParts,
+        timestamp: moment().format("h:mm A"),
+        isPending: false,
+      };
+
+      setChatHistory((prevHistory) => prevHistory.map((msg) => (msg.id === pendingMessageId ? botResponse : msg)));
     } catch (error) {
       console.error("Webhook call failed:", error);
       
