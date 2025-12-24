@@ -60,12 +60,10 @@ const Hero = () => {
               transition={{ duration: 0.8, delay: 0.8 }}
               className={`${styles.heroSubText} text-white-100 leading-relaxed relative z-10`}
             >
-              I develop{" "}
-              <span className="text-[#915EFF] font-semibold">3D visuals</span>,{" "}
-              <span className="text-[#915EFF] font-semibold">user interfaces</span>{" "}
+              I build intuitive <span className="text-[#915EFF] font-semibold">user interfaces</span>
               <br className="sm:block hidden" />
-              and{" "}
-              <span className="text-[#915EFF] font-semibold">web applications</span>.
+              and reliable <span className="text-[#915EFF] font-semibold">web applications</span> —
+              turning ideas into polished, production-ready experiences users love.
             </motion.p>
 
             {/* Call to Action Buttons */}

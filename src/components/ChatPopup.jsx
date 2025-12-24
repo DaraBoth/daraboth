@@ -22,6 +22,7 @@ const WEBHOOK_TIMEOUT = 10 * 60 * 1000; // 10 minutes timeout for webhook
 const ChatPopup = ({ onClose }) => {
   const listRef = useRef(); // Ref for the virtualized list
   const chatContainerRef = useRef(null); // container for scrolling
+  const [listHeight, setListHeight] = useState(400);
   const [form, setForm] = useState({ message: "" });
   const [loading, setLoading] = useState(false);
   const [banCount, setBanCount] = useState(0);
@@ -80,6 +81,21 @@ const ChatPopup = ({ onClose }) => {
   useEffect(() => {
     scrollToBottom("smooth");
   }, [chatHistory.length, pendingMessages.size]);
+
+  // Keep the virtualized list height in sync with the container
+  useEffect(() => {
+    const el = chatContainerRef.current;
+    if (!el) return;
+    const update = () => setListHeight(Math.max(100, el.clientHeight));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [chatContainerRef]);
 
   useEffect(() => {
     localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
@@ -504,6 +520,7 @@ const ChatPopup = ({ onClose }) => {
               handleDeleteMessage={handleDeleteMessage}
               hoveredMessageIndex={hoveredMessageIndex}
               setHoveredMessageIndex={setHoveredMessageIndex}
+              height={listHeight}
               ref={listRef} // Attach the ref to the virtualized list
             />
             {/* Typing Indicator */}

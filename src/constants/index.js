@@ -25,6 +25,7 @@ import {
   accpremiumwrap,
   mankerlightkh,
   wewallet,
+  dailygoalmap,
 } from "../assets";
 
 export const navLinks = [
@@ -323,7 +324,28 @@ const projects = [
       },
     ],
     image: tinynotie,
-    source_code_link: "https://www.tinynotie.bio/",
+    source_code_link: "https://tinynotie.vercel.app/",
+  },
+  {
+    name: "Daily Goal Map",
+    description:
+      "A productivity app that helps you map daily goals and track progress.",
+    tags: [
+      { name: "nextjs", color: "blue-text-gradient" },
+      { name: "vercel", color: "pink-text-gradient" },
+      { name: "supabase", color: "green-text-gradient" },
+      { name: "postgresql", color: "green-text-gradient" },
+      { name: "tailwind", color: "blue-text-gradient" },
+      { name: "radix-ui", color: "pink-text-gradient" },
+      { name: "shadcn/ui", color: "purple-text-gradient" },
+      { name: "pwa", color: "pink-text-gradient" },
+      { name: "framer-motion", color: "blue-text-gradient" },
+      { name: "lucide", color: "green-text-gradient" },
+      { name: "open-graph", color: "blue-text-gradient" },
+      { name: "hsts", color: "green-text-gradient" },
+    ],
+    image: dailygoalmap,
+    source_code_link: "https://dailygoalmap.vercel.app/",
   },
 ];
 

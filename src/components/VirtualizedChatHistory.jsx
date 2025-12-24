@@ -130,10 +130,11 @@ const VirtualizedChatHistory = forwardRef((props, ref) => {
     hoveredMessageIndex,
     setHoveredMessageIndex,
     onItemsRendered,
+    height: propHeight,
   } = props;
 
   const itemSize = 100; // Increased for better spacing
-  const height = 500; // Adjust based on container size
+  const height = Math.max(120, Number(propHeight) || 500); // prefer provided height
 
   const itemData = {
     chatHistory,
@@ -177,6 +178,7 @@ VirtualizedChatHistory.propTypes = {
   hoveredMessageIndex: PropTypes.number,
   setHoveredMessageIndex: PropTypes.func.isRequired,
   onItemsRendered: PropTypes.func,
+  height: PropTypes.number,
 };
 
 VirtualizedChatHistory.displayName = "VirtualizedChatHistory";

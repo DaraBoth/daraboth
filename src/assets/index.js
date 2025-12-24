@@ -42,6 +42,7 @@ import kshrdregi from "./kshrdregi.png";
 import tinynotie from "./tinynotie.png";
 import mankerlightkh from "./mankerlighkh.png"
 import wewallet from "./wewallet.png"
+import dailygoalmap from "./dailygoalmap.png";
 
 export {
   logo,
@@ -84,4 +85,5 @@ export {
   tinynotie,
   mankerlightkh,
   wewallet,
+  dailygoalmap,
 };
