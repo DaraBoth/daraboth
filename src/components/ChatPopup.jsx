@@ -498,7 +498,7 @@ const ChatPopup = ({ onClose }) => {
           </div>
 
           {/* Chat History Area */}
-          <div ref={chatContainerRef} className="flex-grow overflow-auto p-2 bg-black-100/50">
+          <div ref={chatContainerRef} className="flex-grow p-2 bg-black-100/50 overflow-hidden">
             <VirtualizedChatHistory
               chatHistory={chatHistory}
               handleDeleteMessage={handleDeleteMessage}
