@@ -33,6 +33,14 @@ const ChatPopup = ({ onClose }) => {
     const storedHistory = localStorage.getItem("chatHistory");
     return storedHistory ? JSON.parse(storedHistory) : [];
   });
+  // Persisted session id for n8n AI Agent memory
+  const [sessionId, setSessionId] = useState(() => {
+    try {
+      return localStorage.getItem("chatSessionId") || null;
+    } catch (e) {
+      return null;
+    }
+  });
   // typing indicator derived from pendingMessages
   const [hoveredMessageIndex, setHoveredMessageIndex] = useState(null); // Track hovered message for delete button
   const [pendingMessages, setPendingMessages] = useState(new Map()); // Track pending webhook responses
@@ -105,6 +113,32 @@ const ChatPopup = ({ onClose }) => {
     setForm({ ...form, [name]: value });
   };
 
+  // Helper to extract various session id keys returned by n8n
+  const extractSessionIdFrom = (obj) => {
+    if (!obj) return null;
+    const candidates = [
+      "sessionId",
+      "session_id",
+      "session",
+      "conversationId",
+      "conversation_id",
+      "chatSessionId",
+      "chat_session_id",
+    ];
+    for (const k of candidates) {
+      if (Object.prototype.hasOwnProperty.call(obj, k) && obj[k]) {
+        const v = obj[k];
+        if (typeof v === "string") return v;
+        if (v && typeof v === "object") {
+          if (typeof v.id === "string") return v.id;
+          if (typeof v.sessionId === "string") return v.sessionId;
+        }
+      }
+    }
+    if (obj.meta) return extractSessionIdFrom(obj.meta);
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (banEndTime && new Date() < new Date(banEndTime)) {
@@ -156,11 +190,29 @@ const ChatPopup = ({ onClose }) => {
       // Send payload matching n8n Chat Trigger expectations: include `chatInput` field
       const N8N_WEBHOOK = `https://n8n.tonlaysab.com/webhook/b214e690-dc99-4809-a3dc-01bfb2789e86/chat`;
 
+      // Ensure a session exists for this chat. If not, create and persist one.
+      let sessionToSend = sessionId;
+      if (!sessionToSend) {
+        sessionToSend = uuidv4();
+        setSessionId(sessionToSend);
+        try { localStorage.setItem("chatSessionId", sessionToSend); } catch (e) {}
+      }
+
       // Send payload: the chatTrigger expects `chatInput` to contain the prompt
       const payload = {
         chatInput: userMessage,
         user_id: userMessageId,
+        // include session under multiple keys so the workflow can pick whichever it expects
+        session: sessionToSend,
+        sessionId: sessionToSend,
+        conversationId: sessionToSend,
       };
+
+      // Debug: help troubleshooting when session isn't sent/recognized
+      try {
+        // eslint-disable-next-line no-console
+        console.debug("Sending to N8N webhook", { payload, sessionToSend, storedLocal: localStorage.getItem("chatSessionId") });
+      } catch (e) {}
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), WEBHOOK_TIMEOUT);
@@ -183,6 +235,14 @@ const ChatPopup = ({ onClose }) => {
           const data = JSON.parse(text);
           // Normalize arrays from n8n (e.g. [{ output: '...' }])
           const normalized = Array.isArray(data) && data.length > 0 ? data[0] : data;
+
+          // Try to extract session id from the response and persist it
+          const maybeSession = extractSessionIdFrom(normalized);
+          if (maybeSession) {
+            setSessionId(maybeSession);
+            try { localStorage.setItem("chatSessionId", maybeSession); } catch (e) {}
+          }
+
           if (Array.isArray(normalized.parts) && normalized.parts.length) {
             responseParts = normalized.parts.map((p) => ({ text: typeof p === "string" ? p : p.text || JSON.stringify(p) }));
           } else if (Array.isArray(normalized.messages) && normalized.messages.length) {
@@ -227,6 +287,14 @@ const ChatPopup = ({ onClose }) => {
           try {
             const maybe = JSON.parse(accumulated);
             const normalized = Array.isArray(maybe) && maybe.length > 0 ? maybe[0] : maybe;
+
+            // If the stream includes session information, persist it
+            const maybeSession = extractSessionIdFrom(normalized);
+            if (maybeSession) {
+              setSessionId(maybeSession);
+              try { localStorage.setItem("chatSessionId", maybeSession); } catch (e) {}
+            }
+
             if (Array.isArray(normalized.parts) && normalized.parts.length > 0) {
               responseParts = normalized.parts.map((p) => ({ text: typeof p === "string" ? p : p.text || JSON.stringify(p) }));
             } else if (Array.isArray(normalized.messages) && normalized.messages.length > 0) {
@@ -354,6 +422,7 @@ const ChatPopup = ({ onClose }) => {
     return differenceInMilliseconds > 1000 * 60 * 60 * 24;
   };
 
+
   const handleDeleteMessage = (id) => {
     const updatedHistory = chatHistory.filter((msg) => msg.id !== id);
     setChatHistory(updatedHistory);
@@ -366,6 +435,8 @@ const ChatPopup = ({ onClose }) => {
     setChatHistory([]);
     try {
       localStorage.removeItem("chatHistory");
+      localStorage.removeItem("chatSessionId");
+      setSessionId(null);
     } catch (e) {
       // ignore
     }
