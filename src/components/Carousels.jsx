@@ -27,7 +27,7 @@ export default function Carousels() {
     async function fetchPost(data) {
       const { companyId, projectId, categoryId, status, size, sort } = data;
       try {
-        let baseURL = `https://api.tinynotie.bio/api/post/list?`;
+        let baseURL = `https://tinynotie-api.vercel.app/api/post/list?`;
         baseURL += `companyId=${companyId}&`;
         baseURL += `&projectId=${projectId}`;
         baseURL += `&categoryId=${categoryId}`;

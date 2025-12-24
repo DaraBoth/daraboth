@@ -1,11 +1,12 @@
 // src/components/ChatPopup.jsx
 
 import React, { useEffect, useState, useRef, memo } from "react";
-import axios from "axios";
+// Use native fetch for streaming responses
 import { toast } from "sonner";
 import {
   MdMinimize,
   MdSend,
+  MdDelete,
 } from "react-icons/md";
 import { ClipLoader } from "react-spinners";
 import moment from "moment";
@@ -20,6 +21,7 @@ const WEBHOOK_TIMEOUT = 10 * 60 * 1000; // 10 minutes timeout for webhook
 
 const ChatPopup = ({ onClose }) => {
   const listRef = useRef(); // Ref for the virtualized list
+  const chatContainerRef = useRef(null); // container for scrolling
   const [form, setForm] = useState({ message: "" });
   const [loading, setLoading] = useState(false);
   const [banCount, setBanCount] = useState(0);
@@ -31,7 +33,7 @@ const ChatPopup = ({ onClose }) => {
     const storedHistory = localStorage.getItem("chatHistory");
     return storedHistory ? JSON.parse(storedHistory) : [];
   });
-  const [isTyping, setIsTyping] = useState(false);
+  // typing indicator derived from pendingMessages
   const [hoveredMessageIndex, setHoveredMessageIndex] = useState(null); // Track hovered message for delete button
   const [pendingMessages, setPendingMessages] = useState(new Map()); // Track pending webhook responses
 
@@ -49,6 +51,27 @@ const ChatPopup = ({ onClose }) => {
       setBanEndTime(new Date(storedBanEndTime));
     }
   }, []);
+
+  // Auto-scroll helper
+  const scrollToBottom = (behavior = "smooth") => {
+    try {
+      const el = chatContainerRef.current;
+      if (!el) return;
+      el.scrollTo({ top: el.scrollHeight, behavior });
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  // Scroll to bottom on mount
+  useEffect(() => {
+    scrollToBottom("auto");
+  }, []);
+
+  // Scroll to bottom when chatHistory or pendingMessages change
+  useEffect(() => {
+    scrollToBottom("smooth");
+  }, [chatHistory.length, pendingMessages.size]);
 
   useEffect(() => {
     localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
@@ -114,7 +137,6 @@ const ChatPopup = ({ onClose }) => {
     setForm({ ...form, message: "" }); // Clear input after sending
 
     setLoading(true);
-    setIsTyping(true); // Show typing indicator
 
     // Add a placeholder message for the pending response
     const pendingMessageId = uuidv4();
@@ -128,58 +150,118 @@ const ChatPopup = ({ onClose }) => {
     setChatHistory((prevHistory) => [...prevHistory, pendingMessage]);
     setPendingMessages(prev => new Map(prev.set(pendingMessageId, true)));
 
-    // Call webhook with message and user_id
+    // Call webhook with message and user_id and handle streaming response
     try {
-      const webhookUrl = `https://n8n.tonlaysab.com/webhook/b214e690-dc99-4809-a3dc-01bfb2789e86/chat`;
 
-      // Set up timeout for webhook response
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error("Webhook timeout")), WEBHOOK_TIMEOUT);
-      });
+      // Send payload matching n8n Chat Trigger expectations: include `chatInput` field
+      const N8N_WEBHOOK = `https://n8n.tonlaysab.com/webhook/b214e690-dc99-4809-a3dc-01bfb2789e86/chat`;
 
-      // Send payload: message and a user identifier
+      // Send payload: the chatTrigger expects `chatInput` to contain the prompt
       const payload = {
-        message: userMessage,
+        chatInput: userMessage,
         user_id: userMessageId,
       };
 
-      const webhookPromise = axios.post(webhookUrl, payload, {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), WEBHOOK_TIMEOUT);
+
+      // POST directly to n8n webhook (n8n will return final response; if streaming is available we'll handle it)
+      const response = await fetch(N8N_WEBHOOK, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
       });
 
-      const response = await Promise.race([webhookPromise, timeoutPromise]);
+      if (!response.ok) throw new Error(`Request failed with status ${response.status}`);
 
-      // Normalize different possible response shapes from the webhook
-      const data = response && response.data ? response.data : {};
-      let responseParts = [];
+      // If server sends full body at once (no stream) handle it
+      if (!response.body) {
+        const text = await response.text();
+        let responseParts = [{ text }];
+        try {
+          const data = JSON.parse(text);
+          // Normalize arrays from n8n (e.g. [{ output: '...' }])
+          const normalized = Array.isArray(data) && data.length > 0 ? data[0] : data;
+          if (Array.isArray(normalized.parts) && normalized.parts.length) {
+            responseParts = normalized.parts.map((p) => ({ text: typeof p === "string" ? p : p.text || JSON.stringify(p) }));
+          } else if (Array.isArray(normalized.messages) && normalized.messages.length) {
+            responseParts = normalized.messages.map((m) => ({ text: typeof m === "string" ? m : m.text || JSON.stringify(m) }));
+          } else if (typeof normalized.output === "string") {
+            responseParts = [{ text: normalized.output }];
+          } else if (typeof normalized.message === "string") {
+            responseParts = [{ text: normalized.message }];
+          }
+        } catch (e) {
+          // keep as plain text
+        }
 
-      if (Array.isArray(data.parts) && data.parts.length > 0) {
-        responseParts = data.parts.map((p) => ({ text: typeof p === "string" ? p : p.text || JSON.stringify(p) }));
-      } else if (Array.isArray(data.messages) && data.messages.length > 0) {
-        responseParts = data.messages.map((m) => ({ text: typeof m === "string" ? m : m.text || JSON.stringify(m) }));
-      } else if (typeof data.message === "string") {
-        responseParts = [{ text: data.message }];
-      } else if (typeof data === "string") {
-        responseParts = [{ text: data }];
+        const botResponse = {
+          id: pendingMessageId,
+          role: "model",
+          parts: responseParts,
+          timestamp: moment().format("h:mm A"),
+          isPending: false,
+        };
+
+        setChatHistory((prevHistory) => prevHistory.map((msg) => (msg.id === pendingMessageId ? botResponse : msg)));
+        clearTimeout(timeoutId);
       } else {
-        // Fallback: stringify entire payload if no known key
-        responseParts = [{ text: "Sorry, I couldn't process your request. Please try again." }];
+        // Streamed response: read chunks and update UI incrementally
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let done = false;
+        let accumulated = "";
+
+        while (!done) {
+          const { value, done: readerDone } = await reader.read();
+          if (readerDone) {
+            done = true;
+            break;
+          }
+          const chunk = decoder.decode(value, { stream: true });
+          accumulated += chunk;
+
+          // Try to interpret accumulated data as JSON first; if it fails, treat as plain text
+          let responseParts = [{ text: accumulated }];
+          try {
+            const maybe = JSON.parse(accumulated);
+            const normalized = Array.isArray(maybe) && maybe.length > 0 ? maybe[0] : maybe;
+            if (Array.isArray(normalized.parts) && normalized.parts.length > 0) {
+              responseParts = normalized.parts.map((p) => ({ text: typeof p === "string" ? p : p.text || JSON.stringify(p) }));
+            } else if (Array.isArray(normalized.messages) && normalized.messages.length > 0) {
+              responseParts = normalized.messages.map((m) => ({ text: typeof m === "string" ? m : m.text || JSON.stringify(m) }));
+            } else if (typeof normalized.output === "string") {
+              responseParts = [{ text: normalized.output }];
+            } else if (typeof normalized.message === "string") {
+              responseParts = [{ text: normalized.message }];
+            } else if (typeof maybe === "string") {
+              responseParts = [{ text: maybe }];
+            }
+          } catch (e) {
+            // not JSON, keep as plain accumulated text
+          }
+
+          setChatHistory((prevHistory) =>
+            prevHistory.map((msg) =>
+              msg.id === pendingMessageId ? { ...msg, parts: responseParts, isPending: true } : msg
+            )
+          );
+        }
+
+        // Finalize the pending message
+        setChatHistory((prevHistory) =>
+          prevHistory.map((msg) => (msg.id === pendingMessageId ? { ...msg, isPending: false, timestamp: moment().format("h:mm A") } : msg))
+        );
+
+        clearTimeout(timeoutId);
       }
-
-      const botResponse = {
-        id: pendingMessageId,
-        role: "model",
-        parts: responseParts,
-        timestamp: moment().format("h:mm A"),
-        isPending: false,
-      };
-
-      setChatHistory((prevHistory) => prevHistory.map((msg) => (msg.id === pendingMessageId ? botResponse : msg)));
     } catch (error) {
       console.error("Webhook call failed:", error);
       
       // Show error message in chat
-      const errorMessage = error.message === 'Webhook timeout' 
+      const isAbort = error.name === 'AbortError' || error.message === 'Webhook timeout';
+      const errorMessage = isAbort
         ? "Sorry, the request is taking longer than expected. Please try again later."
         : "Sorry, there was an issue processing your request. Please try again.";
       
@@ -202,7 +284,7 @@ const ChatPopup = ({ onClose }) => {
       });
     } finally {
       setLoading(false);
-      setIsTyping(false); // Hide typing indicator after response
+      // typing indicator is derived from pendingMessages; no explicit set here
       setPendingMessages(prev => {
         const newMap = new Map(prev);
         newMap.delete(pendingMessageId);
@@ -277,6 +359,20 @@ const ChatPopup = ({ onClose }) => {
     setChatHistory(updatedHistory);
   };
 
+  const handleClearChat = () => {
+    if (chatHistory.length === 0) return;
+    const ok = window.confirm("Clear the entire chat history?");
+    if (!ok) return;
+    setChatHistory([]);
+    try {
+      localStorage.removeItem("chatHistory");
+    } catch (e) {
+      // ignore
+    }
+    setPendingMessages(new Map());
+    setLoading(false);
+  };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -284,9 +380,9 @@ const ChatPopup = ({ onClose }) => {
         animate={{ opacity: 1, x: 0, scale: 1 }}
         exit={{ opacity: 0, x: 300, scale: 0.8 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="fixed bottom-20 right-6 z-50"
+        className="fixed bottom-4 left-4 right-4 sm:bottom-20 sm:right-6 z-50 flex sm:justify-end justify-center"
       >
-        <div className="relative glass-primary backdrop-blur-2xl bg-gradient-to-br from-white/15 via-white/8 to-white/5 border border-white/20 rounded-3xl shadow-2xl max-w-sm min-w-[400px] h-[85vh] flex flex-col overflow-hidden">
+        <div className="relative glass-primary backdrop-blur-2xl bg-gradient-to-br from-white/15 via-white/8 to-white/5 border border-white/20 rounded-3xl shadow-2xl max-w-sm w-full sm:min-w-[400px] h-[70vh] sm:h-[85vh] max-h-[85vh] flex flex-col overflow-hidden">
           {/* Background Decorative Elements */}
           <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#915EFF]/10 to-transparent rounded-full blur-xl" />
           <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-[#804dee]/10 to-transparent rounded-full blur-lg" />
@@ -304,23 +400,34 @@ const ChatPopup = ({ onClose }) => {
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white/50 animate-pulse" />
               </div>
               <div>
-                <h6 className="text-white text-lg font-bold">Website AI Agent</h6>
-                <p className="text-white/80 text-sm">I can help with your website</p>
+                <h6 className="text-white text-lg font-bold">Personal Info Assistance AI</h6>
+                <p className="text-white/80 text-sm">Daraboth's bot</p>
               </div>
             </div>
 
             <motion.button
+              onClick={handleClearChat}
+              title="Clear chat"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative z-10 w-10 h-10 backdrop-blur-md rounded-2xl flex items-center justify-center text-white border border-white/30 hover:bg-white/20 transition-all duration-300 mr-2"
+            >
+              <MdDelete size={18} className="text-white" aria-hidden="true" />
+            </motion.button>
+
+            <motion.button
               onClick={onClose}
+              title="Minimize"
               whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.9 }}
-              className="relative z-10 w-10 h-10 glass-button-secondary backdrop-blur-md rounded-2xl flex items-center justify-center text-white border border-white/30 hover:bg-white/20 transition-all duration-300"
+              className="relative z-10 w-10 h-10 backdrop-blur-md rounded-2xl flex items-center justify-center text-white border border-white/30 hover:bg-white/20 transition-all duration-300"
             >
-              <MdMinimize size={20} />
+              <MdMinimize size={20} className="text-white" aria-hidden="true" />
             </motion.button>
           </div>
 
           {/* Chat History Area */}
-          <div className="flex-grow overflow-auto p-4 bg-black-100/50">
+          <div ref={chatContainerRef} className="flex-grow overflow-auto p-2 bg-black-100/50">
             <VirtualizedChatHistory
               chatHistory={chatHistory}
               handleDeleteMessage={handleDeleteMessage}
@@ -329,7 +436,7 @@ const ChatPopup = ({ onClose }) => {
               ref={listRef} // Attach the ref to the virtualized list
             />
             {/* Typing Indicator */}
-            {isTyping && (
+            {pendingMessages.size > 0 && (
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -350,7 +457,7 @@ const ChatPopup = ({ onClose }) => {
           </div>
 
           {/* Enhanced Chat Input Area */}
-          <div className="relative p-5 glass-secondary backdrop-blur-xl border-t border-white/20 rounded-b-3xl">
+          <div className="relative p-3 glass-secondary backdrop-blur-xl border-t border-white/20 rounded-b-3xl">
             <form onSubmit={handleSubmit}>
               <div className="flex items-end gap-3">
                 <div className="flex-grow relative">
@@ -359,7 +466,7 @@ const ChatPopup = ({ onClose }) => {
                     value={form.message}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    placeholder="Ask me anything about the website..."
+                    placeholder="Ask me anything about me"
                     className="w-full p-4 glass-tertiary backdrop-blur-md bg-gradient-to-r from-white/10 to-white/5 border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#915EFF]/50 focus:border-[#915EFF]/60 focus:shadow-lg focus:shadow-[#915EFF]/25 transition-all duration-300 resize-none overflow-hidden"
                     style={{
                       minHeight: '52px',
@@ -400,7 +507,7 @@ const ChatPopup = ({ onClose }) => {
                     {loading ? (
                       <ClipLoader size={20} color={"#ffffff"} />
                     ) : (
-                      <MdSend size={22} />
+                      <MdSend size={22} className="text-white" aria-hidden="true" />
                     )}
                   </div>
                 </motion.button>
