@@ -62,7 +62,7 @@ const ProjectCard = ({
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => window.open(source_code_link, "_blank")}
-                className="glass-button w-12 h-12 rounded-2xl flex justify-center items-center cursor-pointer backdrop-blur-md border border-white/30 shadow-lg"
+                className="glass-button p-3 w-12 h-12 rounded-2xl flex justify-center items-center cursor-pointer backdrop-blur-md border border-white/30 shadow-lg"
               >
                 <img
                   src={github}
@@ -76,7 +76,7 @@ const ProjectCard = ({
                 whileHover={{ scale: 1.1, rotate: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => window.open(source_code_link, "_blank")}
-                className="glass-button-secondary w-12 h-12 rounded-2xl flex justify-center items-center cursor-pointer backdrop-blur-md border border-white/30 shadow-lg"
+                className="glass-button-secondary p-3 w-12 h-12 rounded-2xl flex justify-center items-center cursor-pointer backdrop-blur-md border border-white/30 shadow-lg"
               >
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

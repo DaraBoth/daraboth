@@ -436,7 +436,7 @@ const ChatPopup = ({ onClose }) => {
               ref={listRef} // Attach the ref to the virtualized list
             />
             {/* Typing Indicator */}
-            {pendingMessages.size > 0 && (
+            {/* {pendingMessages.size > 0 && (
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -453,7 +453,7 @@ const ChatPopup = ({ onClose }) => {
                   </div>
                 </div>
               </motion.div>
-            )}
+            )} */}
           </div>
 
           {/* Enhanced Chat Input Area */}

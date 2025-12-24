@@ -25,14 +25,7 @@ const Row = ({ index, style, data }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Avatar */}
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
-        msg.role === "user" 
-          ? "bg-gradient-to-r from-[#915EFF] to-[#804dee]" 
-          : "bg-gradient-to-r from-[#915EFF] to-[#804dee]"
-      } text-white text-xs font-bold`}>
-        {msg.role === "user" ? "U" : "AI"}
-      </div>
+      {/* Avatar removed: simplified message row without avatar */}
 
       {/* Message Bubble */}
       <div className={`relative max-w-[75%] ${

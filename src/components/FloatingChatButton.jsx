@@ -22,7 +22,7 @@ const FloatingChatButton = () => {
             boxShadow: "0 20px 40px rgba(145, 94, 255, 0.4)"
           }}
           whileTap={{ scale: 0.95 }}
-          className="relative w-16 h-16 rounded-2xl glass-button backdrop-blur-xl bg-gradient-to-br from-[#915EFF]/30 via-[#804dee]/20 to-[#915EFF]/30 border border-[#915EFF]/40 text-white shadow-lg shadow-[#915EFF]/25 transition-all duration-300 overflow-hidden group"
+          className="relative w-14 h-14 rounded-2xl glass-button backdrop-blur-xl bg-gradient-to-br from-[#915EFF]/30 via-[#804dee]/20 to-[#915EFF]/30 border border-[#915EFF]/40 text-white shadow-lg shadow-[#915EFF]/25 transition-all duration-300 overflow-hidden group p-0"
           aria-label="Toggle chat"
         >
           {/* Background Glow Effect */}
@@ -34,7 +34,7 @@ const FloatingChatButton = () => {
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="relative z-10 flex items-center justify-center w-full h-full"
           >
-            {isChatOpen ? <MdClose size={28} /> : <MdChat size={28} />}
+            {isChatOpen ? <MdClose size={30} /> : <MdChat size={30} />}
           </motion.div>
 
           {/* Floating Particles */}
@@ -69,7 +69,7 @@ const FloatingChatButton = () => {
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: isChatOpen ? 0 : 1 }}
-          className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center border-2 border-white/30 backdrop-blur-sm"
+          className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center border-2 border-white/30 backdrop-blur-sm"
         >
           <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
         </motion.div>
