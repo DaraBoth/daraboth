@@ -14,8 +14,8 @@ const Tech = lazy(() => import("@/components/Tech"));
 const Works = lazy(() => import("@/components/Works"));
 const Contact = lazy(() => import("@/components/Contact"));
 const TestimonialFormWrapper = lazy(() => import("@/components/TestimonialFormWrapper"));
-const FloatingChatButton = lazy(() => import("@/components/FloatingChatButton"));
-const ChatPopup = lazy(() => import("../components/ChatPopup"));
+
+
 
 const HomePage = () => {
 
@@ -103,11 +103,7 @@ const HomePage = () => {
               <Contact />
             </Suspense>
             <StarsCanvas />
-            <Suspense fallback={<div className="flex justify-center items-center h-8"><div className="text-secondary text-sm">Loading chat...</div></div>}>
-              <FloatingChatButton>
-                <ChatPopup />
-              </FloatingChatButton>
-            </Suspense>
+
           </div>
         </div>
       </div>

@@ -26,6 +26,7 @@ import {
   mankerlightkh,
   wewallet,
   dailygoalmap,
+  typeflow_ai,
 } from "../assets";
 
 export const navLinks = [
@@ -153,7 +154,7 @@ const experiences = [
     points: [
       "Car photographer, Editing Car's Picture, Sale, Customer Service, also build website for company.",
     ],
-  }, 
+  },
   {
     title: "Content Creator",
     company_name: "Manker Light Cambodia",
@@ -346,6 +347,23 @@ const projects = [
     ],
     image: dailygoalmap,
     source_code_link: "https://dailygoalmap.vercel.app/",
+  },
+  {
+    name: "TypeFlow AI",
+    description:
+      "AI-powered autocomplete with RAG, interactive chat, and training analytics. Features intelligent word completion, phrase suggestions using OpenAI embeddings and Supabase vector search.",
+    tags: [
+      { name: "nextjs", color: "blue-text-gradient" },
+      { name: "typescript", color: "blue-text-gradient" },
+      { name: "supabase", color: "green-text-gradient" },
+      { name: "openai", color: "purple-text-gradient" },
+      { name: "rag", color: "pink-text-gradient" },
+      { name: "tailwind", color: "blue-text-gradient" },
+      { name: "framer-motion", color: "pink-text-gradient" },
+      { name: "zustand", color: "green-text-gradient" },
+    ],
+    image: typeflow_ai,
+    source_code_link: "https://b2b-rag-ai.vercel.app/",
   },
 ];
 

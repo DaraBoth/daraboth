@@ -43,6 +43,7 @@ import tinynotie from "./tinynotie.png";
 import mankerlightkh from "./mankerlighkh.png"
 import wewallet from "./wewallet.png"
 import dailygoalmap from "./dailygoalmap.png";
+import typeflow_ai from "./typeflow_ai.png";
 
 export {
   logo,
@@ -86,4 +87,5 @@ export {
   mankerlightkh,
   wewallet,
   dailygoalmap,
+  typeflow_ai,
 };

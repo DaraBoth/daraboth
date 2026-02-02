@@ -147,10 +147,10 @@ const Works = () => {
   const filteredProjects = filter === 'all'
     ? projects
     : projects.filter(project =>
-        project.tags.some(tag => tag.name.toLowerCase().includes(filter.toLowerCase()))
-      );
+      project.tags.some(tag => tag.name.toLowerCase().includes(filter.toLowerCase()))
+    );
 
-  const categories = ['all', 'react', 'angular', 'javascript', 'css'];
+  const categories = ['all', 'react', 'angular', 'nextjs', 'pwa'];
 
   return (
     <div className="relative max-w-7xl mx-auto">
@@ -191,11 +191,10 @@ const Works = () => {
               <button
                 key={category}
                 onClick={() => setFilter(category)}
-                className={`px-6 py-2 rounded-xl transition-all duration-300 capitalize font-medium ${
-                  filter === category
+                className={`px-6 py-2 rounded-xl transition-all duration-300 capitalize font-medium ${filter === category
                     ? 'glass-accent text-white shadow-lg shadow-[#915EFF]/25'
                     : 'text-white/70 hover:text-white hover:bg-white/10'
-                }`}
+                  }`}
               >
                 {category}
               </button>

@@ -30,7 +30,7 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!form.name || !form.email || !form.message) {
       toast.warning`Please fill all the information first!`;
       return;
@@ -218,7 +218,7 @@ const Contact = () => {
           variants={slideIn("right", "tween", 0.3, 1)}
           className="xl:flex-1 relative"
         >
-          <div className="relative xl:h-auto md:h-[600px] h-[400px] rounded-3xl overflow-hidden glass-secondary backdrop-blur-xl border border-white/20 shadow-2xl">
+          <div className="relative xl:h-[550px] md:h-[500px] h-[400px] rounded-3xl overflow-hidden glass-secondary backdrop-blur-xl border border-white/20 shadow-2xl">
             <EarthCanvas />
 
             {/* Overlay with Contact Info */}
