@@ -79,7 +79,7 @@ const HomePage = () => {
           {/* Tech Section with Enhanced Layout */}
           <div className="relative py-20 lg:py-32">
             <Suspense fallback={<SimpleLoader />}>
-              {/* <Tech /> */}
+              <Tech />
             </Suspense>
           </div>
 

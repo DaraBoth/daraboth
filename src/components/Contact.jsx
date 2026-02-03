@@ -213,24 +213,12 @@ const Contact = () => {
           </div>
         </motion.div>
 
-        {/* Enhanced 3D Earth Canvas */}
+        {/* 3D Earth Canvas */}
         <motion.div
           variants={slideIn("right", "tween", 0.3, 1)}
-          className="xl:flex-1 relative"
+          className="xl:flex-1 xl:h-auto h-[650px]"
         >
-          <div className="relative xl:h-[550px] md:h-[500px] h-[400px] rounded-3xl overflow-hidden glass-secondary backdrop-blur-xl border border-white/20 shadow-2xl">
-            <EarthCanvas />
-
-            {/* Overlay with Contact Info */}
-            <div className="absolute bottom-6 left-6 right-6">
-              <div className="glass-tertiary rounded-2xl p-4 backdrop-blur-md border border-white/20">
-                <div className="flex items-center gap-3 text-white">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium">Available for new projects</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <EarthCanvas />
         </motion.div>
       </div>
 

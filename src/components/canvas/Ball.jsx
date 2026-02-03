@@ -49,12 +49,14 @@ const BallCanvas = ({ icon }) => {
         powerPreference: "high-performance"
       }}
       performance={{ min: 0.5 }}
+      style={{ width: '100%', height: '100%', pointerEvents: 'auto' }}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
           enableZoom={false}
-          enablePan={false} // Disable panning for performance
-          enableDamping={false} // Disable damping for performance
+          enablePan={false}
+          enableRotate={true}
+          rotateSpeed={0.5}
         />
         <Ball imgUrl={icon} />
       </Suspense>

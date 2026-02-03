@@ -8,7 +8,7 @@ const Earth = () => {
   const earth = useGLTF("./planet/scene.gltf");
 
   return (
-    <primitive object={earth.scene} scale={3.2} position-y={-0.5} rotation-y={0} />
+    <primitive object={earth.scene} scale={4.2} position-y={0} rotation-y={0} />
   );
 };
 
@@ -25,10 +25,10 @@ const EarthCanvas = () => {
         powerPreference: "high-performance"
       }}
       camera={{
-        fov: 50,
+        fov: 55,
         near: 0.1,
         far: 200,
-        position: [0, 0, 5],
+        position: [0, 0, 6],
       }}
       performance={{ min: 0.5 }}
     >
