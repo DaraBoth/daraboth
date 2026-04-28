@@ -1,129 +1,24 @@
-# 👨‍💻 Daraboth Portfolio
+# Daraboth
 
-## About Me
+Software Engineer building modern web apps, AI tools, and business systems.
 
-Hi, I'm **Daraboth** — a passionate and detail-oriented **Software Engineer** with experience in building modern web applications and solving real business problems.
+## About
+I focus on clean UI, practical product work, and scalable full-stack development. I’m based in Seoul and originally from Cambodia.
 
-I enjoy creating products that are clean, efficient, scalable, and enjoyable to use. My focus is not only making things work, but making them work beautifully.
+## Tech Stack
+- Next.js, React, TypeScript, JavaScript, Tailwind CSS, Framer Motion
+- Node.js, NestJS, REST APIs, NextAuth, Supabase, SQLite, Rust, Tauri
+- AI / Workflow: OpenAI, Claude Code, RAG, prompt engineering, workflow automation
 
----
+## What I Build
+- AI autocomplete and document chat tools
+- Full-stack business apps
+- POS and local-first desktop systems
+- Authentication and dashboard systems
+- Prompt-engineering and agent workflow setups
 
-## 💼 Professional Identity
-
-**Role:** Full-Stack Software Engineer  
-**Industry Experience:** SaaS / Fintech / Web Platforms  
-**Core Strengths:**
-
-- Frontend Development
-- Backend Integration
-- UI / UX Thinking
-- Problem Solving
-- Performance Optimization
-- Clean Code Practices
-- Product Mindset
-
----
-
-## 🛠 Technical Skills
-
-### Frontend
-- React
-- JavaScript
-- TypeScript
-- HTML5
-- CSS3
-- Tailwind CSS
-
-### Backend
-- Node.js
-- REST APIs
-- Authentication Systems
-- Database Integration
-
-### Tools & Workflow
-- Git / GitHub
-- Agile Workflow
-- Debugging
-- Deployment Pipelines
-- Version Control
-
----
-
-## 🚀 What I Build
-
-I enjoy working on projects such as:
-
-- Business Web Applications
-- SaaS Platforms
-- Fintech Systems
-- Dashboard Systems
-- Portfolio Websites
-- Productivity Tools
-- Custom Internal Systems
-
----
-
-## 🧠 Work Philosophy
-
-I believe strong software should have:
-
-- Clean architecture
-- Great user experience
-- Fast performance
-- Maintainable code
-- Real business value
-
-I always aim to improve both technical quality and user satisfaction.
-
----
-
-## 🌍 Personal Background
-
-Originally from **Cambodia**, with international work experience in **South Korea**.
-
-This journey has helped me grow both technically and personally through adapting to new environments, cultures, and challenges.
-
----
-
-## 📈 Current Focus
-
-Right now, I am focused on improving myself in these areas:
-
-- Advanced Software Engineering Skills
-- System Design
-- Clean Scalable Architecture
-- Korean Language Growth
-- Career Development
-- Personal Discipline & Fitness
-
----
-
-## 🎯 Long-Term Goals
-
-- Become a high-level software engineer
-- Build meaningful digital products
-- Grow internationally in the tech industry
-- Continue learning and mastering new technologies
-- Create a life through skill, discipline, and consistency
-
----
-
-## 🤝 Personality
-
-People often describe me as:
-
-- Hardworking
-- Curious
-- Creative
-- Persistent
-- Detail-focused
-- Ambitious
-- Calm under pressure
-
----
-
-## 👑 Closing Statement
-
-I am someone who continuously grows, builds, learns, and improves.
-
-Technology is not just my job — it is one of the ways I create value in the world.
+## Selected Public Projects
+- **TypeFlow AI** — AI autocomplete with RAG, document chat, analytics, and Supabase vector search.
+- **Agent Manager** — Claude Code configuration, skills, rules, and multi-agent workflow simulation.
+- **Cambodian Restaurant POS System** — offline, local-first POS built with Tauri, Rust, SQLite, and Next.js.
+- **TinyNotie** — group, trip, and expense management app with auth, receipt scanning, translation, and AI chat.
